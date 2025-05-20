@@ -19,7 +19,13 @@ function loadEvents() {
             const monthNum = e['Månadsnummer'].padStart(2, '0');
             const monthName = e['Månadsnamn'];
             const key = `${year}-${monthNum}`;
-            if (!grouped[key]) grouped[key] = { namn: monthName, år: year, data: [] };
+            if (!grouped[key]) {
+              grouped[key] = {
+                namn: monthName,
+                år: year,
+                data: []
+              };
+            }
             grouped[key].data.push(e);
           });
 
@@ -30,7 +36,7 @@ function loadEvents() {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
-              groupDiv.innerHTML = `<h2>📅 ${namn} ${år}</h2>`;
+              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
               data.forEach(e => {
                 const card = document.createElement('div');
