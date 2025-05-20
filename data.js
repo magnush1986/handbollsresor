@@ -57,21 +57,13 @@ function loadEvents() {
               .forEach(key => {
                 const { namn, år, data } = grouped[key];
                 const groupDiv = document.createElement('div');
-                groupDiv.className = 'event-group';
-                if (isPast) {
-                  groupDiv.classList.add('past');
-                  groupDiv.style.display = 'none';
-                }
+                groupDiv.className = isPast ? 'event-group past-group' : 'event-group';
+                if (isPast) groupDiv.style.display = 'none';
                 groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
                 data.forEach(e => {
                   const card = document.createElement('div');
                   card.className = 'event-card';
-                  if (e._isPast) {
-                    card.classList.add('past');
-                    card.style.display = 'none';
-                  }
-
                   card.innerHTML = `
                     <strong>${e['Namn på händelse']}</strong><br>
                     📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
@@ -82,7 +74,6 @@ function loadEvents() {
                     🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
                     ${e["Hemsida_URL"] ? `🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>` : ""}
                   `;
-
                   groupDiv.appendChild(card);
                 });
 
@@ -100,8 +91,8 @@ function loadEvents() {
 document.addEventListener("DOMContentLoaded", loadEvents);
 
 function togglePast() {
-  const past = document.querySelectorAll(".past");
-  past.forEach(el => {
+  const pastGroups = document.querySelectorAll(".past-group");
+  pastGroups.forEach(el => {
     el.style.display = el.style.display === "none" ? "block" : "none";
   });
 }
