@@ -9,6 +9,12 @@
 </head>
 <body>
   <h1>Händelser med skolledighet</h1>
+  <nav>
+    <a href="index.html">Alla</a>
+    <a href="usm.html">USM</a>
+    <a href="cup.html">Cuper</a>
+    <a href="ledig.html">Ledigt</a>
+  </nav>
   <div id="event-container"></div>
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
@@ -41,7 +47,7 @@
                   🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                   💰 Kostnad: ${e['Kostnad per spelare']}<br>
                   🚗 Färdsätt: ${e['Färdsätt']}<br>
-                  ${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]}" target="_blank">Mer info</a>` : ""}
+                  ${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]]}" target="_blank">Mer info</a>` : ""}
                 `;
                 container.appendChild(card);
               });

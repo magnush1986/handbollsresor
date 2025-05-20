@@ -3,13 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Härnösands HF – Händelser</title>
+  <title>Alla händelser</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
-  <h1>Härnösands HF – Händelser</h1>
+  <h1>Härnösands HF – Alla händelser</h1>
+  <nav>
+    <a href="index.html">Alla</a>
+    <a href="usm.html">USM</a>
+    <a href="cup.html">Cuper</a>
+    <a href="ledig.html">Ledigt</a>
+  </nav>
   <div id="event-container"></div>
-  <script src="data.js"></script>
+  <script>
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+
+    function loadEvents() {
+      fetch(SHEET_URL)
+        .then(response => response.text())
+        .then(csvText => {
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              const events = results.data;
+              const todayStr = new Date().toISOString().split("T")[0];
+              const container = document.getElementById('event-container');
+
+              const filter = e => true;
+
+              const filtered = events.filter(filter);
+              filtered.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+
+              filtered.forEach(e => {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                card.innerHTML = `
+                  <strong>${e['Namn på händelse']}</strong><br>
+                  📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
+                  📅 ${e['Datum från']} – ${e['Datum till']}<br>
+                  ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
+                  🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
+                  💰 Kostnad: ${e['Kostnad per spelare']}<br>
+                  🚗 Färdsätt: ${e['Färdsätt']}<br>
+                  ${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]]}" target="_blank">Mer info</a>` : ""}
+                `;
+                container.appendChild(card);
+              });
+            }
+          });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadEvents);
+  </script>
 </body>
 </html>
