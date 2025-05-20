@@ -15,19 +15,22 @@ function loadEvents() {
 
           const grouped = {};
           events.forEach(e => {
-            const key = `${e['År']}_${e['Månadsnummer'].padStart(2, '0')}`;
-            if (!grouped[key]) grouped[key] = { namn: e['Månadsnamn'], år: e['År'], data: [] };
+            const year = e['År'];
+            const month = e['Månadsnummer'].padStart(2, '0');
+            const namn = e['Månadsnamn'];
+            const key = `${year}-${month}`;
+            if (!grouped[key]) grouped[key] = { år: year, namn: namn, data: [] };
             grouped[key].data.push(e);
           });
 
           const container = document.getElementById('event-container');
           Object.keys(grouped)
             .sort()
-            .forEach(monthKey => {
-              const { namn, år, data } = grouped[monthKey];
+            .forEach(key => {
+              const { år, namn, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
-              groupDiv.innerHTML = `<h2>📅 ${namn} ${år}</h2>`;
+              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
               data.forEach(e => {
                 const card = document.createElement('div');
