@@ -1,6 +1,6 @@
 // Bygger vidare exakt på v4-koden – med:
 // - filtrering för USM/Cup/Ledig per URL
-// - korrekt sortering och gruppering per År–Månad
+// - korrekt sortering och gruppering per År–Månad (numeriskt)
 // - tidigare händelser längst ner, dolda från början
 // - korrekt länk via Hemsida_URL
 
@@ -22,8 +22,6 @@ function loadEvents() {
         complete: function(results) {
           const events = results.data;
 
-          events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
-
           const upcomingGrouped = {};
           const pastGrouped = {};
 
@@ -40,7 +38,8 @@ function loadEvents() {
             const key = `${year}-${monthNum}`;
             const groupEntry = { namn: monthName, år: year, data: [] };
 
-            const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+            const slutdatumRaw = e['Datum till'] || e['Datum från'];
+            const slutdatum = slutdatumRaw?.substring(0, 10) || "0000-00-00";
             const isPast = slutdatum < today;
             e._isPast = isPast;
 
@@ -53,7 +52,11 @@ function loadEvents() {
 
           function renderGrouped(grouped, isPast = false) {
             Object.keys(grouped)
-              .sort()
+              .sort((a, b) => {
+                const [ay, am] = a.split('-').map(Number);
+                const [by, bm] = b.split('-').map(Number);
+                return ay !== by ? ay - by : am - bm;
+              })
               .forEach(key => {
                 const { namn, år, data } = grouped[key];
                 const groupDiv = document.createElement('div');
