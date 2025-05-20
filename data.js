@@ -67,6 +67,11 @@ function loadEvents() {
                 data.forEach(e => {
                   const card = document.createElement('div');
                   card.className = 'event-card';
+
+                  const hemsidaUrl = e["Hemsida_URL"] && e["Hemsida_URL"].startsWith("http")
+                    ? `<br>🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>`
+                    : "";
+
                   card.innerHTML = `
                     <strong>${e['Namn på händelse']}</strong><br>
                     📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
@@ -74,8 +79,7 @@ function loadEvents() {
                     ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
                     🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                     💰 Kostnad: ${e['Kostnad per spelare']}<br>
-                    🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
-                    ${e["Hemsida_URL"] ? `🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>` : ""}
+                    🚗 Färdsätt: ${e['Färdsätt'] || ''}${hemsidaUrl}
                   `;
                   groupDiv.appendChild(card);
                 });
