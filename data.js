@@ -1,7 +1,7 @@
 // Bygger vidare exakt på v4-koden – med:
 // - filtrering för USM/Cup/Ledig per URL
 // - korrekt sortering och gruppering per År–Månad (numeriskt)
-// - tidigare händelser längst ner, dolda från början
+// - tidigare händelser längst ner, dolda från början med rubrik & linje
 // - korrekt länk via Hemsida_URL
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
@@ -90,7 +90,26 @@ function loadEvents() {
           }
 
           renderGrouped(upcomingGrouped);
-          renderGrouped(pastGrouped, true);
+
+          if (Object.keys(pastGrouped).length > 0) {
+            const toggleBtn = document.createElement("button");
+            toggleBtn.textContent = "Visa tidigare händelser";
+            toggleBtn.className = "toggle-past-button";
+            toggleBtn.onclick = togglePast;
+
+            const divider = document.createElement("hr");
+            const pastHeader = document.createElement("h2");
+            pastHeader.textContent = "Tidigare händelser";
+            pastHeader.style.marginTop = "2rem";
+            pastHeader.style.display = "none";
+            pastHeader.id = "past-header";
+
+            container.appendChild(toggleBtn);
+            container.appendChild(divider);
+            container.appendChild(pastHeader);
+
+            renderGrouped(pastGrouped, true);
+          }
         }
       });
     });
@@ -100,7 +119,11 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 
 function togglePast() {
   const pastGroups = document.querySelectorAll(".past-group");
+  const header = document.getElementById("past-header");
   pastGroups.forEach(el => {
     el.style.display = el.style.display === "none" ? "block" : "none";
   });
+  if (header) {
+    header.style.display = header.style.display === "none" ? "block" : "none";
+  }
 }
