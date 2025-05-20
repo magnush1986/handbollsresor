@@ -11,7 +11,7 @@ function loadEvents() {
         complete: function(results) {
           const events = results.data;
 
-          const today = new Date().toISOString().split("T")[0];
+          const today = new Date();
 
           events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
@@ -49,8 +49,8 @@ function loadEvents() {
               let isPastGroup = true;
 
               data.forEach(e => {
-                const eventDate = e['Datum till'] || e['Datum från'];
-                const isFuture = eventDate >= today;
+                const eventEnd = e['Datum till'] ? new Date(e['Datum till']) : new Date(e['Datum från']);
+                const isFuture = eventEnd >= today;
                 if (isFuture) isPastGroup = false;
 
                 const card = document.createElement('div');
