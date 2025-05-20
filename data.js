@@ -1,36 +1,35 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split("T")[0];
-
-  // Filtrering beroende på sida
-  const page = window.location.pathname.toLowerCase();
-  const isUSM = page.includes("usm");
-  const isCup = page.includes("cup");
-  const isLedigt = page.includes("ledig");
+  const path = window.location.pathname.toLowerCase();
+  const filterUSM = path.includes("usm");
+  const filterCup = path.includes("cup");
+  const filterLedigt = path.includes("ledig");
 
   fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv")
-    .then(response => response.text())
+    .then(r => r.text())
     .then(csv => {
       Papa.parse(csv, {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
-          const data = results.data;
+          const rows = results.data;
           const container = document.getElementById("event-container");
 
-          const future = [];
-          const past = [];
+          rows.forEach(e => {
+            const type = e['Typ av händelse']?.toLowerCase();
+            if (filterUSM && type !== 'usm') return;
+            if (filterCup && type !== 'cup') return;
+            if (filterLedigt && !e['Ledig från skolan?']?.toLowerCase().includes('ja')) return;
 
-          data.forEach(e => {
-            if (isUSM && e['Typ av händelse'].toLowerCase() !== "usm") return;
-            if (isCup && e['Typ av händelse'].toLowerCase() !== "cup") return;
-            if (isLedigt && !e['Ledig från skolan?'].toLowerCase().includes("ja")) return;
-
-            const end = (e["Datum till"] || e["Datum från"]).substring(0,10);
-            const isFuture = end >= today;
+            const endDate = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+            const isFuture = endDate >= today;
 
             const card = document.createElement("div");
             card.className = "event-card";
+            if (!isFuture) card.classList.add("past");
+            card.style.display = isFuture ? "block" : "none";
+
             card.innerHTML = `
               <strong>${e['Namn på händelse']}</strong><br>
               📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
@@ -39,16 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
               🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
               💰 Kostnad: ${e['Kostnad per spelare']}<br>
               🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
-              ${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]}" target="_blank">Mer info</a>` : ""}
+              ${e["Hemsida_URL"] ? `🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>` : ""}
             `;
-
-            if (isFuture) {
-              container.appendChild(card);
-            } else {
-              card.classList.add("past");
-              card.style.display = "none";
-              container.appendChild(card);
-            }
+            container.appendChild(card);
           });
         }
       });
@@ -57,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function togglePast() {
   const past = document.querySelectorAll(".event-card.past");
-  past.forEach(el => {
-    el.style.display = el.style.display === "none" ? "block" : "none";
+  past.forEach(card => {
+    card.style.display = (card.style.display === "none") ? "block" : "none";
   });
 }
