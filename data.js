@@ -1,10 +1,10 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split("T")[0];
-  const path = window.location.pathname.toLowerCase();
-  const filterUSM = path.includes("usm");
-  const filterCup = path.includes("cup");
-  const filterLedigt = path.includes("ledig");
+  const href = window.location.href.toLowerCase();
+
+  const isUSM = href.includes("usm.html");
+  const isCup = href.includes("cup.html");
+  const isLedigt = href.includes("ledig.html");
 
   fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv")
     .then(r => r.text())
@@ -17,18 +17,24 @@ document.addEventListener("DOMContentLoaded", () => {
           const container = document.getElementById("event-container");
 
           rows.forEach(e => {
-            const type = e['Typ av händelse']?.toLowerCase();
-            if (filterUSM && type !== 'usm') return;
-            if (filterCup && type !== 'cup') return;
-            if (filterLedigt && !e['Ledig från skolan?']?.toLowerCase().includes('ja')) return;
+            const typ = e['Typ av händelse']?.toLowerCase() || "";
+            const ledighet = e['Ledig från skolan?']?.toLowerCase() || "";
+            const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
 
-            const endDate = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
-            const isFuture = endDate >= today;
+            // filtrera typ
+            if (isUSM && typ !== "usm") return;
+            if (isCup && typ !== "cup") return;
+            if (isLedigt && !ledighet.includes("ja")) return;
 
+            // skapa kort
             const card = document.createElement("div");
-            card.className = "event-card";
-            if (!isFuture) card.classList.add("past");
-            card.style.display = isFuture ? "block" : "none";
+            card.classList.add("event-card");
+
+            // markera gamla
+            if (slutdatum < today) {
+              card.classList.add("past");
+              card.style.display = "none";
+            }
 
             card.innerHTML = `
               <strong>${e['Namn på händelse']}</strong><br>
@@ -48,8 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function togglePast() {
-  const past = document.querySelectorAll(".event-card.past");
-  past.forEach(card => {
-    card.style.display = (card.style.display === "none") ? "block" : "none";
+  const cards = document.querySelectorAll(".event-card.past");
+  cards.forEach(card => {
+    card.style.display = card.style.display === "none" ? "block" : "none";
   });
 }
