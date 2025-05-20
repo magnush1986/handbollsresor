@@ -68,8 +68,9 @@ function loadEvents() {
                   const card = document.createElement('div');
                   card.className = 'event-card';
 
-                  const hemsidaUrl = (e["Länk till hemsida"] && typeof e["Länk till hemsida"] === 'string' && e["Länk till hemsida"].trim().startsWith("http"))
-                    ? `<br>🔗 <a href="${e["Länk till hemsida"].trim()}" target="_blank">Mer info</a>`
+                  const länk = e["Länk till hemsida"]?.trim();
+                  const hemsidaUrl = (länk && länk.startsWith("http"))
+                    ? `<br>🔗 <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                     : "";
 
                   card.innerHTML = `
