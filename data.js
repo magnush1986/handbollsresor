@@ -68,8 +68,8 @@ function loadEvents() {
                   const card = document.createElement('div');
                   card.className = 'event-card';
 
-                  const hemsidaUrl = e["Hemsida_URL"] && e["Hemsida_URL"].startsWith("http")
-                    ? `<br>🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>`
+                  const hemsidaUrl = (e["Länk till hemsida"] && typeof e["Länk till hemsida"] === 'string' && e["Länk till hemsida"].trim().startsWith("http"))
+                    ? `<br>🔗 <a href="${e["Länk till hemsida"].trim()}" target="_blank">Mer info</a>`
                     : "";
 
                   card.innerHTML = `
