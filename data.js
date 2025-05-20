@@ -63,7 +63,7 @@ function loadEvents() {
                   📅 ${e['Datum från']} – ${e['Datum till']}<br>
                   ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
                   🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
-                  💰 Kostnad: ${e['Kostnad per spelare']}
+                  💰 Kostnad: ${e['Kostnad per spelare']}<br>🚗 Färdsätt: ${e['Färdsätt']}<br>${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]}" target="_blank">Mer info</a>` : ""}
                 `;
                 groupDiv.appendChild(card);
               });
