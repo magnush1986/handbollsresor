@@ -14,24 +14,43 @@ document.addEventListener("DOMContentLoaded", () => {
         skipEmptyLines: true,
         complete: function(results) {
           const rows = results.data;
+
           const container = document.getElementById("event-container");
+
+          // sortera efter datum från
+          rows.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+
+          let currentGroup = "";
 
           rows.forEach(e => {
             const typ = e['Typ av händelse']?.toLowerCase() || "";
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || "";
-            const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+            const start = e['Datum från']?.substring(0, 10);
+            const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
 
-            // filtrera typ
-            if (isUSM && typ !== "usm") return;
-            if (isCup && typ !== "cup") return;
-            if (isLedigt && !ledighet.includes("ja")) return;
+            if (!start) return;
 
-            // skapa kort
+            // filtrera
+            if (isUSM && typ !== 'usm') return;
+            if (isCup && typ !== 'cup') return;
+            if (isLedigt && !ledighet.includes('ja')) return;
+
+            // gruppering: YYYY – MM
+            const d = new Date(start);
+            const year = d.getFullYear();
+            const month = d.toLocaleString('sv-SE', { month: 'long' });
+            const groupKey = `${year}-${month}`;
+
+            if (groupKey !== currentGroup) {
+              const heading = document.createElement("h2");
+              heading.textContent = `${year} – ${month.charAt(0).toUpperCase() + month.slice(1)}`;
+              container.appendChild(heading);
+              currentGroup = groupKey;
+            }
+
             const card = document.createElement("div");
             card.classList.add("event-card");
-
-            // markera gamla
-            if (slutdatum < today) {
+            if (end < today) {
               card.classList.add("past");
               card.style.display = "none";
             }
