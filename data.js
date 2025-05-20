@@ -36,6 +36,9 @@ function loadEvents() {
             if (isCup && typ !== 'cup') return;
             if (isLedigt && !ledighet.includes('ja')) return;
 
+            const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+            const isPast = slutdatum < today;
+
             if (!grouped[key]) {
               grouped[key] = {
                 namn: monthName,
@@ -43,6 +46,7 @@ function loadEvents() {
                 data: []
               };
             }
+            e._isPast = isPast;
             grouped[key].data.push(e);
           });
 
@@ -53,14 +57,12 @@ function loadEvents() {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
-              groupDiv.innerHTML = `<h2>🗕️ ${år} – ${namn}</h2>`;
+              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
               data.forEach(e => {
                 const card = document.createElement('div');
                 card.className = 'event-card';
-
-                const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
-                if (slutdatum < today) {
+                if (e._isPast) {
                   card.classList.add('past');
                   card.style.display = 'none';
                 }
@@ -68,7 +70,7 @@ function loadEvents() {
                 card.innerHTML = `
                   <strong>${e['Namn på händelse']}</strong><br>
                   📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                  🗓 ${e['Datum från']} – ${e['Datum till']}<br>
+                  📅 ${e['Datum från']} – ${e['Datum till']}<br>
                   ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
                   🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                   💰 Kostnad: ${e['Kostnad per spelare']}<br>
