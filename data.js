@@ -1,6 +1,7 @@
 // Bygger vidare exakt på v4-koden – med:
 // - filtrering för USM/Cup/Ledig per URL
-// - visa/dölj tidigare händelser (Datum till eller från < idag)
+// - korrekt sortering och gruppering per År–Månad
+// - tidigare händelser längst ner, dolda från början
 // - korrekt länk via Hemsida_URL
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
@@ -27,30 +28,25 @@ function loadEvents() {
           const pastGrouped = {};
 
           events.forEach(e => {
-            const year = e['År'];
-            const monthNum = e['Månadsnummer'].padStart(2, '0');
-            const monthName = e['Månadsnamn'];
-            const key = `${year}-${monthNum}`;
-
             const typ = e['Typ av händelse']?.toLowerCase() || '';
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
             if (isUSM && typ !== 'usm') return;
             if (isCup && typ !== 'cup') return;
             if (isLedigt && !ledighet.includes('ja')) return;
 
+            const year = e['År'];
+            const monthNum = e['Månadsnummer'].padStart(2, '0');
+            const monthName = e['Månadsnamn'];
+            const key = `${year}-${monthNum}`;
+            const groupEntry = { namn: monthName, år: year, data: [] };
+
             const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
             const isPast = slutdatum < today;
+            e._isPast = isPast;
 
-            const targetGroup = isPast ? pastGrouped : upcomingGrouped;
-
-            if (!targetGroup[key]) {
-              targetGroup[key] = {
-                namn: monthName,
-                år: year,
-                data: []
-              };
-            }
-            targetGroup[key].data.push(e);
+            const target = isPast ? pastGrouped : upcomingGrouped;
+            if (!target[key]) target[key] = { ...groupEntry, data: [] };
+            target[key].data.push(e);
           });
 
           const container = document.getElementById('event-container');
@@ -62,14 +58,16 @@ function loadEvents() {
                 const { namn, år, data } = grouped[key];
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'event-group';
-                if (isPast) groupDiv.classList.add('past');
-                if (isPast) groupDiv.style.display = 'none';
+                if (isPast) {
+                  groupDiv.classList.add('past');
+                  groupDiv.style.display = 'none';
+                }
                 groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
                 data.forEach(e => {
                   const card = document.createElement('div');
                   card.className = 'event-card';
-                  if (isPast) {
+                  if (e._isPast) {
                     card.classList.add('past');
                     card.style.display = 'none';
                   }
@@ -103,7 +101,7 @@ document.addEventListener("DOMContentLoaded", loadEvents);
 
 function togglePast() {
   const past = document.querySelectorAll(".past");
-  past.forEach(card => {
-    card.style.display = card.style.display === "none" ? "block" : "none";
+  past.forEach(el => {
+    el.style.display = el.style.display === "none" ? "block" : "none";
   });
 }
