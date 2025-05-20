@@ -5,14 +5,15 @@ fetch(SHEET_URL)
   .then(response => response.text())
   .then(csv => {
     const rows = csv.trim().split("\n").map(row => row.split(","));
-    const headers = rows.shift();
+    const headers = rows.shift().map(h => h.trim().replace(/\s+/g, ' '));
     const events = rows.map(row => {
       const obj = {};
-      headers.forEach((key, i) => obj[key.trim()] = row[i]?.trim());
+      headers.forEach((key, i) => {
+        obj[key] = row[i]?.trim();
+      });
       return obj;
     });
 
-    // sortera efter Datum från
     events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
     const grouped = {};
