@@ -11,6 +11,8 @@ function loadEvents() {
         complete: function(results) {
           const events = results.data;
 
+          const today = new Date().toISOString().split("T")[0];
+
           events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
           const grouped = {};
@@ -30,6 +32,12 @@ function loadEvents() {
           });
 
           const container = document.getElementById('event-container');
+
+          let hasOld = false;
+          const futureWrapper = document.createElement('div');
+          const pastWrapper = document.createElement('div');
+          pastWrapper.style.display = "none";
+
           Object.keys(grouped)
             .sort()
             .forEach(key => {
@@ -38,7 +46,13 @@ function loadEvents() {
               groupDiv.className = 'event-group';
               groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
+              let isPastGroup = true;
+
               data.forEach(e => {
+                const eventDate = e['Datum till'] || e['Datum från'];
+                const isFuture = eventDate >= today;
+                if (isFuture) isPastGroup = false;
+
                 const card = document.createElement('div');
                 card.className = 'event-card';
                 card.innerHTML = `
@@ -52,8 +66,26 @@ function loadEvents() {
                 groupDiv.appendChild(card);
               });
 
-              container.appendChild(groupDiv);
+              if (isPastGroup) {
+                hasOld = true;
+                pastWrapper.appendChild(groupDiv);
+              } else {
+                futureWrapper.appendChild(groupDiv);
+              }
             });
+
+          container.appendChild(futureWrapper);
+
+          if (hasOld) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.textContent = "Visa tidigare händelser";
+            toggleBtn.onclick = () => {
+              pastWrapper.style.display = pastWrapper.style.display === "none" ? "block" : "none";
+              toggleBtn.textContent = pastWrapper.style.display === "none" ? "Visa tidigare händelser" : "Dölj tidigare händelser";
+            };
+            container.appendChild(toggleBtn);
+            container.appendChild(pastWrapper);
+          }
         }
       });
     });
