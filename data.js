@@ -23,7 +23,9 @@ function loadEvents() {
 
           events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
-          const grouped = {};
+          const upcomingGrouped = {};
+          const pastGrouped = {};
+
           events.forEach(e => {
             const year = e['År'];
             const monthNum = e['Månadsnummer'].padStart(2, '0');
@@ -39,50 +41,59 @@ function loadEvents() {
             const slutdatum = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
             const isPast = slutdatum < today;
 
-            if (!grouped[key]) {
-              grouped[key] = {
+            const targetGroup = isPast ? pastGrouped : upcomingGrouped;
+
+            if (!targetGroup[key]) {
+              targetGroup[key] = {
                 namn: monthName,
                 år: year,
                 data: []
               };
             }
-            e._isPast = isPast;
-            grouped[key].data.push(e);
+            targetGroup[key].data.push(e);
           });
 
           const container = document.getElementById('event-container');
-          Object.keys(grouped)
-            .sort()
-            .forEach(key => {
-              const { namn, år, data } = grouped[key];
-              const groupDiv = document.createElement('div');
-              groupDiv.className = 'event-group';
-              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
-              data.forEach(e => {
-                const card = document.createElement('div');
-                card.className = 'event-card';
-                if (e._isPast) {
-                  card.classList.add('past');
-                  card.style.display = 'none';
-                }
+          function renderGrouped(grouped, isPast = false) {
+            Object.keys(grouped)
+              .sort()
+              .forEach(key => {
+                const { namn, år, data } = grouped[key];
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'event-group';
+                if (isPast) groupDiv.classList.add('past');
+                if (isPast) groupDiv.style.display = 'none';
+                groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
-                card.innerHTML = `
-                  <strong>${e['Namn på händelse']}</strong><br>
-                  📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                  📅 ${e['Datum från']} – ${e['Datum till']}<br>
-                  ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
-                  🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
-                  💰 Kostnad: ${e['Kostnad per spelare']}<br>
-                  🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
-                  ${e["Hemsida_URL"] ? `🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>` : ""}
-                `;
+                data.forEach(e => {
+                  const card = document.createElement('div');
+                  card.className = 'event-card';
+                  if (isPast) {
+                    card.classList.add('past');
+                    card.style.display = 'none';
+                  }
 
-                groupDiv.appendChild(card);
+                  card.innerHTML = `
+                    <strong>${e['Namn på händelse']}</strong><br>
+                    📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
+                    📅 ${e['Datum från']} – ${e['Datum till']}<br>
+                    ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
+                    🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
+                    💰 Kostnad: ${e['Kostnad per spelare']}<br>
+                    🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
+                    ${e["Hemsida_URL"] ? `🔗 <a href="${e["Hemsida_URL"]}" target="_blank">Mer info</a>` : ""}
+                  `;
+
+                  groupDiv.appendChild(card);
+                });
+
+                container.appendChild(groupDiv);
               });
+          }
 
-              container.appendChild(groupDiv);
-            });
+          renderGrouped(upcomingGrouped);
+          renderGrouped(pastGrouped, true);
         }
       });
     });
@@ -91,7 +102,7 @@ function loadEvents() {
 document.addEventListener("DOMContentLoaded", loadEvents);
 
 function togglePast() {
-  const past = document.querySelectorAll(".event-card.past");
+  const past = document.querySelectorAll(".past");
   past.forEach(card => {
     card.style.display = card.style.display === "none" ? "block" : "none";
   });
