@@ -24,7 +24,13 @@ fetch(SHEET_URL)
     });
 
     const container = document.getElementById('event-container');
-    Object.keys(grouped).sort().forEach(month => {
+    Object.keys(grouped)
+  .sort((a, b) => {
+    const [ma, ya] = a.split(' ');
+    const [mb, yb] = b.split(' ');
+    return parseInt(ya) - parseInt(yb) || parseInt(ma) - parseInt(mb);
+  })
+  .forEach(month => {
       const groupDiv = document.createElement('div');
       groupDiv.className = 'event-group';
       groupDiv.innerHTML = `<h2>📅 ${month}</h2>`;
