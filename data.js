@@ -81,6 +81,7 @@ function loadEvents() {
           if (hasOld) {
             const toggleBtn = document.createElement('button');
             toggleBtn.textContent = "Visa tidigare händelser";
+            toggleBtn.className = "toggle-button";
             toggleBtn.onclick = () => {
               pastWrapper.style.display = pastWrapper.style.display === "none" ? "block" : "none";
               toggleBtn.textContent = pastWrapper.style.display === "none" ? "Visa tidigare händelser" : "Dölj tidigare händelser";
