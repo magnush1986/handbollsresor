@@ -1,62 +1,63 @@
 
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date().toISOString().split("T")[0];
 
-function loadEvents() {
-  fetch(SHEET_URL)
+  // Filtrering beroende på sida
+  const page = window.location.pathname.toLowerCase();
+  const isUSM = page.includes("usm");
+  const isCup = page.includes("cup");
+  const isLedigt = page.includes("ledig");
+
+  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv")
     .then(response => response.text())
-    .then(csvText => {
-      Papa.parse(csvText, {
+    .then(csv => {
+      Papa.parse(csv, {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
-          const events = results.data;
+          const data = results.data;
+          const container = document.getElementById("event-container");
 
-          events.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+          const future = [];
+          const past = [];
 
-          const grouped = {};
-          events.forEach(e => {
-            const year = e['År'];
-            const monthNum = e['Månadsnummer'].padStart(2, '0');
-            const monthName = e['Månadsnamn'];
-            const key = `${year}-${monthNum}`;
-            if (!grouped[key]) {
-              grouped[key] = {
-                namn: monthName,
-                år: year,
-                data: []
-              };
+          data.forEach(e => {
+            if (isUSM && e['Typ av händelse'].toLowerCase() !== "usm") return;
+            if (isCup && e['Typ av händelse'].toLowerCase() !== "cup") return;
+            if (isLedigt && !e['Ledig från skolan?'].toLowerCase().includes("ja")) return;
+
+            const end = (e["Datum till"] || e["Datum från"]).substring(0,10);
+            const isFuture = end >= today;
+
+            const card = document.createElement("div");
+            card.className = "event-card";
+            card.innerHTML = `
+              <strong>${e['Namn på händelse']}</strong><br>
+              📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
+              📅 ${e['Datum från']} – ${e['Datum till']}<br>
+              ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
+              🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
+              💰 Kostnad: ${e['Kostnad per spelare']}<br>
+              🚗 Färdsätt: ${e['Färdsätt'] || ''}<br>
+              ${e["Länk till hemsida"] ? `🔗 <a href="${e["Länk till hemsida"]}" target="_blank">Mer info</a>` : ""}
+            `;
+
+            if (isFuture) {
+              container.appendChild(card);
+            } else {
+              card.classList.add("past");
+              card.style.display = "none";
+              container.appendChild(card);
             }
-            grouped[key].data.push(e);
           });
-
-          const container = document.getElementById('event-container');
-          Object.keys(grouped)
-            .sort()
-            .forEach(key => {
-              const { namn, år, data } = grouped[key];
-              const groupDiv = document.createElement('div');
-              groupDiv.className = 'event-group';
-              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
-
-              data.forEach(e => {
-                const card = document.createElement('div');
-                card.className = 'event-card';
-                card.innerHTML = `
-                  <strong>${e['Namn på händelse']}</strong><br>
-                  📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                  📅 ${e['Datum från']} – ${e['Datum till']}<br>
-                  ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
-                  🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
-                  💰 Kostnad: ${e['Kostnad per spelare']}
-                `;
-                groupDiv.appendChild(card);
-              });
-
-              container.appendChild(groupDiv);
-            });
         }
       });
     });
-}
+});
 
-document.addEventListener("DOMContentLoaded", loadEvents);
+function togglePast() {
+  const past = document.querySelectorAll(".event-card.past");
+  past.forEach(el => {
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  });
+}
