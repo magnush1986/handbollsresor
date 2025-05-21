@@ -72,10 +72,16 @@ nav a:hover {
   transition: transform 0.2s ease;
 }
 
-.past-events-box[open] summary::before {
-  transform: rotate(90deg);
-  content: "▼ ";
+.past-events-box summary::before {
+  content: "▸";
+  display: inline-block;
+  transition: transform 0.2s ease;
 }
+
+.past-events-box[open] summary::before {
+  content: "▾";
+}
+
 /* Rensa oönskade knappar och stil */
 .past-events-box summary {
   list-style: none;
@@ -100,9 +106,14 @@ nav a:hover {
   transition: transform 0.2s ease;
 }
 
+.past-events-box summary::before {
+  content: "▸";
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
 .past-events-box[open] summary::before {
-  transform: rotate(90deg);
-  content: "▼";
+  content: "▾";
 }
 
 /* Inre container */
