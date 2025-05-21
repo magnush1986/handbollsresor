@@ -80,7 +80,7 @@ function loadEvents() {
                   }
 
                   card.innerHTML = `
-                    <strong>${e['Namn på händelse']}</strong><br>
+                    <strong>${e['Namn på händelse']}</strong><br><br>
                     📍 Plats: ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
                     📅 Period: ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
