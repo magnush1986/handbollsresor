@@ -73,14 +73,15 @@ function loadEvents() {
 
                   if (samlingH && samlingP) {
                     samlingHTML = `
-                      <span class="icon">🚍</span><span class="label"> Samling Härnösand:</span> ${samlingH}<br>
-                      <span class="icon">📍</span><span class="label"> Samling på plats:</span> ${samlingP}<br>
+                      <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
+                      <strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>
                     `;
                   } else if (samlingH) {
-                    samlingHTML = `<span class="icon">🚍</span><span class="label"> Samling Härnösand:</span> ${samlingH}<br>`;
+                    samlingHTML = `<strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>`;
                   } else if (samlingP) {
-                    samlingHTML = `<span class="icon">📍</span><span class="label"> Samling på plats:</span> ${samlingP}<br>`;
+                    samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
                   }
+
 
 
 
@@ -88,15 +89,16 @@ function loadEvents() {
                     <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                       ${e['Namn på händelse']}
                     </div>
-                    <span class="icon">📍</span><span class="label"> Plats:</span> ${e['Plats']} |
-                    <span class="icon">🏷</span><span class="label"> Typ:</span> ${e['Typ av händelse']}<br>
-                    <span class="icon">📅</span><span class="label"> Period:</span> ${e['Datum från']} – ${e['Datum till']}<br>
+                    <strong><span class="icon">📍</span><span class="label"> Plats:</span></strong> ${e['Plats']} |
+                    <strong><span class="icon">🏷</span><span class="label"> Typ:</span></strong> ${e['Typ av händelse']}<br>
+                    <strong><span class="icon">📅</span><span class="label"> Period:</span></strong> ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
-                    <span class="icon">🏫</span><span class="label"> Ledig från skolan:</span> ${e['Ledig från skolan?']}<br>
-                    <span class="icon">💰</span><span class="label"> Kostnad:</span> ${e['Kostnad per spelare']}<br>
-                    <span class="icon">🚗</span><span class="label"> Färdsätt:</span> ${e['Färdsätt'] || ''}<br>
+                    <strong><span class="icon">🏫</span><span class="label"> Ledig från skolan:</span></strong> ${e['Ledig från skolan?']}<br>
+                    <strong><span class="icon">💰</span><span class="label"> Kostnad:</span></strong> ${e['Kostnad per spelare']}<br>
+                    <strong><span class="icon">🚗</span><span class="label"> Färdsätt:</span></strong> ${e['Färdsätt'] || ''}<br>
                     ${hemsidaUrl}
                   `;
+
 
 
 
