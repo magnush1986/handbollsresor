@@ -92,3 +92,11 @@ nav a:hover {
 #past-container {
   padding-left: 0.5rem;
 }
+
+/* Dölj rubriketiketter i kort på små skärmar */
+@media (max-width: 600px) {
+  .label {
+    display: none;
+  }
+}
+
