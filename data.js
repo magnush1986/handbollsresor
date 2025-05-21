@@ -51,31 +51,32 @@ function loadEvents() {
               return reverse
                 ? (by !== ay ? by - ay : bm - am)
                 : (ay !== by ? ay - by : am - bm);
-          });
+            }); // 👈 OBS: denna ska STÄNGA sort
+          
             keys.forEach(key => {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
               groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
-
+          
               data.forEach(e => {
                 const card = document.createElement('div');
                 card.className = 'event-card';
-
+          
                 const länk = e["Länk till hemsida"]?.trim();
                 const hemsidaUrl = (länk && länk.startsWith("http"))
                   ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                   : "";
-
+          
                 const bilderLänk = e["Länk till bilder"]?.trim();
                 const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
                   ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
                   : "";
-
+          
                 let samlingHTML = '';
                 const samlingH = e['Samling Härnösand']?.trim();
                 const samlingP = e['Samling på plats']?.trim();
-
+          
                 if (samlingH && samlingP) {
                   samlingHTML = `
                     <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
@@ -86,7 +87,7 @@ function loadEvents() {
                 } else if (samlingP) {
                   samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
                 }
-
+          
                 card.innerHTML = `
                   <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                     ${e['Namn på händelse']}
@@ -101,13 +102,14 @@ function loadEvents() {
                   ${hemsidaUrl}
                   ${bilderHtml}
                 `;
-
+          
                 groupDiv.appendChild(card);
               });
-
+          
               targetContainer.appendChild(groupDiv);
             });
           }
+
 
           renderGrouped(upcomingGrouped, container); // sortering: äldst först
 
