@@ -1,3 +1,4 @@
+/* Grundlayout */
 body {
   font-family: sans-serif;
   margin: 0 auto;
@@ -5,12 +6,16 @@ body {
   padding: 1rem;
   background-color: #f9f9f9;
 }
+
 h1, h2 {
   color: #222;
 }
+
+/* Händelsegruppering */
 .event-group {
   margin-top: 2rem;
 }
+
 .event-card {
   background: #fff;
   border-left: 5px solid #007acc;
@@ -19,8 +24,7 @@ h1, h2 {
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Snyggare meny */
-
+/* Toppmeny */
 nav {
   display: flex;
   justify-content: center;
@@ -42,6 +46,7 @@ nav a:hover {
   background-color: #007acc;
   color: white;
 }
+
 /* Tidigare händelser - collapsible box */
 .past-events-box {
   border: 1px solid #ddd;
@@ -49,63 +54,30 @@ nav a:hover {
   background-color: #fff;
   padding: 0.5rem 1rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  margin-bottom: 2rem;
+  margin: 2rem 0;
 }
 
+/* Rubrikrad i collapsible */
 .past-events-box summary {
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  list-style: none;
-  margin: 0;
-  padding: 0.5rem 0;
-}
-
-.past-events-box summary::-webkit-details-marker {
-  display: none;
-}
-
-.past-events-box summary::before {
-  content: "▶ ";
-  display: inline-block;
-  transform: rotate(0deg);
-  transition: transform 0.2s ease;
-}
-
-.past-events-box summary::before {
-  content: "▸";
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.past-events-box[open] summary::before {
-  content: "▾";
-}
-
-/* Rensa oönskade knappar och stil */
-.past-events-box summary {
-  list-style: none;
   display: flex;
   align-items: center;
+  font-size: 1.1rem;
+  font-weight: bold;
   gap: 0.5rem;
   padding: 0.5rem 0;
   margin-bottom: 1rem;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  list-style: none;
 }
 
+/* Ta bort inbyggd pil */
 .past-events-box summary::marker,
 .past-events-box summary::-webkit-details-marker {
   display: none;
 }
 
-/* Pilsymbol */
-.past-events-box summary::before {
-  content: "▶";
-  display: inline-block;
-  transform: rotate(0deg);
-  transition: transform 0.2s ease;
-}
-
+/* Pilikoner */
 .past-events-box summary::before {
   content: "▸";
   display: inline-block;
@@ -116,8 +88,7 @@ nav a:hover {
   content: "▾";
 }
 
-/* Inre container */
+/* Innehåll i collapsible */
 #past-container {
   padding-left: 0.5rem;
 }
-
