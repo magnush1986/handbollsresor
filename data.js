@@ -63,7 +63,7 @@ function loadEvents() {
 
                   const länk = e["Länk till hemsida"]?.trim();
                   const hemsidaUrl = (länk && länk.startsWith("http"))
-                    ? `<br>🔗 <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
+                    ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                     : "";
 
                   // Samlingstider - separata rader
@@ -72,21 +72,24 @@ function loadEvents() {
                   const samlingP = e['Samling på plats']?.trim();
 
                   if (samlingH && samlingP) {
-                    samlingHTML = `🚍 Samling Härnösand: ${samlingH}<br>📍 Samling på plats: ${samlingP}<br>`;
+                    samlingHTML = `<strong>🚍 Samling Härnösand:</strong> ${samlingH}<br><strong>📍 Samling på plats:</strong> ${samlingP}<br>`;
                   } else if (samlingH) {
-                    samlingHTML = `🚍 Samling Härnösand: ${samlingH}<br>`;
+                    samlingHTML = `<strong>🚍 Samling Härnösand:</strong> ${samlingH}<br>`;
                   } else if (samlingP) {
-                    samlingHTML = `📍 Samling på plats: ${samlingP}<br>`;
+                    samlingHTML = `<strong>📍 Samling på plats:</strong> ${samlingP}<br>`;
                   }
 
                   card.innerHTML = `
-                    <strong>${e['Namn på händelse']}</strong><br><br>
-                    📍 Plats: ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                    📅 Period: ${e['Datum från']} – ${e['Datum till']}<br>
+                    <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem;">
+                      ${e['Namn på händelse']}
+                    </div>
+                    <strong>📍 Plats:</strong> ${e['Plats']}<br>
+                    <strong>🏷 Typ:</strong> ${e['Typ av händelse']}<br>
+                    <strong>📅 Period:</strong> ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
-                    🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
-                    💰 Kostnad: ${e['Kostnad per spelare']}<br>
-                    🚗 Färdsätt: ${e['Färdsätt'] || ''}${hemsidaUrl}
+                    <strong>🏫 Ledig från skolan:</strong> ${e['Ledig från skolan?']}<br>
+                    <strong>💰 Kostnad:</strong> ${e['Kostnad per spelare']}<br>
+                    <strong>🚗 Färdsätt:</strong> ${e['Färdsätt'] || ''}${hemsidaUrl}
                   `;
                   groupDiv.appendChild(card);
                 });
