@@ -44,13 +44,14 @@ function loadEvents() {
 
           const container = document.getElementById('event-container');
 
-          function renderGrouped(grouped, targetContainer) {
-            Object.keys(grouped)
-              .sort((a, b) => {
-                const [ay, am] = a.split('-').map(Number);
-                const [by, bm] = b.split('-').map(Number);
-                return ay !== by ? ay - by : am - bm;
-              })
+          function renderGrouped(grouped, targetContainer, reverse = false) {
+            const keys = Object.keys(grouped).sort((a, b) => {
+              const [ay, am] = a.split('-').map(Number);
+              const [by, bm] = b.split('-').map(Number);
+              return reverse
+                ? (by !== ay ? by - ay : bm - am)
+                : (ay !== by ? ay - by : am - bm);
+            });
               .forEach(key => {
                 const { namn, år, data } = grouped[key];
                 const groupDiv = document.createElement('div');
@@ -136,7 +137,7 @@ function loadEvents() {
             details.appendChild(pastWrapper);
             container.appendChild(details);
 
-            renderGrouped(pastGrouped, pastWrapper);
+            renderGrouped(pastGrouped, pastWrapper, true);
           }
         }
       });
