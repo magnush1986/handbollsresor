@@ -72,7 +72,7 @@ function loadEvents() {
                   const samlingP = e['Samling på plats']?.trim();
 
                   if (samlingH && samlingP) {
-                    samlingHTML = `🚍 Härnösand: ${samlingH}<br>📍 På plats: ${samlingP}<br>`;
+                    samlingHTML = `🚍 Samling Härnösand: ${samlingH}<br>📍 Samling på plats: ${samlingP}<br>`;
                   } else if (samlingH) {
                     samlingHTML = `🚍 Samling Härnösand: ${samlingH}<br>`;
                   } else if (samlingP) {
@@ -81,8 +81,8 @@ function loadEvents() {
 
                   card.innerHTML = `
                     <strong>${e['Namn på händelse']}</strong><br>
-                    📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                    📅 ${e['Datum från']} – ${e['Datum till']}<br>
+                    📍 Plats: ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
+                    📅 Period: ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
                     🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                     💰 Kostnad: ${e['Kostnad per spelare']}<br>
