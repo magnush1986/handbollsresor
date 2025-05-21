@@ -1,7 +1,7 @@
 // Bygger vidare exakt på v4-koden – med:
 // - filtrering för USM/Cup/Ledig per URL
 // - korrekt sortering och gruppering per År–Månad (numeriskt)
-// - tidigare händelser längst ner, dolda från början med rubrik & linje
+// - tidigare händelser längst ner i en collapsible box med rubrik & linje
 // - korrekt länk via Hemsida_URL
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
@@ -50,7 +50,7 @@ function loadEvents() {
 
           const container = document.getElementById('event-container');
 
-          function renderGrouped(grouped, isPast = false) {
+          function renderGrouped(grouped, targetContainer) {
             Object.keys(grouped)
               .sort((a, b) => {
                 const [ay, am] = a.split('-').map(Number);
@@ -60,8 +60,7 @@ function loadEvents() {
               .forEach(key => {
                 const { namn, år, data } = grouped[key];
                 const groupDiv = document.createElement('div');
-                groupDiv.className = isPast ? 'event-group past-group' : 'event-group';
-                if (isPast) groupDiv.style.display = 'none';
+                groupDiv.className = 'event-group';
                 groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
                 data.forEach(e => {
@@ -85,33 +84,30 @@ function loadEvents() {
                   groupDiv.appendChild(card);
                 });
 
-                container.appendChild(groupDiv);
+                targetContainer.appendChild(groupDiv);
               });
           }
 
-          renderGrouped(upcomingGrouped);
+          // Rendera kommande direkt
+          renderGrouped(upcomingGrouped, container);
 
+          // Skapa collapsible box för tidigare händelser
           if (Object.keys(pastGrouped).length > 0) {
-            const toggleBtn = document.createElement("button");
-            toggleBtn.textContent = "Visa tidigare händelser";
-            toggleBtn.className = "toggle-past-button";
-            toggleBtn.onclick = togglePast;
-            container.appendChild(toggleBtn);
+            const details = document.createElement("details");
+            details.className = "past-events-box";
+            const summary = document.createElement("summary");
+            summary.textContent = "⬇️ Tidigare händelser";
+            details.appendChild(summary);
 
             const pastContainer = document.createElement("div");
             pastContainer.id = "past-container";
-            pastContainer.style.display = "none";
-            pastContainer.innerHTML = `
-              <hr style="margin-top: 3rem;">
-              <h2 style="margin-top: 1rem;">Tidigare händelser</h2>
-            `;
-            container.appendChild(pastContainer);
+            pastContainer.style.marginTop = "1rem";
+            details.appendChild(pastContainer);
 
-            renderGrouped(pastGrouped, true);
+            container.appendChild(document.createElement("hr"));
+            container.appendChild(details);
 
-            // Flytta alla .past-group till pastContainer efter rendering
-            const pastGroups = document.querySelectorAll(".past-group");
-            pastGroups.forEach(group => pastContainer.appendChild(group));
+            renderGrouped(pastGrouped, pastContainer);
           }
         }
       });
@@ -119,10 +115,3 @@ function loadEvents() {
 }
 
 document.addEventListener("DOMContentLoaded", loadEvents);
-
-function togglePast() {
-  const pastContainer = document.getElementById("past-container");
-  if (pastContainer) {
-    pastContainer.style.display = pastContainer.style.display === "none" ? "block" : "none";
-  }
-}
