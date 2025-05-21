@@ -70,7 +70,8 @@ function loadEvents() {
                     <strong>${e['Namn på händelse']}</strong><br>
                     📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
                     📅 ${e['Datum från']} – ${e['Datum till']}<br>
-                    ⏰ ${e['Samling Härnösand'] || ''} ${e['Samling på plats'] || ''}<br>
+                    ${e['Samling Härnösand'] ? `🚍 Härnösand: ${e['Samling Härnösand']}<br>` : ''}
+                    ${e['Samling på plats'] ? `📍 På plats: ${e['Samling på plats']}<br>` : ''}
                     🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                     💰 Kostnad: ${e['Kostnad per spelare']}<br>
                     🚗 Färdsätt: ${e['Färdsätt'] || ''}${hemsidaUrl}
