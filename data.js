@@ -52,7 +52,7 @@ function loadEvents() {
                 ? (by !== ay ? by - ay : bm - am)
                 : (ay !== by ? ay - by : am - bm);
 
-            keys.forEach(key => {
+            forEach(key => {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
