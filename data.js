@@ -83,14 +83,15 @@ function loadEvents() {
                     <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.5rem;">
                       ${e['Namn på händelse']}
                     </div>
-                    <strong>📍 Plats:</strong> ${e['Plats']}<br>
-                    <strong>🏷 Typ:</strong> ${e['Typ av händelse']}<br>
-                    <strong>📅 Period:</strong> ${e['Datum från']} – ${e['Datum till']}<br>
+                    <strong>📍 Plats: ${e['Plats']}</strong><br>
+                    <strong>🏷 Typ: ${e['Typ av händelse']}</strong><br>
+                    <strong>📅 Period: ${e['Datum från']} – ${e['Datum till']}</strong><br>
                     ${samlingHTML}
-                    <strong>🏫 Ledig från skolan:</strong> ${e['Ledig från skolan?']}<br>
-                    <strong>💰 Kostnad:</strong> ${e['Kostnad per spelare']}<br>
-                    <strong>🚗 Färdsätt:</strong> ${e['Färdsätt'] || ''}${hemsidaUrl}
+                    <strong>🏫 Ledig från skolan: ${e['Ledig från skolan?']}</strong><br>
+                    <strong>💰 Kostnad: ${e['Kostnad per spelare']}</strong><br>
+                    <strong>🚗 Färdsätt: ${e['Färdsätt'] || ''}</strong>${hemsidaUrl}
                   `;
+
                   groupDiv.appendChild(card);
                 });
 
