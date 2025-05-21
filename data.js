@@ -66,12 +66,24 @@ function loadEvents() {
                     ? `<br>🔗 <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                     : "";
 
+                  // Samlingstider - separata rader
+                  let samlingHTML = '';
+                  const samlingH = e['Samling Härnösand']?.trim();
+                  const samlingP = e['Samling på plats']?.trim();
+
+                  if (samlingH && samlingP) {
+                    samlingHTML = `🚍 Härnösand: ${samlingH}<br>📍 På plats: ${samlingP}<br>`;
+                  } else if (samlingH) {
+                    samlingHTML = `🚍 Samling Härnösand: ${samlingH}<br>`;
+                  } else if (samlingP) {
+                    samlingHTML = `📍 Samling på plats: ${samlingP}<br>`;
+                  }
+
                   card.innerHTML = `
                     <strong>${e['Namn på händelse']}</strong><br>
                     📍 ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
                     📅 ${e['Datum från']} – ${e['Datum till']}<br>
-                    ${e['Samling Härnösand'] ? `🚍 Härnösand: ${e['Samling Härnösand']}<br>` : ''}
-                    ${e['Samling på plats'] ? `📍 På plats: ${e['Samling på plats']}<br>` : ''}
+                    ${samlingHTML}
                     🏫 Ledig från skolan: ${e['Ledig från skolan?']}<br>
                     💰 Kostnad: ${e['Kostnad per spelare']}<br>
                     🚗 Färdsätt: ${e['Färdsätt'] || ''}${hemsidaUrl}
