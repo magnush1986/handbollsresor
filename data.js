@@ -51,7 +51,7 @@ function loadEvents() {
               return reverse
                 ? (by !== ay ? by - ay : bm - am)
                 : (ay !== by ? ay - by : am - bm);
-
+          });
             keys.forEach(key => {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
