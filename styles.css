@@ -76,3 +76,37 @@ nav a:hover {
   transform: rotate(90deg);
   content: "▼ ";
 }
+/* Rensa oönskade knappar och stil */
+.past-events-box summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.past-events-box summary::marker,
+.past-events-box summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Pilsymbol */
+.past-events-box summary::before {
+  content: "▶";
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.past-events-box[open] summary::before {
+  transform: rotate(90deg);
+  content: "▼";
+}
+
+/* Inre container */
+#past-container {
+  padding-left: 0.5rem;
+}
+
