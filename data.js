@@ -99,7 +99,7 @@ function loadEvents() {
             summary.style.cursor = "pointer";
             summary.style.fontWeight = "bold";
             summary.style.marginBottom = "1rem";
-            summary.textContent = "⬇️ Tidigare händelser";
+            summary.innerHTML = "⬇️ <strong>Tidigare händelser</strong>";
             details.appendChild(summary);
 
             const pastWrapper = document.createElement("div");
