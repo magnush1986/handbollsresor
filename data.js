@@ -1,9 +1,3 @@
-// Bygger vidare exakt på v4-koden – med:
-// - filtrering för USM/Cup/Ledig per URL
-// - korrekt sortering och gruppering per År–Månad (numeriskt)
-// - tidigare händelser längst ner i en collapsible box med rubrik & linje
-// - korrekt länk via Hemsida_URL
-
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
 function loadEvents() {
@@ -93,21 +87,31 @@ function loadEvents() {
 
           // Skapa collapsible box för tidigare händelser
           if (Object.keys(pastGrouped).length > 0) {
+            const hr = document.createElement("hr");
+            container.appendChild(hr);
+
             const details = document.createElement("details");
             details.className = "past-events-box";
+            details.style.marginTop = "2rem";
+
             const summary = document.createElement("summary");
+            summary.style.fontSize = "1.2rem";
+            summary.style.cursor = "pointer";
+            summary.style.fontWeight = "bold";
+            summary.style.marginBottom = "1rem";
             summary.textContent = "⬇️ Tidigare händelser";
             details.appendChild(summary);
 
-            const pastContainer = document.createElement("div");
-            pastContainer.id = "past-container";
-            pastContainer.style.marginTop = "1rem";
-            details.appendChild(pastContainer);
+            const pastWrapper = document.createElement("div");
+            pastWrapper.id = "past-container";
+            pastWrapper.style.paddingLeft = "1rem";
+            pastWrapper.style.paddingBottom = "1rem";
+            pastWrapper.style.marginTop = "1rem";
 
-            container.appendChild(document.createElement("hr"));
+            details.appendChild(pastWrapper);
             container.appendChild(details);
 
-            renderGrouped(pastGrouped, pastContainer);
+            renderGrouped(pastGrouped, pastWrapper);
           }
         }
       });
