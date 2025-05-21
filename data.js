@@ -83,7 +83,7 @@ function loadEvents() {
                     <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                       ${e['Namn på händelse']}
                     </div>
-                    <strong>📍 Plats:</strong> ${e['Plats']} |  ${e['Typ av händelse']}<br>
+                    <strong>📍 Plats:</strong> ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
                     <strong>📅 Period:</strong> ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
                     <strong>🏫 Ledig från skolan:</strong> ${e['Ledig från skolan?']}<br>
