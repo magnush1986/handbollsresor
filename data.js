@@ -66,7 +66,12 @@ function loadEvents() {
                     ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                     : "";
 
-                  // Samlingstider - separata rader
+                  const bilderLänk = e["Länk till bilder"]?.trim();
+                  const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
+                    ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
+                    : "";
+
+                  // Samlingstider
                   let samlingHTML = '';
                   const samlingH = e['Samling Härnösand']?.trim();
                   const samlingP = e['Samling på plats']?.trim();
@@ -82,9 +87,6 @@ function loadEvents() {
                     samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
                   }
 
-
-
-
                   card.innerHTML = `
                     <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                       ${e['Namn på händelse']}
@@ -97,10 +99,8 @@ function loadEvents() {
                     <strong><span class="icon">💰</span><span class="label"> Kostnad:</span></strong> ${e['Kostnad per spelare']}<br>
                     <strong><span class="icon">🚗</span><span class="label"> Färdsätt:</span></strong> ${e['Färdsätt'] || ''}<br>
                     ${hemsidaUrl}
+                    ${bilderHtml}
                   `;
-
-
-
 
                   groupDiv.appendChild(card);
                 });
@@ -109,10 +109,8 @@ function loadEvents() {
               });
           }
 
-          // Rendera kommande direkt
           renderGrouped(upcomingGrouped, container);
 
-          // Skapa collapsible box för tidigare händelser
           if (Object.keys(pastGrouped).length > 0) {
             const hr = document.createElement("hr");
             container.appendChild(hr);
