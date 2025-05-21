@@ -72,25 +72,31 @@ function loadEvents() {
                   const samlingP = e['Samling på plats']?.trim();
 
                   if (samlingH && samlingP) {
-                    samlingHTML = `<strong>🚍 Samling Härnösand:</strong> ${samlingH}<br><strong>📍 Samling på plats:</strong> ${samlingP}<br>`;
+                    samlingHTML = `
+                      <span class="label">🚍 Samling Härnösand:</span> ${samlingH}<br>
+                      <span class="label">📍 Samling på plats:</span> ${samlingP}<br>
+                    `;
                   } else if (samlingH) {
-                    samlingHTML = `<strong>🚍 Samling Härnösand:</strong> ${samlingH}<br>`;
+                    samlingHTML = `<span class="label">🚍 Samling Härnösand:</span> ${samlingH}<br>`;
                   } else if (samlingP) {
-                    samlingHTML = `<strong>📍 Samling på plats:</strong> ${samlingP}<br>`;
+                    samlingHTML = `<span class="label">📍 Samling på plats:</span> ${samlingP}<br>`;
                   }
+
 
                   card.innerHTML = `
                     <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                       ${e['Namn på händelse']}
                     </div>
-                    <strong>📍 Plats:</strong> ${e['Plats']} | 🏷 ${e['Typ av händelse']}<br>
-                    <strong>📅 Period:</strong> ${e['Datum från']} – ${e['Datum till']}<br>
+                    <span class="label">📍 Plats:</span> ${e['Plats']} |
+                    <span class="label">🏷 Typ:</span> ${e['Typ av händelse']}<br>
+                    <span class="label">📅 Period:</span> ${e['Datum från']} – ${e['Datum till']}<br>
                     ${samlingHTML}
-                    <strong>🏫 Ledig från skolan:</strong> ${e['Ledig från skolan?']}<br>
-                    <strong>💰 Kostnad:</strong> ${e['Kostnad per spelare']}<br>
-                    <strong>🚗 Färdsätt:</strong> ${e['Färdsätt'] || ''}<br>
+                    <span class="label">🏫 Ledig från skolan:</span> ${e['Ledig från skolan?']}<br>
+                    <span class="label">💰 Kostnad:</span> ${e['Kostnad per spelare']}<br>
+                    <span class="label">🚗 Färdsätt:</span> ${e['Färdsätt'] || ''}<br>
                     ${hemsidaUrl}
                   `;
+
 
                   groupDiv.appendChild(card);
                 });
