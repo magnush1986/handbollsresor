@@ -52,65 +52,65 @@ function loadEvents() {
                 ? (by !== ay ? by - ay : bm - am)
                 : (ay !== by ? ay - by : am - bm);
             });
-              .forEach(key => {
-                const { namn, år, data } = grouped[key];
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'event-group';
-                groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
-                data.forEach(e => {
-                  const card = document.createElement('div');
-                  card.className = 'event-card';
+            keys.forEach(key => {
+              const { namn, år, data } = grouped[key];
+              const groupDiv = document.createElement('div');
+              groupDiv.className = 'event-group';
+              groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
 
-                  const länk = e["Länk till hemsida"]?.trim();
-                  const hemsidaUrl = (länk && länk.startsWith("http"))
-                    ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
-                    : "";
+              data.forEach(e => {
+                const card = document.createElement('div');
+                card.className = 'event-card';
 
-                  const bilderLänk = e["Länk till bilder"]?.trim();
-                  const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
-                    ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
-                    : "";
+                const länk = e["Länk till hemsida"]?.trim();
+                const hemsidaUrl = (länk && länk.startsWith("http"))
+                  ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
+                  : "";
 
-                  // Samlingstider
-                  let samlingHTML = '';
-                  const samlingH = e['Samling Härnösand']?.trim();
-                  const samlingP = e['Samling på plats']?.trim();
+                const bilderLänk = e["Länk till bilder"]?.trim();
+                const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
+                  ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
+                  : "";
 
-                  if (samlingH && samlingP) {
-                    samlingHTML = `
-                      <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
-                      <strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>
-                    `;
-                  } else if (samlingH) {
-                    samlingHTML = `<strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>`;
-                  } else if (samlingP) {
-                    samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
-                  }
+                let samlingHTML = '';
+                const samlingH = e['Samling Härnösand']?.trim();
+                const samlingP = e['Samling på plats']?.trim();
 
-                  card.innerHTML = `
-                    <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
-                      ${e['Namn på händelse']}
-                    </div>
-                    <strong><span class="icon">📍</span><span class="label"> Plats:</span></strong> ${e['Plats']} |
-                    <strong><span class="icon">🏷</span><span class="label"> Typ:</span></strong> ${e['Typ av händelse']}<br>
-                    <strong><span class="icon">📅</span><span class="label"> Period:</span></strong> ${e['Datum från']} – ${e['Datum till']}<br>
-                    ${samlingHTML}
-                    <strong><span class="icon">🏫</span><span class="label"> Ledig från skolan:</span></strong> ${e['Ledig från skolan?']}<br>
-                    <strong><span class="icon">💰</span><span class="label"> Kostnad:</span></strong> ${e['Kostnad per spelare']}<br>
-                    <strong><span class="icon">🚗</span><span class="label"> Färdsätt:</span></strong> ${e['Färdsätt'] || ''}<br>
-                    ${hemsidaUrl}
-                    ${bilderHtml}
+                if (samlingH && samlingP) {
+                  samlingHTML = `
+                    <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
+                    <strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>
                   `;
+                } else if (samlingH) {
+                  samlingHTML = `<strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>`;
+                } else if (samlingP) {
+                  samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
+                }
 
-                  groupDiv.appendChild(card);
-                });
+                card.innerHTML = `
+                  <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
+                    ${e['Namn på händelse']}
+                  </div>
+                  <strong><span class="icon">📍</span><span class="label"> Plats:</span></strong> ${e['Plats']} |
+                  <strong><span class="icon">🏷</span><span class="label"> Typ:</span></strong> ${e['Typ av händelse']}<br>
+                  <strong><span class="icon">📅</span><span class="label"> Period:</span></strong> ${e['Datum från']} – ${e['Datum till']}<br>
+                  ${samlingHTML}
+                  <strong><span class="icon">🏫</span><span class="label"> Ledig från skolan:</span></strong> ${e['Ledig från skolan?']}<br>
+                  <strong><span class="icon">💰</span><span class="label"> Kostnad:</span></strong> ${e['Kostnad per spelare']}<br>
+                  <strong><span class="icon">🚗</span><span class="label"> Färdsätt:</span></strong> ${e['Färdsätt'] || ''}<br>
+                  ${hemsidaUrl}
+                  ${bilderHtml}
+                `;
 
-                targetContainer.appendChild(groupDiv);
+                groupDiv.appendChild(card);
               });
+
+              targetContainer.appendChild(groupDiv);
+            });
           }
 
-          renderGrouped(upcomingGrouped, container);
+          renderGrouped(upcomingGrouped, container); // sortering: äldst först
 
           if (Object.keys(pastGrouped).length > 0) {
             const hr = document.createElement("hr");
@@ -137,7 +137,7 @@ function loadEvents() {
             details.appendChild(pastWrapper);
             container.appendChild(details);
 
-            renderGrouped(pastGrouped, pastWrapper, true);
+            renderGrouped(pastGrouped, pastWrapper, true); // sortering: nyast först
           }
         }
       });
