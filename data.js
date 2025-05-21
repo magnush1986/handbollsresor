@@ -96,19 +96,22 @@ function loadEvents() {
             toggleBtn.textContent = "Visa tidigare händelser";
             toggleBtn.className = "toggle-past-button";
             toggleBtn.onclick = togglePast;
-
-            const divider = document.createElement("hr");
-            const pastHeader = document.createElement("h2");
-            pastHeader.textContent = "Tidigare händelser";
-            pastHeader.style.marginTop = "2rem";
-            pastHeader.style.display = "none";
-            pastHeader.id = "past-header";
-
             container.appendChild(toggleBtn);
-            container.appendChild(divider);
-            container.appendChild(pastHeader);
+
+            const pastContainer = document.createElement("div");
+            pastContainer.id = "past-container";
+            pastContainer.style.display = "none";
+            pastContainer.innerHTML = `
+              <hr style="margin-top: 3rem;">
+              <h2 style="margin-top: 1rem;">Tidigare händelser</h2>
+            `;
+            container.appendChild(pastContainer);
 
             renderGrouped(pastGrouped, true);
+
+            // Flytta alla .past-group till pastContainer efter rendering
+            const pastGroups = document.querySelectorAll(".past-group");
+            pastGroups.forEach(group => pastContainer.appendChild(group));
           }
         }
       });
@@ -118,12 +121,8 @@ function loadEvents() {
 document.addEventListener("DOMContentLoaded", loadEvents);
 
 function togglePast() {
-  const pastGroups = document.querySelectorAll(".past-group");
-  const header = document.getElementById("past-header");
-  pastGroups.forEach(el => {
-    el.style.display = el.style.display === "none" ? "block" : "none";
-  });
-  if (header) {
-    header.style.display = header.style.display === "none" ? "block" : "none";
+  const pastContainer = document.getElementById("past-container");
+  if (pastContainer) {
+    pastContainer.style.display = pastContainer.style.display === "none" ? "block" : "none";
   }
 }
