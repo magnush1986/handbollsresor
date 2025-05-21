@@ -42,3 +42,37 @@ nav a:hover {
   background-color: #007acc;
   color: white;
 }
+/* Tidigare händelser - collapsible box */
+.past-events-box {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+}
+
+.past-events-box summary {
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.past-events-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.past-events-box summary::before {
+  content: "▶ ";
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.past-events-box[open] summary::before {
+  transform: rotate(90deg);
+  content: "▼ ";
+}
