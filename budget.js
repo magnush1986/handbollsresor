@@ -10,6 +10,13 @@ function parseKostnad(kostnadStr) {
   ) || 0;
 }
 
+function getCurrentSeason() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+}
+
 function loadBudget() {
   fetch(SHEET_URL)
     .then(response => response.text())
@@ -19,10 +26,40 @@ function loadBudget() {
         skipEmptyLines: true,
         complete: function(results) {
           const data = results.data;
+          const container = document.getElementById('budget-container');
+          container.innerHTML = ''; // rensa tidigare innehåll
+
+          // Fyll säsongsdropdown om den inte redan finns
+          let select = document.getElementById('season-filter');
+          const currentSeason = getCurrentSeason();
+
+          if (!select) {
+            select = document.createElement('select');
+            select.id = 'season-filter';
+            const label = document.createElement('label');
+            label.textContent = 'Säsong: ';
+            label.setAttribute('for', 'season-filter');
+            container.before(label, container);
+            container.before(select);
+
+            const seasons = [...new Set(data.map(e => e['Säsong']))].sort().reverse();
+            seasons.forEach(season => {
+              const option = document.createElement('option');
+              option.value = season;
+              option.textContent = season;
+              if (season === currentSeason) option.selected = true;
+              select.appendChild(option);
+            });
+
+            select.addEventListener('change', () => loadBudget());
+          }
+
+          const selectedSeason = select.value;
+
           const grouped = {};
           let total = 0;
 
-          data.forEach(e => {
+          data.filter(e => e['Säsong'] === selectedSeason).forEach(e => {
             const year = e['År'];
             const month = e['Månadsnummer']?.padStart(2, '0');
             const monthName = e['Månadsnamn'];
@@ -50,7 +87,6 @@ function loadBudget() {
             total += kostnad;
           });
 
-          const container = document.getElementById('budget-container');
           const table = document.createElement('div');
           table.className = 'budget-table';
 
