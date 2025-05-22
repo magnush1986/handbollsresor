@@ -51,67 +51,76 @@ function loadBudget() {
           });
 
           const container = document.getElementById('budget-container');
-          const table = document.createElement('div');
+          const table = document.createElement('table');
           table.className = 'budget-table';
+          table.style.width = '100%';
+          table.style.borderCollapse = 'collapse';
 
           Object.keys(grouped).sort().forEach(key => {
             const g = grouped[key];
 
-            const details = document.createElement('details');
-            details.className = 'budget-details';
-
-            const summary = document.createElement('summary');
-            summary.className = 'budget-summary';
-            summary.innerHTML = `
-              <span class="toggle-icon">＋</span>
-              <span class="budget-label">📅 ${g.year} – ${g.monthName}</span>
-              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
-            `;
-            details.appendChild(summary);
-
-            const innerTable = document.createElement('table');
-            innerTable.className = 'budget-inner-table';
-
-            const thead = document.createElement('thead');
-            thead.innerHTML = `
-              <tr>
-                <th>Händelse</th>
-                <th>Datum</th>
-                <th>Plats</th>
-                <th>Kostnad</th>
-              </tr>`;
-            innerTable.appendChild(thead);
-
             const tbody = document.createElement('tbody');
-            g.events.forEach(ev => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${ev.namn}</td>
-                <td>📅 ${ev.datum}</td>
-                <td>📍 ${ev.plats}</td>
-                <td>💰 ${ev.kostnad.toFixed(0)} kr</td>`;
-              tbody.appendChild(row);
-            });
-            innerTable.appendChild(tbody);
-            details.appendChild(innerTable);
+            const headerRow = document.createElement('tr');
 
-            table.appendChild(details);
+            const expandCell = document.createElement('td');
+            expandCell.colSpan = 3;
+
+            const detailsId = `details-${key}`;
+
+            expandCell.innerHTML = `
+              <details id="${detailsId}">
+                <summary style="display: flex; justify-content: space-between; align-items: center; background-color: #f0f4f8; padding: 0.6rem 1rem; font-weight: bold; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer;">
+                  <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="toggle-icon" style="font-weight: bold; font-size: 1.2rem;">＋</span> 📅 ${g.year} – ${g.monthName}
+                  </span>
+                  <span>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
+                </summary>
+                <table style="width: 100%; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+                  <thead style="background-color: #fafafa; font-weight: bold;">
+                    <tr>
+                      <td style="padding: 0.5rem 1rem;">Händelse</td>
+                      <td style="padding: 0.5rem 1rem;">Datum</td>
+                      <td style="padding: 0.5rem 1rem;">Plats</td>
+                      <td style="padding: 0.5rem 1rem;">Kostnad</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${g.events.map(ev => `
+                      <tr style="border-top: 1px solid #eee;">
+                        <td style="padding: 0.5rem 1rem;">${ev.namn}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">📅 ${ev.datum}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">📍 ${ev.plats}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">💰 ${ev.kostnad.toFixed(0)} kr</td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </details>
+            `;
+
+            headerRow.appendChild(expandCell);
+            tbody.appendChild(headerRow);
+            table.appendChild(tbody);
           });
 
           container.appendChild(table);
 
           const totalDiv = document.createElement('div');
           totalDiv.className = 'budget-total';
+          totalDiv.style.marginTop = '1.5rem';
+          totalDiv.style.fontSize = '1.3rem';
+          totalDiv.style.fontWeight = 'bold';
           totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
 
-          document.querySelectorAll('.budget-details summary').forEach(summary => {
-            const icon = summary.querySelector('.toggle-icon');
-            const details = summary.parentElement;
-            summary.addEventListener('click', () => {
-              setTimeout(() => {
-                icon.textContent = details.open ? '−' : '＋';
-              }, 10);
+          // Toggle +/− symbol
+          document.querySelectorAll('details').forEach(detail => {
+            const icon = detail.querySelector('.toggle-icon');
+            detail.addEventListener('toggle', () => {
+              if (detail.open) {
+                icon.textContent = '−';
+              } else {
+                icon.textContent = '＋';
+              }
             });
           });
         }
