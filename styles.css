@@ -203,3 +203,27 @@ h1#page-title {
     gap: 0.25rem;
   }
 }
+
+@media (max-width: 812px) and (orientation: landscape) {
+  body {
+    font-size: 0.85rem;
+  }
+
+  .event-card {
+    padding: 0.6rem;
+  }
+
+  .event-title {
+    font-size: 1.1rem;
+  }
+
+  .event-line {
+    margin-bottom: 0.3rem;
+  }
+
+  .nav-links li a {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
