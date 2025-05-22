@@ -100,3 +100,59 @@ h1 {
     margin-right: 0.5rem;
   }
 }
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding-left: 0;
+  margin: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #007acc;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-links li a:hover {
+  background-color: #007acc;
+  color: white;
+}
+@media (max-width: 600px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.97);
+    position: absolute;
+    top: 40px;
+    right: 0;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 140px;
+    z-index: 100;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    margin: 0.4rem 0;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+}
+
