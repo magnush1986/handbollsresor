@@ -13,8 +13,10 @@ function loadEvents() {
   const isUSM = href.includes("usm.html");
   const isCup = href.includes("cup.html");
   const isLedigt = href.includes("ledig.html");
-  const today = new Date().toISOString().split("T")[0];
+
+  const todayDate = new Date().toISOString().split("T")[0];
   const currentSeason = getCurrentSeason();
+  const virtualToday = (currentSeason === '2025-2026' && todayDate < '2025-07-01') ? '2025-07-01' : todayDate;
 
   fetch(SHEET_URL)
     .then(res => res.text())
@@ -35,25 +37,30 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'season-filter-wrapper';
 
+            // Säsong
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
-
             const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
-            const allSeasonOption = document.createElement('option');
-            allSeasonOption.value = '';
-            allSeasonOption.textContent = 'Alla säsonger';
-            seasonSelect.appendChild(allSeasonOption);
+            const allOption = document.createElement('option');
+            allOption.value = '';
+            allOption.textContent = 'Alla säsonger';
+            seasonSelect.appendChild(allOption);
             allSeasons.forEach(season => {
               const option = document.createElement('option');
               option.value = season;
               option.textContent = season;
               seasonSelect.appendChild(option);
             });
-            seasonSelect.value = currentSeason;
+            if (allSeasons.includes(currentSeason)) {
+              seasonSelect.value = currentSeason;
+            } else {
+              seasonSelect.selectedIndex = 0;
+            }
 
+            // Typ
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
@@ -71,6 +78,7 @@ function loadEvents() {
               typeSelect.appendChild(option);
             });
 
+            // Plats
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
@@ -103,11 +111,13 @@ function loadEvents() {
           }
 
           const selectedSeason = seasonSelect.value;
+          const selectedType = typeSelect.value;
+          const selectedPlace = placeSelect.value;
 
           const filtered = events.filter(e =>
             (!selectedSeason || e['Säsong'] === selectedSeason) &&
-            (!typeSelect.value || e['Typ av händelse'] === typeSelect.value) &&
-            (!placeSelect.value || e['Plats'] === placeSelect.value)
+            (!selectedType || e['Typ av händelse'] === selectedType) &&
+            (!selectedPlace || e['Plats'] === selectedPlace)
           ).filter(e => {
             const typ = e['Typ av händelse']?.toLowerCase() || '';
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
@@ -132,9 +142,9 @@ function loadEvents() {
               seasonHeader.textContent = `📆 ${season}`;
               container.appendChild(seasonHeader);
 
-              groupedBySeason[season].sort((a, b) =>
-                (a['Datum från'] || '').localeCompare(b['Datum från'] || '')
-              ).forEach(e => renderEventCard(e, container));
+              groupedBySeason[season]
+                .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
+                .forEach(e => renderEventCard(e, container));
             });
 
           } else if (selectedSeason === currentSeason) {
@@ -143,16 +153,16 @@ function loadEvents() {
 
             filtered.forEach(e => {
               const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
-              if (end && end < todayDate) {
+              if (end && end < virtualToday) {
                 past.push(e);
               } else {
                 upcoming.push(e);
               }
             });
 
-            upcoming.sort((a, b) =>
-              (a['Datum från'] || '').localeCompare(b['Datum från'] || '')
-            ).forEach(e => renderEventCard(e, container));
+            upcoming
+              .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
+              .forEach(e => renderEventCard(e, container));
 
             if (past.length > 0) {
               const hr = document.createElement('hr');
@@ -178,15 +188,15 @@ function loadEvents() {
               details.appendChild(pastWrapper);
               container.appendChild(details);
 
-              past.sort((a, b) =>
-                (a['Datum från'] || '').localeCompare(b['Datum från'] || '')
-              ).forEach(e => renderEventCard(e, pastWrapper));
+              past
+                .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
+                .forEach(e => renderEventCard(e, pastWrapper));
             }
 
           } else {
-            filtered.sort((a, b) =>
-              (a['Datum från'] || '').localeCompare(b['Datum från'] || '')
-            ).forEach(e => renderEventCard(e, container));
+            filtered
+              .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
+              .forEach(e => renderEventCard(e, container));
           }
         }
       });
@@ -224,33 +234,13 @@ function renderEventCard(e, target) {
 
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
-
-    <div class="event-line">
-      <span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span>
-    </div>
-
-    <div class="event-line">
-      <span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span>
-    </div>
-
-    <div class="event-line">
-      <span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span>
-    </div>
-
+    <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
+    <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
+    <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
     ${samlingHTML}
-
-    <div class="event-line">
-      <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span>
-    </div>
-
-    <div class="event-line">
-      <span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span>
-    </div>
-
-    <div class="event-line">
-      <span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span>
-    </div>
-
+    <div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span></div>
+    <div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span></div>
+    <div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span></div>
     ${hemsidaUrl}
     ${bilderHtml}
   `;
