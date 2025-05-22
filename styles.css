@@ -285,3 +285,41 @@ h1#page-title {
     padding: 0.4rem 0.8rem;
   }
 }
+
+/* === Tidigare händelser (kollapsbar) === */
+.past-events-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.past-events-box summary {
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+.past-events-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.past-events-box .event-card {
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 812px) and (orientation: landscape) {
+  .past-events-box {
+    font-size: 0.85rem;
+    padding: 0.8rem;
+  }
+
+  .past-events-box summary {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+}
