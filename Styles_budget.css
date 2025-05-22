@@ -182,21 +182,21 @@ h1#page-title {
   }
 
   .budget-inner-table tr {
-  display: block;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 0.8rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
+    display: block;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
 
-.budget-inner-table td {
-  display: block;
-  padding: 0.2rem 0;
-  margin-bottom: 0.2rem;
-}
-  
+  .budget-inner-table td {
+    display: block;
+    padding: 0.2rem 0;
+    margin-bottom: 0.2rem;
+  }
+
   .budget-inner-table td::before {
     content: attr(data-label);
     font-weight: bold;
@@ -252,7 +252,6 @@ label[for="season-filter"] {
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
-
 
 details summary::-webkit-details-marker {
   display: none;
