@@ -2,13 +2,13 @@
 body {
   font-family: system-ui, sans-serif;
   background: #f9f9f9;
-  margin: 0;
+  margin: 0 auto;
   padding: 1rem;
   color: #222;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  box-sizing: border-box;
 }
+
 
 h1 {
   text-align: center;
