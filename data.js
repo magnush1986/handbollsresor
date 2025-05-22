@@ -245,12 +245,12 @@ function renderEventCard(e, target) {
   if (samlingH && samlingP) {
     samlingHTML = `
       <div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>
-      <div class="event-line sampling-line"><span class="icon">📍</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>
+      <div class="event-line sampling-line"><span class="icon">⏱️</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>
     `;
   } else if (samlingH) {
     samlingHTML = `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>`;
   } else if (samlingP) {
-    samlingHTML = `<div class="event-line sampling-line"><span class="icon">📍</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>`;
+    samlingHTML = `<div class="event-line sampling-line"><span class="icon">⏱️</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>`;
   }
 
   const resväg = e['Resväg']?.trim();
@@ -261,6 +261,13 @@ function renderEventCard(e, target) {
        </div>`
     : "";
 
+  const ledighet = e['Ledighet']?.trim();
+  const ledighetHtml = ledighet
+    ? `<div class="event-line long-text">
+         <span class="icon">📝</span>
+         <span class="value">${ledighet}</span>
+       </div>`
+    : "";
 
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
@@ -269,6 +276,7 @@ function renderEventCard(e, target) {
     <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
     ${samlingHTML}
     <div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span></div>
+    ${ledighetHtml}
     <div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span></div>
     <div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span></div>
     ${resvägHtml}
@@ -277,6 +285,8 @@ function renderEventCard(e, target) {
   `;
 
   target.appendChild(card);
+}
+
 }
 
 
