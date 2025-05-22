@@ -339,3 +339,18 @@ h1#page-title {
   line-height: 1.5;
   word-break: break-word;
 }
+
+.header-logo-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.header-logo {
+  max-height: 60px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
