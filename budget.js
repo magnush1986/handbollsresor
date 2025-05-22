@@ -65,7 +65,7 @@ function loadBudget() {
             summary.innerHTML = `
               <span class="toggle-icon">＋</span>
               <span class="budget-label">📅 ${g.year} – ${g.monthName}</span>
-              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
+              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toLocaleString('sv-SE')} kr</strong></span>
             `;
             details.appendChild(summary);
 
