@@ -1,5 +1,17 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
+function getCurrentSeason() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  if (year === 2025 && month >= 5) {
+    return '2025-2026';
+  }
+  return month >= 7
+    ? `${year}-${year + 1}`
+    : `${year - 1}-${year}`;
+}
+
 function loadEvents() {
   const href = window.location.href.toLowerCase();
   const isUSM = href.includes("usm.html");
@@ -16,7 +28,7 @@ function loadEvents() {
         complete: function(results) {
           const events = results.data;
           const container = document.getElementById('event-container');
-          container.innerHTML = ''; // Rensa tidigare innehåll
+          container.innerHTML = '';
 
           let seasonSelect = document.getElementById('season-filter');
           let typeSelect = document.getElementById('type-filter');
@@ -26,26 +38,67 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'event-filter-wrapper';
 
-            // Skapa säsongselect
+            // Säsong
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
 
-            // Skapa typselect
+            // Hämta alla unika säsonger och sortera
+            const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
+            allSeasons.forEach(season => {
+              const option = document.createElement('option');
+              option.value = season;
+              option.textContent = season;
+              seasonSelect.appendChild(option);
+            });
+
+            // Sätt förvald säsong enligt logik
+            const currentSeason = getCurrentSeason();
+            if (allSeasons.includes(currentSeason)) {
+              seasonSelect.value = currentSeason;
+            } else {
+              seasonSelect.selectedIndex = 0; // första om specialfallet ej finns
+            }
+
+            // Typ av händelse
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
             typeLabel.textContent = 'Typ:';
             typeLabel.setAttribute('for', 'type-filter');
 
-            // Skapa platsselect
+            const allTypes = [...new Set(events.map(e => e['Typ av händelse']))].sort();
+            const allTypeOption = document.createElement('option');
+            allTypeOption.value = '';
+            allTypeOption.textContent = 'Alla typer';
+            typeSelect.appendChild(allTypeOption);
+            allTypes.forEach(type => {
+              const option = document.createElement('option');
+              option.value = type;
+              option.textContent = type;
+              typeSelect.appendChild(option);
+            });
+
+            // Plats
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
             placeLabel.textContent = 'Plats:';
             placeLabel.setAttribute('for', 'place-filter');
+
+            const allPlaces = [...new Set(events.map(e => e['Plats']))].sort();
+            const allPlaceOption = document.createElement('option');
+            allPlaceOption.value = '';
+            allPlaceOption.textContent = 'Alla platser';
+            placeSelect.appendChild(allPlaceOption);
+            allPlaces.forEach(place => {
+              const option = document.createElement('option');
+              option.value = place;
+              option.textContent = place;
+              placeSelect.appendChild(option);
+            });
 
             filterWrapper.appendChild(seasonLabel);
             filterWrapper.appendChild(seasonSelect);
@@ -56,7 +109,6 @@ function loadEvents() {
 
             container.before(filterWrapper);
 
-            // Lägg till eventlyssnare med skydd mot loopar
             let isUpdating = false;
             function onFilterChange() {
               if (isUpdating) return;
@@ -75,29 +127,28 @@ function loadEvents() {
             const selectedType = typeSelect.value;
             const selectedPlace = placeSelect.value;
 
-            // Uppdatera säsongselect
+            // Uppdatera säsong baserat på andra filter (typ & plats)
             const filteredForSeason = events.filter(e =>
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(seasonSelect, [...new Set(filteredForSeason.map(e => e['Säsong']))].sort().reverse(), selectedSeason, 'Alla säsonger');
 
-            // Uppdatera typselect
+            // Uppdatera typ baserat på säsong & plats
             const filteredForType = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(typeSelect, [...new Set(filteredForType.map(e => e['Typ av händelse']))].sort(), selectedType, 'Alla typer');
 
-            // Uppdatera platsselect
+            // Uppdatera plats baserat på säsong & typ
             const filteredForPlace = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType)
             );
             updateSelectOptions(placeSelect, [...new Set(filteredForPlace.map(e => e['Plats']))].sort(), selectedPlace, 'Alla platser');
 
-            // Rendera events
-            renderEvents(filteredForSeason, filteredForType, filteredForPlace);
+            renderEvents();
           }
 
           function updateSelectOptions(selectElem, options, currentValue, allText) {
@@ -115,7 +166,6 @@ function loadEvents() {
               selectElem.appendChild(option);
             });
 
-            // Behåll tidigare valt om möjligt
             if (options.includes(oldValue)) {
               selectElem.value = oldValue;
             } else {
@@ -123,44 +173,42 @@ function loadEvents() {
             }
           }
 
-          function renderEvents(filteredForSeason, filteredForType, filteredForPlace) {
-            // Vi måste filtrera original events enligt alla val:
+          function renderEvents() {
             const selectedSeason = seasonSelect.value;
             const selectedType = typeSelect.value;
             const selectedPlace = placeSelect.value;
 
-            // Samla events som uppfyller alla tre filter
             const filteredEvents = events.filter(e =>
               (!selectedSeason || e['Säsong'] === selectedSeason) &&
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
 
-            // Ev filtrering på sida
-            const isUSM = href.includes("usm.html");
-            const isCup = href.includes("cup.html");
-            const isLedigt = href.includes("ledig.html");
+            // Sida-specifika filter
+            const typFilter = e => {
+              const typ = e['Typ av händelse']?.toLowerCase() || '';
+              const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
+              if (isUSM && typ !== 'usm') return false;
+              if (isCup && typ !== 'cup') return false;
+              if (isLedigt && !ledighet.includes('ja')) return false;
+              return true;
+            };
 
             const upcomingGrouped = {};
             const pastGrouped = {};
 
-            filteredEvents.forEach(e => {
-              const typ = e['Typ av händelse']?.toLowerCase() || '';
-              const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
-              if (isUSM && typ !== 'usm') return;
-              if (isCup && typ !== 'cup') return;
-              if (isLedigt && !ledighet.includes('ja')) return;
+            const todayDate = new Date().toISOString().split("T")[0];
 
+            filteredEvents.filter(typFilter).forEach(e => {
               const year = e['År'];
               const monthNum = e['Månadsnummer'].padStart(2, '0');
               const monthName = e['Månadsnamn'];
               const key = `${year}-${monthNum}`;
               const groupEntry = { namn: monthName, år: year, data: [] };
 
-              const today = new Date().toISOString().split("T")[0];
               const slutdatumRaw = e['Datum till'] || e['Datum från'];
               const slutdatum = slutdatumRaw?.substring(0, 10) || "0000-00-00";
-              const isPast = slutdatum < today;
+              const isPast = slutdatum < todayDate;
               e._isPast = isPast;
 
               const target = isPast ? pastGrouped : upcomingGrouped;
@@ -168,7 +216,7 @@ function loadEvents() {
               target[key].data.push(e);
             });
 
-            container.innerHTML = ''; // Rensa container
+            container.innerHTML = '';
 
             function renderGrouped(grouped, targetContainer, reverse = false) {
               const keys = Object.keys(grouped).sort((a, b) => {
@@ -232,7 +280,7 @@ function loadEvents() {
                   groupDiv.appendChild(card);
                 });
 
-                targetContainer.appendChild(groupDiv);
+                container.appendChild(groupDiv);
               });
             }
 
@@ -267,7 +315,7 @@ function loadEvents() {
             }
           }
 
-          // Starta initial rendering och filter-setup
+          // Initiera första rendering och filteruppdatering
           updateFiltersAndRender();
         }
       });
