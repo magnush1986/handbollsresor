@@ -51,47 +51,67 @@ function loadBudget() {
           });
 
           const container = document.getElementById('budget-container');
-          const table = document.createElement('table');
+          const table = document.createElement('div');
           table.className = 'budget-table';
-          table.style.width = '100%';
-          table.style.borderCollapse = 'collapse';
 
           Object.keys(grouped).sort().forEach(key => {
             const g = grouped[key];
 
+            const details = document.createElement('details');
+            details.className = 'budget-details';
+
+            const summary = document.createElement('summary');
+            summary.className = 'budget-summary';
+            summary.innerHTML = `
+              <span class="toggle-icon">＋</span>
+              <span class="budget-label">📅 ${g.year} – ${g.monthName}</span>
+              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
+            `;
+            details.appendChild(summary);
+
+            const innerTable = document.createElement('table');
+            innerTable.className = 'budget-inner-table';
+
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+              <tr>
+                <th>Händelse</th>
+                <th>Datum</th>
+                <th>Plats</th>
+                <th>Kostnad</th>
+              </tr>`;
+            innerTable.appendChild(thead);
+
             const tbody = document.createElement('tbody');
-            const headerRow = document.createElement('tr');
+            g.events.forEach(ev => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${ev.namn}</td>
+                <td>📅 ${ev.datum}</td>
+                <td>📍 ${ev.plats}</td>
+                <td>💰 ${ev.kostnad.toFixed(0)} kr</td>`;
+              tbody.appendChild(row);
+            });
+            innerTable.appendChild(tbody);
+            details.appendChild(innerTable);
 
-            const expandCell = document.createElement('td');
-            expandCell.colSpan = 3;
+            table.appendChild(details);
+          });
 
-            const detailsId = `details-${key}`;
+          container.appendChild(table);
 
-            expandCell.innerHTML = `
-              <details>
-              <details id="${detailsId}">
-                <summary style="display: flex; justify-content: space-between; align-items: center; background-color: #f0f4f8; padding: 0.6rem 1rem; font-weight: bold; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer;">
-                  <span>📅 ${g.year} – ${g.monthName}</span>
-                  <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span class="toggle-icon" style="font-weight: bold; font-size: 1.2rem;">＋</span> 📅 ${g.year} – ${g.monthName}
-                  </span>
-                  <span>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
-                </summary>
-                <table style="width: 100%; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
-@@ -106,9 +111,21 @@
-          totalDiv.style.fontWeight = 'bold';
+          const totalDiv = document.createElement('div');
+          totalDiv.className = 'budget-total';
           totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
 
-          // Toggle +/− symbol
-          document.querySelectorAll('details').forEach(detail => {
-            const icon = detail.querySelector('.toggle-icon');
-            detail.addEventListener('toggle', () => {
-              if (detail.open) {
-                icon.textContent = '−';
-              } else {
-                icon.textContent = '＋';
-              }
+          document.querySelectorAll('.budget-details summary').forEach(summary => {
+            const icon = summary.querySelector('.toggle-icon');
+            const details = summary.parentElement;
+            summary.addEventListener('click', () => {
+              setTimeout(() => {
+                icon.textContent = details.open ? '−' : '＋';
+              }, 10);
             });
           });
         }
