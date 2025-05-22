@@ -60,17 +60,24 @@ function loadBudget() {
             details.className = 'budget-group';
 
             const summary = document.createElement('summary');
-            summary.innerHTML = `<strong>${g.year} – ${g.monthName}</strong>: ${g.events.length} händelser, <strong>${g.total.toFixed(0)} kr</strong>`;
+            summary.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0;">
+                <div><strong>${g.year} – ${g.monthName}</strong></div>
+                <div>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></div>
+              </div>
+            `;
             details.appendChild(summary);
 
             const ul = document.createElement('ul');
             ul.className = 'budget-event-list';
+            ul.style.marginLeft = '1rem';
 
             g.events.forEach(ev => {
               const li = document.createElement('li');
+              li.style.marginBottom = '0.5rem';
               li.innerHTML = `
                 <strong>${ev.namn}</strong><br>
-                📅 ${ev.datum} | 📍 ${ev.plats} | 💰 ${ev.kostnad.toFixed(0)} kr
+                <span style="color: #555;">📅 ${ev.datum} | 📍 ${ev.plats} | 💰 ${ev.kostnad.toFixed(0)} kr</span>
               `;
               ul.appendChild(li);
             });
@@ -81,7 +88,10 @@ function loadBudget() {
 
           const totalDiv = document.createElement('div');
           totalDiv.className = 'budget-total';
-          totalDiv.innerHTML = `<strong>Totalt:</strong> ${total.toFixed(0)} kr`;
+          totalDiv.style.marginTop = '1rem';
+          totalDiv.style.fontSize = '1.2rem';
+          totalDiv.style.fontWeight = 'bold';
+          totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
         }
       });
