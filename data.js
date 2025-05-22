@@ -255,9 +255,10 @@ function loadEvents() {
                     <div class="event-title">${e['Namn på händelse']}</div>
 
                     <div class="event-line place-type">
-                      <span class="icon">📍</span><span class="label">Plats:</span> ${e['Plats']}
-                      <span class="icon" style="margin-left: 2rem;">🏷</span><span class="label">Typ:</span> ${e['Typ av händelse']}
-                    </div>
+                    <span class="icon">📍</span><span class="label">Plats:</span> ${e['Plats']}
+                    <span class="icon">🏷</span><span class="label">Typ:</span> ${e['Typ av händelse']}
+                  </div>
+
 
                     <div class="event-line">
                       <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
