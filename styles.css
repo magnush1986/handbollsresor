@@ -42,36 +42,34 @@ h1#page-title {
   line-height: 1.2;
 }
 
-/* Flex-rad för varje info-rad */
+/* Varje rad staplas (block) */
 .event-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
+  display: block;
+  margin-bottom: 0.75rem;
 }
 
-/* Ikoner i rad med text */
+/* Ikon och label på samma rad */
 .event-line .icon {
-  flex-shrink: 0;
+  margin-right: 0.25rem;
+  vertical-align: middle;
   font-size: 1.15rem;
   line-height: 1;
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
 }
 
-/* Etikett i rad med ikon och text, fet */
 .event-line .label {
   font-weight: 600;
   margin-right: 0.25rem;
+  vertical-align: middle;
   white-space: nowrap;
+  display: inline-block;
 }
 
-/* Plats och Typ på samma rad med lagom avstånd */
+/* Plats och Typ på samma rad med lite extra mellanrum */
 .event-line.place-type {
   display: flex;
-  gap: 2rem;
-  flex-wrap: nowrap;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 /* === Navigering & hamburgermeny === */
@@ -151,87 +149,8 @@ h1#page-title {
     display: block;
     font-size: 1rem;
   }
-}
 
-/* === Tidigare händelser-box === */
-.past-events-box {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: #fff;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  margin-bottom: 2rem;
-}
-
-.past-events-box summary {
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ccc;
-  list-style: none;
-  margin: 0;
-}
-
-.past-events-box summary::marker,
-.past-events-box summary::-webkit-details-marker {
-  display: none;
-}
-
-.past-events-box summary::before {
-  content: "▸";
-  transition: transform 0.2s ease;
-}
-
-.past-events-box[open] summary::before {
-  content: "▾";
-}
-
-/* Inre wrapper för gamla händelser */
-#past-container {
-  padding-left: 0.5rem;
-}
-
-/* === Filter-wrapper och filterfält === */
-.event-filter-wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.event-filter-wrapper label {
-  font-weight: 700;
-  font-size: 1rem;
-  min-width: 70px;
-  color: #333;
-}
-
-#season-filter,
-#type-filter,
-#place-filter {
-  font-size: 1rem;
-  padding: 0.4rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  color: #333;
-  appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg fill="%23007acc" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 0.6rem center;
-  background-size: 1rem;
-  padding-right: 2rem;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-/* Mobilanpassning - stacka filtren */
-@media (max-width: 600px) {
+  /* Filterwrapper och fält staplas */
   .event-filter-wrapper {
     flex-direction: column;
     align-items: flex-start;
@@ -245,7 +164,7 @@ h1#page-title {
     max-width: 300px;
   }
 
-  /* Dölj etiketterna "Plats:", "Typ:" på eventkort */
+  /* Dölj etiketter "Plats:", "Typ:" på eventkort */
   .event-card .label {
     display: none;
   }
@@ -261,15 +180,5 @@ h1#page-title {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
-  }
-
-  /* Alla andra rader blocknivå */
-  .event-line {
-    display: block;
-    margin-bottom: 0.75rem;
-  }
-
-  .event-line .icon {
-    margin-right: 0.25rem;
   }
 }
