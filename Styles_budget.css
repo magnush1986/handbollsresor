@@ -123,6 +123,7 @@ h1#page-title {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  justify-content: flex-start;
 }
 
 .budget-inner-table {
@@ -132,7 +133,7 @@ h1#page-title {
   font-size: 0.95rem;
 }
 
-.budget-inner-table thead td {
+.budget-inner-table thead th {
   font-weight: bold;
   padding: 0.5rem;
   background: #f0f8ff;
