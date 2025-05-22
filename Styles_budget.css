@@ -256,3 +256,18 @@ label[for="season-filter"] {
 details summary::-webkit-details-marker {
   display: none;
 }
+
+@media (max-width: 600px) {
+  .season-filter-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  #season-filter,
+  #type-filter {
+    width: 100%;
+    max-width: 300px; /* justera vid behov */
+  }
+}
+
