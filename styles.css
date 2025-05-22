@@ -38,19 +38,19 @@ h1#page-title {
 .event-title {
   font-weight: 700;
   font-size: 1.25rem;
-  margin-bottom: 0.6rem; /* mindre marginal än tidigare */
+  margin-bottom: 0.6rem;
   line-height: 1.2;
 }
 
 /* Varje rad staplas (block) */
 .event-line {
   display: block;
-  margin-bottom: 0.4rem; /* mindre mellanrum mellan rader */
+  margin-bottom: 0.4rem;
 }
 
 /* Ikon och label på samma rad */
 .event-line .icon {
-  margin-right: 0.15rem; /* mindre mellanrum än tidigare */
+  margin-right: 0.15rem;
   vertical-align: middle;
   font-size: 1.15rem;
   line-height: 1;
@@ -65,7 +65,7 @@ h1#page-title {
   display: inline-block;
 }
 
-/* Plats och Typ på samma rad med lite extra mellanrum */
+/* Plats och Typ på samma rad med extra mellanrum */
 .event-line.place-type {
   display: flex;
   gap: 2rem;
@@ -97,7 +97,7 @@ h1#page-title {
   background: none;
   border: none;
   cursor: pointer;
-  display: none; /* syns bara på mobil */
+  display: none;
   padding: 0.75rem;
   width: 48px;
   height: 48px;
@@ -106,7 +106,7 @@ h1#page-title {
 .menu-toggle svg {
   width: 100%;
   height: 100%;
-  fill: #007acc; /* färg på strecken */
+  fill: #007acc;
 }
 
 .nav-links {
@@ -192,25 +192,23 @@ h1#page-title {
     line-height: 1.4;
   }
 
-  /* Plats och Typ på samma rad */
   .event-line.place-type {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
   }
 
-  /* Dölj bara label-text för samling */
   .event-line.sampling-line .label {
     display: none;
   }
 
-  /* Samling behåller rad (icon + värde) */
   .event-line.sampling-line {
     display: flex;
     gap: 0.25rem;
   }
 }
 
+/* === Mobil - landskapsläge === */
 @media (max-width: 812px) and (orientation: landscape) {
   body {
     font-size: 0.85rem;
@@ -218,6 +216,7 @@ h1#page-title {
 
   .event-card {
     padding: 0.6rem;
+    font-size: 0.85rem; /* Gör värden mindre */
   }
 
   .event-title {
@@ -228,9 +227,18 @@ h1#page-title {
     margin-bottom: 0.3rem;
   }
 
+  .event-card .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .event-card .event-line strong {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
   .nav-links li a {
     font-size: 0.95rem;
     padding: 0.4rem 0.8rem;
   }
 }
-
