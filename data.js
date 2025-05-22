@@ -322,6 +322,34 @@ function loadEvents() {
             }
           }
 
+          function updateFiltersAndRender() {
+            updateFiltersAndRender = updateFiltersAndRender || function() {};
+            const selectedSeason = seasonSelect.value;
+            const selectedType = typeSelect.value;
+            const selectedPlace = placeSelect.value;
+
+            // Uppdatera filterval baserat på andra filter
+            const filteredForSeason = events.filter(e =>
+              (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
+              (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
+            );
+            updateSelectOptions(seasonSelect, [...new Set(filteredForSeason.map(e => e['Säsong']))].sort().reverse(), selectedSeason, 'Alla säsonger');
+
+            const filteredForType = events.filter(e =>
+              (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
+              (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
+            );
+            updateSelectOptions(typeSelect, [...new Set(filteredForType.map(e => e['Typ av händelse']))].sort(), selectedType, 'Alla typer');
+
+            const filteredForPlace = events.filter(e =>
+              (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
+              (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType)
+            );
+            updateSelectOptions(placeSelect, [...new Set(filteredForPlace.map(e => e['Plats']))].sort(), selectedPlace, 'Alla platser');
+
+            renderEvents();
+          }
+
           // Initiera första rendering och filteruppdatering
           updateFiltersAndRender();
         }
