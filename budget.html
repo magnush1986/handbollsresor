@@ -18,21 +18,24 @@
         </svg>
       </button>
       <ul class="nav-links">
-        <li><a href="index.html">Alla</a></li>
+        <li><a href="index.html">Händelser</a></li>
         <li><a href="usm.html">USM</a></li>
         <li><a href="cup.html">Cuper</a></li>
-        <li><a href="ledig.html">Ledigt</a></li>
+        <li><a href="ledig.html">Ledighetsansökningar</a></li>
         <li><a href="budget.html" class="active">Budget</a></li>
       </ul>
     </div>
   </nav>
 
-  <h1>Budget</h1>
+  <h1 id="page-title">Budget</h1>
   <div id="budget-container"></div>
 
   <script src="budget.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // Sätt rubrik från <title>
+      document.getElementById("page-title").textContent = document.title;
+
       const toggleBtn = document.querySelector(".menu-toggle");
       const navLinks = document.querySelector(".nav-links");
 
