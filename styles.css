@@ -34,6 +34,30 @@ h1#page-title {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Rader i eventkortet med ikon och text på samma rad */
+.event-line {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.event-line .icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.event-line .label {
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+/* Plats och Typ på samma rad med extra mellanrum */
+.event-line.place-type {
+  gap: 2rem;
+}
+
 /* === Navigering & hamburgermeny === */
 .main-nav {
   display: flex;
@@ -217,22 +241,18 @@ h1#page-title {
   }
 
   /* Gör plats och typ starka-element inline-block på samma rad */
-  .event-card strong {
+  .event-line {
     display: block;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.75rem;
   }
 
-  .event-card strong:nth-of-type(1),
-  .event-card strong:nth-of-type(2) {
-    display: inline-block;
-    margin-right: 1rem;
+  .event-line.place-type {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
   }
 
-  .event-card .icon {
+  .event-line .icon {
     margin-right: 0.25rem;
-  }
-
-  .event-card br {
-    display: none;
   }
 }
