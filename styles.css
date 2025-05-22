@@ -154,3 +154,78 @@ h1#page-title {
 #past-container {
   padding-left: 0.5rem;
 }
+
+/* === Filter-wrapper och filterfält === */
+.event-filter-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.event-filter-wrapper label {
+  font-weight: bold;
+  font-size: 1rem;
+  min-width: 70px;
+  color: #333;
+}
+
+#season-filter,
+#type-filter,
+#place-filter {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23007acc" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Mobilanpassning - stacka filtren */
+@media (max-width: 600px) {
+  .event-filter-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  #season-filter,
+  #type-filter,
+  #place-filter {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  /* Dölj etiketterna "Plats:", "Typ:" på eventkort */
+  .event-card .label {
+    display: none;
+  }
+
+  .event-card {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .event-card .icon {
+    margin-right: 0.25rem;
+  }
+
+  .event-card strong {
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+
+  .event-card br {
+    display: none;
+  }
+}
