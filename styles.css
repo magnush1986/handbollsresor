@@ -1,4 +1,8 @@
 /* === Grundlayout === */
+html {
+  -webkit-text-size-adjust: 100%; /* förhindrar iOS att förstora små texter */
+}
+
 body {
   font-family: sans-serif;
   margin: 0 auto;
@@ -254,25 +258,17 @@ h1#page-title {
   }
 
   .event-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    font-weight: 700;
   }
 
   .event-line {
     margin-bottom: 0.3rem;
   }
 
-  .event-card .label {
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
-  .event-card .event-line strong {
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
+  .event-card .label,
   .event-card .value {
-    font-size: 0.72rem;
+    font-size: 0.8125rem;
   }
 
   .nav-links li a {
