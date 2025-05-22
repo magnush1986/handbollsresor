@@ -1,0 +1,95 @@
+/* === Budget-specifik CSS === */
+
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.budget-details {
+  margin-bottom: 1.2rem;
+}
+
+.budget-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e6f0fa;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: bold;
+  border-radius: 5px;
+  border: 1px solid #c0d8ee;
+}
+
+.toggle-icon {
+  font-weight: bold;
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.budget-summary .budget-label,
+.budget-summary .budget-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budget-inner-table {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.budget-inner-table thead td {
+  font-weight: bold;
+  padding: 0.5rem;
+  background: #f0f8ff;
+  border-bottom: 1px solid #ccc;
+}
+
+.budget-inner-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.budget-total {
+  text-align: right;
+  padding-top: 1rem;
+  border-top: 2px solid #ccc;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* === Mobilanpassning för budget === */
+@media (max-width: 600px) {
+  .budget-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .budget-inner-table thead {
+    display: none;
+  }
+
+  .budget-inner-table tr {
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .budget-inner-table td {
+    display: block;
+    padding: 0.2rem 0;
+  }
+
+  .budget-inner-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 0.5rem;
+    display: inline-block;
+    min-width: 80px;
+  }
+}
