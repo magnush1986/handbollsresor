@@ -68,9 +68,9 @@ h1#page-title {
 /* Plats och Typ på samma rad med lite extra mellanrum */
 .event-line.place-type {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem; /* 1.5rem var lite för stort visuellt */
   flex-wrap: wrap;
-  margin-bottom: 0.5rem; /* lite extra marginal efter raden */
+  margin-bottom: 0.5rem;
 }
 
 /* === Navigering & hamburgermeny === */
