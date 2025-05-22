@@ -177,3 +177,12 @@ h1#page-title {
     margin-right: 0.5rem;
   }
 }
+
+/* Dölj standard list bullets för summary element */
+details summary {
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
