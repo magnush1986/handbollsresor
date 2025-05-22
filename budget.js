@@ -25,7 +25,6 @@ function getCurrentSeason() {
     : `${year - 1}-${year}`;
 }
 
-
 function loadBudget() {
   fetch(SHEET_URL)
     .then(response => response.text())
@@ -33,23 +32,25 @@ function loadBudget() {
       Papa.parse(csvText, {
         header: true,
         skipEmptyLines: true,
-        complete: function(results) {
+        complete: function (results) {
           const data = results.data;
           const container = document.getElementById('budget-container');
           container.innerHTML = ''; // rensa tidigare innehåll
 
-          // Fyll säsongsdropdown om den inte redan finns
-          let select = document.getElementById('season-filter');
+          let seasonSelect = document.getElementById('season-filter');
+          let typeSelect = document.getElementById('type-filter');
           const currentSeason = getCurrentSeason();
 
-          if (!select) {
-            select = document.createElement('select');
-            select.id = 'season-filter';
-            const label = document.createElement('label');
-            label.textContent = 'Säsong: ';
-            label.setAttribute('for', 'season-filter');
-            container.before(label, container);
-            container.before(select);
+          if (!seasonSelect || !typeSelect) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'season-filter-wrapper';
+
+            // Säsong
+            seasonSelect = document.createElement('select');
+            seasonSelect.id = 'season-filter';
+            const seasonLabel = document.createElement('label');
+            seasonLabel.textContent = 'Säsong:';
+            seasonLabel.setAttribute('for', 'season-filter');
 
             const seasons = [...new Set(data.map(e => e['Säsong']))].sort().reverse();
             seasons.forEach(season => {
@@ -57,44 +58,76 @@ function loadBudget() {
               option.value = season;
               option.textContent = season;
               if (season === currentSeason) option.selected = true;
-              select.appendChild(option);
+              seasonSelect.appendChild(option);
             });
 
-            select.addEventListener('change', () => loadBudget());
+            // Typ av händelse
+            typeSelect = document.createElement('select');
+            typeSelect.id = 'type-filter';
+            const typeLabel = document.createElement('label');
+            typeLabel.textContent = 'Typ:';
+            typeLabel.setAttribute('for', 'type-filter');
+
+            const types = [...new Set(data.map(e => e['Typ av händelse']))].sort();
+            const allOption = document.createElement('option');
+            allOption.value = '';
+            allOption.textContent = 'Alla typer';
+            typeSelect.appendChild(allOption);
+            types.forEach(type => {
+              const option = document.createElement('option');
+              option.value = type;
+              option.textContent = type;
+              typeSelect.appendChild(option);
+            });
+
+            wrapper.appendChild(seasonLabel);
+            wrapper.appendChild(seasonSelect);
+            wrapper.appendChild(typeLabel);
+            wrapper.appendChild(typeSelect);
+            container.before(wrapper);
+
+            seasonSelect.addEventListener('change', loadBudget);
+            typeSelect.addEventListener('change', loadBudget);
           }
 
-          const selectedSeason = select.value;
+          const selectedSeason = seasonSelect.value;
+          const selectedType = typeSelect.value;
 
           const grouped = {};
           let total = 0;
 
-          data.filter(e => e['Säsong'] === selectedSeason).forEach(e => {
-            const year = e['År'];
-            const month = e['Månadsnummer']?.padStart(2, '0');
-            const monthName = e['Månadsnamn'];
-            const key = `${year}-${month}`;
-            const kostnad = parseKostnad(e['Kostnad per spelare']);
+          data
+            .filter(e =>
+              e['Säsong'] === selectedSeason &&
+              (!selectedType || e['Typ av händelse'] === selectedType)
+            )
+            .forEach(e => {
+              const year = e['År'];
+              const month = e['Månadsnummer']?.padStart(2, '0');
+              const monthName = e['Månadsnamn'];
+              const key = `${year}-${month}`;
+              const kostnad = parseKostnad(e['Kostnad per spelare']);
 
-            if (!grouped[key]) {
-              grouped[key] = {
-                year,
-                month,
-                monthName,
-                total: 0,
-                events: []
-              };
-            }
+              if (!grouped[key]) {
+                grouped[key] = {
+                  year,
+                  month,
+                  monthName,
+                  total: 0,
+                  events: []
+                };
+              }
 
-            grouped[key].total += kostnad;
-            grouped[key].events.push({
-              namn: e['Namn på händelse'],
-              datum: e['Datum från'],
-              plats: e['Plats'],
-              kostnad
+              grouped[key].total += kostnad;
+              grouped[key].events.push({
+                namn: e['Namn på händelse'],
+                datum: e['Datum från'],
+                plats: e['Plats'],
+                kostnad
+              });
+
+              total += kostnad;
             });
-
-            total += kostnad;
-          });
 
           const table = document.createElement('div');
           table.className = 'budget-table';
