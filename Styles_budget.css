@@ -297,3 +297,10 @@ details summary {
     padding: 0.3rem 0.7rem;
   }
 } 
+
+.nav-links li a.active {
+  background-color: #007acc;
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
