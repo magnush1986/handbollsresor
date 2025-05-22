@@ -77,6 +77,9 @@ h1#page-title {
   font-weight: normal;
   white-space: pre-wrap;
   line-height: 1.4;
+  display: inline-block;
+  text-indent: -1.8rem;
+  padding-left: 1.8rem;
 }
 
 /* === Plats & Typ i block (endast om de ska visas bredvid varann) === */
