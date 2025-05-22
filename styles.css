@@ -323,3 +323,10 @@ h1#page-title {
     margin-bottom: 0.6rem;
   }
 }
+
+.nav-links li a.active {
+  background-color: #007acc;
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
