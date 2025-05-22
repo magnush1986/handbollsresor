@@ -32,7 +32,7 @@ function loadEvents() {
 
           if (!seasonSelect || !typeSelect || !placeSelect) {
             const filterWrapper = document.createElement('div');
-            filterWrapper.className = 'event-filter-wrapper';
+            filterWrapper.className = 'season-filter-wrapper';
 
             // Säsong-filter
             seasonSelect = document.createElement('select');
