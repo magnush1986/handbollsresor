@@ -64,10 +64,15 @@ function loadBudget() {
 
             const expandCell = document.createElement('td');
             expandCell.colSpan = 3;
+
+            const detailsId = `details-${key}`;
+
             expandCell.innerHTML = `
-              <details>
+              <details id="${detailsId}">
                 <summary style="display: flex; justify-content: space-between; align-items: center; background-color: #f0f4f8; padding: 0.6rem 1rem; font-weight: bold; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer;">
-                  <span>📅 ${g.year} – ${g.monthName}</span>
+                  <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="toggle-icon" style="font-weight: bold; font-size: 1.2rem;">＋</span> 📅 ${g.year} – ${g.monthName}
+                  </span>
                   <span>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
                 </summary>
                 <table style="width: 100%; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
@@ -106,6 +111,18 @@ function loadBudget() {
           totalDiv.style.fontWeight = 'bold';
           totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
+
+          // Toggle +/− symbol
+          document.querySelectorAll('details').forEach(detail => {
+            const icon = detail.querySelector('.toggle-icon');
+            detail.addEventListener('toggle', () => {
+              if (detail.open) {
+                icon.textContent = '−';
+              } else {
+                icon.textContent = '＋';
+              }
+            });
+          });
         }
       });
     });
