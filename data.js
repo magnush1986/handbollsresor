@@ -18,7 +18,6 @@ function loadEvents() {
           const container = document.getElementById('event-container');
           container.innerHTML = ''; // Rensa tidigare innehåll
 
-          // Skapa filter-element om de inte redan finns
           let seasonSelect = document.getElementById('season-filter');
           let typeSelect = document.getElementById('type-filter');
           let placeSelect = document.getElementById('place-filter');
@@ -80,7 +79,6 @@ function loadEvents() {
               placeSelect.appendChild(option);
             });
 
-            // Lägg till i wrapper
             filterWrapper.appendChild(seasonLabel);
             filterWrapper.appendChild(seasonSelect);
             filterWrapper.appendChild(typeLabel);
@@ -90,9 +88,8 @@ function loadEvents() {
 
             container.before(filterWrapper);
 
-            // Eventlyssnare för filtrering
-            [seasonSelect, typeSelect, placeSelect].forEach(select => {
-              select.addEventListener('change', loadEvents);
+            [seasonSelect, typeSelect, placeSelect].forEach(sel => {
+              sel.addEventListener('change', loadEvents);
             });
           }
 
@@ -100,17 +97,14 @@ function loadEvents() {
           const selectedType = typeSelect.value;
           const selectedPlace = placeSelect.value;
 
-          // Gruppera händelser i upcoming och past
           const upcomingGrouped = {};
           const pastGrouped = {};
 
           events.forEach(e => {
-            // Filtrera utifrån valda filter
             if (selectedSeason && e['Säsong'] !== selectedSeason) return;
             if (selectedType && selectedType !== '' && e['Typ av händelse'] !== selectedType) return;
             if (selectedPlace && selectedPlace !== '' && e['Plats'] !== selectedPlace) return;
 
-            // Sida-specifik filtrering
             const typ = e['Typ av händelse']?.toLowerCase() || '';
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
             if (isUSM && typ !== 'usm') return;
