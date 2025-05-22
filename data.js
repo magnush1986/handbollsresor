@@ -253,6 +253,11 @@ function renderEventCard(e, target) {
     samlingHTML = `<div class="event-line sampling-line"><span class="icon">📍</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>`;
   }
 
+  const resväg = e['Resväg']?.trim();
+  const resvägHtml = resväg
+    ? `<div class="event-line"><span class="icon">🗺️</span><span class="label">Resväg:</span> <span class="value">${resväg}</span></div>`
+    : "";
+
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
     <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
@@ -262,11 +267,13 @@ function renderEventCard(e, target) {
     <div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span></div>
     <div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span></div>
     <div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span></div>
+    ${resvägHtml}
     ${hemsidaUrl}
     ${bilderHtml}
   `;
 
   target.appendChild(card);
 }
+
 
 document.addEventListener("DOMContentLoaded", loadEvents);
