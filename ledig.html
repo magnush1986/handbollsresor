@@ -2,20 +2,50 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Härnösands HF F11 – Ledighetsansökningar</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ledighetsansökningar</title> <!-- Byt för andra sidor -->
+  <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
-  <h1>Härnösands HF – Alla Händelser</h1>
-  <nav>
-  <a href="index.html">Alla</a>
-  <a href="usm.html">USM</a>
-  <a href="cup.html">Cuper</a>
-  <a href="ledig.html">Ledigt</a>
-</nav>
-<div id="event-container"></div>
+  <nav class="main-nav">
+    <div class="nav-wrapper">
+      <button class="menu-toggle" aria-label="Meny">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Alla</a></li>
+        <li><a href="usm.html">USM</a></li>
+        <li><a href="cup.html">Cuper</a></li>
+        <li><a href="ledig.html">Ledigt</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Dynamisk rubrik från <title> -->
+  <h1 id="page-title"></h1>
+
+  <!-- Här visas alla eventkort -->
+  <div id="event-container"></div>
+
   <script src="data.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Sätt rubrik från <title>
+      document.getElementById("page-title").textContent = document.title;
+
+      // Hamburgermeny-toggle
+      const toggleBtn = document.querySelector(".menu-toggle");
+      const navLinks = document.querySelector(".nav-links");
+
+      toggleBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("open");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
