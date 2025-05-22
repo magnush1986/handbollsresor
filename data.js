@@ -245,13 +245,13 @@ function loadEvents() {
 
                   if (samlingH && samlingP) {
                     samlingHTML = `
-                      <div class="event-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>
-                      <div class="event-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>
+                      <div class="event-line sampling-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>
+                      <div class="event-line sampling-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>
                     `;
                   } else if (samlingH) {
-                    samlingHTML = `<div class="event-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>`;
+                    samlingHTML = `<div class="event-line sampling-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>`;
                   } else if (samlingP) {
-                    samlingHTML = `<div class="event-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>`;
+                    samlingHTML = `<div class="event-line sampling-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>`;
                   }
 
                   card.innerHTML = `
