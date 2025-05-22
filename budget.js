@@ -1,197 +1,122 @@
-/* === Grundlayout === */
-body {
-  font-family: sans-serif;
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  line-height: 1.6;
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+
+function parseKostnad(kostnadStr) {
+  if (!kostnadStr) return 0;
+  return parseFloat(
+    kostnadStr
+      .replace(/\s/g, '')
+      .replace('kr', '')
+      .replace(',', '.')
+  ) || 0;
 }
 
-h1#page-title {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #222;
-  text-align: center;
+function loadBudget() {
+  fetch(SHEET_URL)
+    .then(response => response.text())
+    .then(csvText => {
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          const data = results.data;
+          const grouped = {};
+          let total = 0;
+
+          data.forEach(e => {
+            const year = e['År'];
+            const month = e['Månadsnummer']?.padStart(2, '0');
+            const monthName = e['Månadsnamn'];
+            const key = `${year}-${month}`;
+            const kostnad = parseKostnad(e['Kostnad per spelare']);
+
+            if (!grouped[key]) {
+              grouped[key] = {
+                year,
+                month,
+                monthName,
+                total: 0,
+                events: []
+              };
+            }
+
+            grouped[key].total += kostnad;
+            grouped[key].events.push({
+              namn: e['Namn på händelse'],
+              datum: e['Datum från'],
+              plats: e['Plats'],
+              kostnad
+            });
+
+            total += kostnad;
+          });
+
+          const container = document.getElementById('budget-container');
+          const table = document.createElement('div');
+          table.className = 'budget-table';
+
+          Object.keys(grouped).sort().forEach(key => {
+            const g = grouped[key];
+
+            const details = document.createElement('details');
+            details.className = 'budget-details';
+
+            const summary = document.createElement('summary');
+            summary.className = 'budget-summary';
+            summary.innerHTML = `
+              <span class="toggle-icon">＋</span>
+              <span class="budget-label">📅 ${g.year} – ${g.monthName}</span>
+              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
+            `;
+            details.appendChild(summary);
+
+            const innerTable = document.createElement('table');
+            innerTable.className = 'budget-inner-table';
+
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+              <tr>
+                <th>Händelse</th>
+                <th>Datum</th>
+                <th>Plats</th>
+                <th>Kostnad</th>
+              </tr>`;
+            innerTable.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            g.events.forEach(ev => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td data-label="Händelse">${ev.namn}</td>
+                <td data-label="Datum">📅 ${ev.datum}</td>
+                <td data-label="Plats">📍 ${ev.plats}</td>
+                <td data-label="Kostnad">💰 ${ev.kostnad.toLocaleString('sv-SE')} kr</td>`;
+              tbody.appendChild(row);
+            });
+            innerTable.appendChild(tbody);
+            details.appendChild(innerTable);
+
+            table.appendChild(details);
+          });
+
+          container.appendChild(table);
+
+          const totalDiv = document.createElement('div');
+          totalDiv.className = 'budget-total';
+          totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
+          container.appendChild(totalDiv);
+
+          document.querySelectorAll('.budget-details summary').forEach(summary => {
+            const icon = summary.querySelector('.toggle-icon');
+            const details = summary.parentElement;
+            summary.addEventListener('click', () => {
+              setTimeout(() => {
+                icon.textContent = details.open ? '−' : '＋';
+              }, 10);
+            });
+          });
+        }
+      });
+    });
 }
 
-/* === Navigering & hamburgermeny === */
-.main-nav {
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.nav-wrapper {
-  position: relative;
-}
-
-.menu-toggle {
-  font-size: 1.6rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: none;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  padding-left: 0;
-  margin: 0;
-}
-
-.nav-links li a {
-  text-decoration: none;
-  color: #007acc;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  transition: background-color 0.2s ease;
-}
-
-.nav-links li a:hover {
-  background-color: #007acc;
-  color: white;
-}
-
-/* === Responsiv meny === */
-@media (max-width: 600px) {
-  .menu-toggle {
-    display: block;
-  }
-
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.97);
-    position: absolute;
-    top: 40px;
-    right: 0;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    min-width: 140px;
-    z-index: 100;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .nav-links li {
-    margin: 0.4rem 0;
-  }
-
-  .nav-links li a {
-    padding: 0.6rem 1rem;
-    display: block;
-    font-size: 1rem;
-  }
-}
-
-/* === Budgetspecifik layout === */
-.budget-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.budget-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #e6f0fa;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-  font-size: 1.05rem;
-  font-weight: bold;
-  border-radius: 5px;
-  border: 1px solid #c0d8ee;
-  text-align: left;
-}
-
-.budget-summary .toggle-icon {
-  font-weight: bold;
-  margin-right: 0.75rem;
-  font-size: 1.2rem;
-}
-
-.budget-summary span {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.budget-inner-table {
-  width: 100%;
-  margin-top: 0.5rem;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-.budget-inner-table thead td {
-  font-weight: bold;
-  padding: 0.5rem;
-  background: #f0f8ff;
-  border-bottom: 1px solid #ccc;
-  text-align: left;
-}
-
-.budget-inner-table td {
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-
-.budget-details {
-  margin-bottom: 1rem;
-}
-
-.budget-total {
-  text-align: right;
-  padding-top: 1rem;
-  border-top: 2px solid #ccc;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-/* Mobilanpassning */
-@media (max-width: 600px) {
-  .budget-summary {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.4rem;
-  }
-
-  .budget-inner-table thead {
-    display: none;
-  }
-
-  .budget-inner-table tr {
-    display: block;
-    margin-bottom: 1rem;
-  }
-
-  .budget-inner-table td {
-    display: block;
-    padding: 0.2rem 0;
-  }
-
-  .budget-inner-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    margin-right: 0.5rem;
-  }
-}
-
-/* Dölj standard list bullets för summary element */
-details summary {
-  list-style: none;
-}
-
-details summary::-webkit-details-marker {
-  display: none;
-}
+document.addEventListener('DOMContentLoaded', loadBudget);
