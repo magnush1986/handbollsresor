@@ -8,15 +8,20 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
+function getEffectiveToday() {
+  const today = new Date();
+  if (today.getFullYear() === 2025 && (today.getMonth() + 1) < 7) {
+    return new Date('2025-07-01');
+  }
+  return today;
+}
+
 function loadEvents() {
   const href = window.location.href.toLowerCase();
   const isUSM = href.includes("usm.html");
   const isCup = href.includes("cup.html");
   const isLedigt = href.includes("ledig.html");
-
-  const todayDate = new Date().toISOString().split("T")[0];
-  const currentSeason = getCurrentSeason();
-  const virtualToday = (currentSeason === '2025-2026' && todayDate < '2025-07-01') ? '2025-07-01' : todayDate;
+  const todayDate = getEffectiveToday().toISOString().split("T")[0];
 
   fetch(SHEET_URL)
     .then(res => res.text())
@@ -37,12 +42,12 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'season-filter-wrapper';
 
-            // Säsong
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
+
             const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
             const allOption = document.createElement('option');
             allOption.value = '';
@@ -54,18 +59,16 @@ function loadEvents() {
               option.textContent = season;
               seasonSelect.appendChild(option);
             });
-            if (allSeasons.includes(currentSeason)) {
-              seasonSelect.value = currentSeason;
-            } else {
-              seasonSelect.selectedIndex = 0;
-            }
 
-            // Typ
+            const currentSeason = getCurrentSeason();
+            seasonSelect.value = allSeasons.includes(currentSeason) ? currentSeason : '';
+
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
             typeLabel.textContent = 'Typ:';
             typeLabel.setAttribute('for', 'type-filter');
+
             const allTypes = [...new Set(events.map(e => e['Typ av händelse']))].sort();
             const allTypeOption = document.createElement('option');
             allTypeOption.value = '';
@@ -78,12 +81,12 @@ function loadEvents() {
               typeSelect.appendChild(option);
             });
 
-            // Plats
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
             placeLabel.textContent = 'Plats:';
             placeLabel.setAttribute('for', 'place-filter');
+
             const allPlaces = [...new Set(events.map(e => e['Plats']))].sort();
             const allPlaceOption = document.createElement('option');
             allPlaceOption.value = '';
@@ -102,7 +105,6 @@ function loadEvents() {
             filterWrapper.appendChild(typeSelect);
             filterWrapper.appendChild(placeLabel);
             filterWrapper.appendChild(placeSelect);
-
             container.before(filterWrapper);
 
             seasonSelect.addEventListener('change', loadEvents);
@@ -113,6 +115,7 @@ function loadEvents() {
           const selectedSeason = seasonSelect.value;
           const selectedType = typeSelect.value;
           const selectedPlace = placeSelect.value;
+          const currentSeason = getCurrentSeason();
 
           const filtered = events.filter(e =>
             (!selectedSeason || e['Säsong'] === selectedSeason) &&
@@ -129,22 +132,47 @@ function loadEvents() {
 
           container.innerHTML = '';
 
-          if (selectedSeason === '') {
+          function renderGroup(title, list, target) {
+            const grouped = {};
+            list.forEach(e => {
+              const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
+              if (!grouped[key]) {
+                grouped[key] = {
+                  year: e['År'],
+                  name: e['Månadsnamn'],
+                  data: []
+                };
+              }
+              grouped[key].data.push(e);
+            });
+
+            const keys = Object.keys(grouped).sort();
+            if (title) {
+              const h2 = document.createElement('h2');
+              h2.textContent = title;
+              target.appendChild(h2);
+            }
+
+            keys.forEach(key => {
+              const group = grouped[key];
+              const groupDiv = document.createElement('div');
+              groupDiv.className = 'event-group';
+              groupDiv.innerHTML = `<h2>📅 ${group.year} – ${group.name}</h2>`;
+              group.data.forEach(e => renderEventCard(e, groupDiv));
+              target.appendChild(groupDiv);
+            });
+          }
+
+          if (!selectedSeason) {
             const groupedBySeason = {};
             filtered.forEach(e => {
-              const season = e['Säsong'] || 'Okänd säsong';
+              const season = e['Säsong'] || 'Okänd';
               if (!groupedBySeason[season]) groupedBySeason[season] = [];
               groupedBySeason[season].push(e);
             });
 
             Object.keys(groupedBySeason).sort().reverse().forEach(season => {
-              const seasonHeader = document.createElement('h2');
-              seasonHeader.textContent = `📆 ${season}`;
-              container.appendChild(seasonHeader);
-
-              groupedBySeason[season]
-                .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
-                .forEach(e => renderEventCard(e, container));
+              renderGroup(`📆 ${season}`, groupedBySeason[season], container);
             });
 
           } else if (selectedSeason === currentSeason) {
@@ -153,50 +181,44 @@ function loadEvents() {
 
             filtered.forEach(e => {
               const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
-              if (end && end < virtualToday) {
+              if (end && end < todayDate) {
                 past.push(e);
               } else {
                 upcoming.push(e);
               }
             });
 
-            upcoming
-              .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
-              .forEach(e => renderEventCard(e, container));
+            renderGroup(null, upcoming, container);
 
             if (past.length > 0) {
-              const hr = document.createElement('hr');
+              const hr = document.createElement("hr");
               container.appendChild(hr);
 
-              const details = document.createElement('details');
-              details.className = 'past-events-box';
-              details.style.marginTop = '2rem';
+              const details = document.createElement("details");
+              details.className = "past-events-box";
+              details.style.marginTop = "2rem";
 
-              const summary = document.createElement('summary');
-              summary.style.fontSize = '1.2rem';
-              summary.style.cursor = 'pointer';
-              summary.style.fontWeight = 'bold';
-              summary.style.marginBottom = '1rem';
-              summary.innerHTML = '⬇️ <strong>Tidigare händelser</strong>';
+              const summary = document.createElement("summary");
+              summary.style.fontSize = "1.2rem";
+              summary.style.cursor = "pointer";
+              summary.style.fontWeight = "bold";
+              summary.style.marginBottom = "1rem";
+              summary.innerHTML = "⬇️ <strong>Tidigare händelser</strong>";
               details.appendChild(summary);
 
-              const pastWrapper = document.createElement('div');
-              pastWrapper.id = 'past-container';
-              pastWrapper.style.paddingLeft = '1rem';
-              pastWrapper.style.paddingBottom = '1rem';
-              pastWrapper.style.marginTop = '1rem';
+              const pastWrapper = document.createElement("div");
+              pastWrapper.id = "past-container";
+              pastWrapper.style.paddingLeft = "1rem";
+              pastWrapper.style.paddingBottom = "1rem";
+              pastWrapper.style.marginTop = "1rem";
               details.appendChild(pastWrapper);
               container.appendChild(details);
 
-              past
-                .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
-                .forEach(e => renderEventCard(e, pastWrapper));
+              renderGroup(null, past, pastWrapper);
             }
 
           } else {
-            filtered
-              .sort((a, b) => (a['Datum från'] || '').localeCompare(b['Datum från'] || ''))
-              .forEach(e => renderEventCard(e, container));
+            renderGroup(null, filtered, container);
           }
         }
       });
@@ -220,7 +242,6 @@ function renderEventCard(e, target) {
   let samlingHTML = '';
   const samlingH = e['Samling Härnösand']?.trim();
   const samlingP = e['Samling på plats']?.trim();
-
   if (samlingH && samlingP) {
     samlingHTML = `
       <div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>
