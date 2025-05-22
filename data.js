@@ -254,12 +254,18 @@ function loadEvents() {
                   card.innerHTML = `
                     <div class="event-title">${e['Namn på händelse']}</div>
 
-                    <div class="event-line place-type">
-                      <span class="icon">📍</span><span class="label">Plats:</span><span>${e['Plats']}</span>
-                      <span class="icon">🏷️</span><span class="label">Typ:</span><span>${e['Typ av händelse']}</span>
+                   <div class="event-line place-type">
+                      <span class="place-block">
+                        <span class="icon">📍</span>
+                        <span class="label">Plats:</span>
+                        <span class="value">${e['Plats']}</span>
+                      </span>
+                      <span class="type-block">
+                        <span class="icon">🏷️</span>
+                        <span class="label">Typ:</span>
+                        <span class="value">${e['Typ av händelse']}</span>
+                      </span>
                     </div>
-
-
 
                     <div class="event-line">
                       <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
