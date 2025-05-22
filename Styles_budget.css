@@ -110,12 +110,19 @@ h1#page-title {
   font-weight: bold;
   border-radius: 5px;
   border: 1px solid #c0d8ee;
+  text-align: left;
 }
 
-.toggle-icon {
+.budget-summary .toggle-icon {
   font-weight: bold;
   margin-right: 0.75rem;
   font-size: 1.2rem;
+}
+
+.budget-summary span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .budget-inner-table {
