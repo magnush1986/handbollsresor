@@ -4,9 +4,9 @@ function parseKostnad(kostnadStr) {
   if (!kostnadStr) return 0;
   return parseFloat(
     kostnadStr
-      .replace(/\s/g, '')       // Ta bort alla mellanslag
-      .replace('kr', '')        // Ta bort "kr"
-      .replace(',', '.')        // Byt komma till punkt
+      .replace(/\s/g, '')
+      .replace('kr', '')
+      .replace(',', '.')
   ) || 0;
 }
 
@@ -51,45 +51,58 @@ function loadBudget() {
           });
 
           const container = document.getElementById('budget-container');
-          const sortedKeys = Object.keys(grouped).sort();
+          const table = document.createElement('table');
+          table.className = 'budget-table';
+          table.style.width = '100%';
+          table.style.borderCollapse = 'collapse';
 
-          sortedKeys.forEach(key => {
+          Object.keys(grouped).sort().forEach(key => {
             const g = grouped[key];
 
-            const details = document.createElement('details');
-            details.className = 'budget-group';
+            const tbody = document.createElement('tbody');
+            const headerRow = document.createElement('tr');
 
-            const summary = document.createElement('summary');
-            summary.innerHTML = `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0;">
-                <div><strong>${g.year} – ${g.monthName}</strong></div>
-                <div>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></div>
-              </div>
+            const expandCell = document.createElement('td');
+            expandCell.colSpan = 3;
+            expandCell.innerHTML = `
+              <details>
+                <summary style="display: flex; justify-content: space-between; align-items: center; background-color: #f0f4f8; padding: 0.6rem 1rem; font-weight: bold; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer;">
+                  <span>📅 ${g.year} – ${g.monthName}</span>
+                  <span>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
+                </summary>
+                <table style="width: 100%; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+                  <thead style="background-color: #fafafa; font-weight: bold;">
+                    <tr>
+                      <td style="padding: 0.5rem 1rem;">Händelse</td>
+                      <td style="padding: 0.5rem 1rem;">Datum</td>
+                      <td style="padding: 0.5rem 1rem;">Plats</td>
+                      <td style="padding: 0.5rem 1rem;">Kostnad</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${g.events.map(ev => `
+                      <tr style="border-top: 1px solid #eee;">
+                        <td style="padding: 0.5rem 1rem;">${ev.namn}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">📅 ${ev.datum}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">📍 ${ev.plats}</td>
+                        <td style="padding: 0.5rem 1rem; color: #555;">💰 ${ev.kostnad.toFixed(0)} kr</td>
+                      </tr>`).join('')}
+                  </tbody>
+                </table>
+              </details>
             `;
-            details.appendChild(summary);
 
-            const ul = document.createElement('ul');
-            ul.className = 'budget-event-list';
-            ul.style.marginLeft = '1rem';
-
-            g.events.forEach(ev => {
-              const li = document.createElement('li');
-              li.style.marginBottom = '0.5rem';
-              li.innerHTML = `
-                <strong>${ev.namn}</strong><br>
-                <span style="color: #555;">📅 ${ev.datum} | 📍 ${ev.plats} | 💰 ${ev.kostnad.toFixed(0)} kr</span>
-              `;
-              ul.appendChild(li);
-            });
-
-            details.appendChild(ul);
-            container.appendChild(details);
+            headerRow.appendChild(expandCell);
+            tbody.appendChild(headerRow);
+            table.appendChild(tbody);
           });
+
+          container.appendChild(table);
 
           const totalDiv = document.createElement('div');
           totalDiv.className = 'budget-total';
-          totalDiv.style.marginTop = '1rem';
-          totalDiv.style.fontSize = '1.2rem';
+          totalDiv.style.marginTop = '1.5rem';
+          totalDiv.style.fontSize = '1.3rem';
           totalDiv.style.fontWeight = 'bold';
           totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
