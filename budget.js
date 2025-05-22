@@ -1,5 +1,15 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
+function parseKostnad(kostnadStr) {
+  if (!kostnadStr) return 0;
+  return parseFloat(
+    kostnadStr
+      .replace(/\s/g, '')       // Ta bort alla mellanslag
+      .replace('kr', '')        // Ta bort "kr"
+      .replace(',', '.')        // Byt komma till punkt
+  ) || 0;
+}
+
 function loadBudget() {
   fetch(SHEET_URL)
     .then(response => response.text())
@@ -14,10 +24,10 @@ function loadBudget() {
 
           data.forEach(e => {
             const year = e['År'];
-            const month = e['Månadsnummer'].padStart(2, '0');
+            const month = e['Månadsnummer']?.padStart(2, '0');
             const monthName = e['Månadsnamn'];
             const key = `${year}-${month}`;
-            const kostnad = parseFloat(e['Kostnad per spelare']) || 0;
+            const kostnad = parseKostnad(e['Kostnad per spelare']);
 
             if (!grouped[key]) {
               grouped[key] = {
@@ -41,8 +51,8 @@ function loadBudget() {
           });
 
           const container = document.getElementById('budget-container');
-
           const sortedKeys = Object.keys(grouped).sort();
+
           sortedKeys.forEach(key => {
             const g = grouped[key];
 
