@@ -209,30 +209,20 @@ details summary {
   list-style: none;
 }
 
-/* === Säsongsfilter (dropdown) === */
-label[for="season-filter"] {
-  font-weight: bold;
-  margin-right: 0.5rem;
-  display: inline-block;
-}
-
-#season-filter {
-  font-size: 1rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  color: #333;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
+/* === Filterwrapper och dropdowns === */
 .season-filter-wrapper {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.season-filter-wrapper label {
+  font-weight: bold;
+  font-size: 1rem;
+  min-width: 70px;
+  color: #333;
 }
 
 #season-filter,
@@ -253,12 +243,10 @@ label[for="season-filter"] {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-details summary::-webkit-details-marker {
-  display: none;
-}
-
+/* Mobilanpassning av filter */
 @media (max-width: 600px) {
   .season-filter-wrapper {
+    flex-wrap: wrap;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
@@ -267,7 +255,6 @@ details summary::-webkit-details-marker {
   #season-filter,
   #type-filter {
     width: 100%;
-    max-width: 300px; /* justera vid behov */
+    max-width: 300px;
   }
 }
-
