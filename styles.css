@@ -38,19 +38,19 @@ h1#page-title {
 .event-title {
   font-weight: 700;
   font-size: 1.25rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem; /* mindre marginal än tidigare */
   line-height: 1.2;
 }
 
 /* Varje rad staplas (block) */
 .event-line {
   display: block;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem; /* mindre mellanrum mellan rader */
 }
 
 /* Ikon och label på samma rad */
 .event-line .icon {
-  margin-right: 0.25rem;
+  margin-right: 0.15rem; /* mindre mellanrum än tidigare */
   vertical-align: middle;
   font-size: 1.15rem;
   line-height: 1;
@@ -70,6 +70,7 @@ h1#page-title {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
+  margin-bottom: 0.5rem; /* lite extra marginal efter raden */
 }
 
 /* === Navigering & hamburgermeny === */
