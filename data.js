@@ -4,12 +4,8 @@ function getCurrentSeason() {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
-  if (year === 2025 && month >= 5) {
-    return '2025-2026';
-  }
-  return month >= 7
-    ? `${year}-${year + 1}`
-    : `${year - 1}-${year}`;
+  if (year === 2025 && month >= 5) return '2025-2026';
+  return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
 function loadEvents() {
@@ -20,7 +16,7 @@ function loadEvents() {
   const today = new Date().toISOString().split("T")[0];
 
   fetch(SHEET_URL)
-    .then(response => response.text())
+    .then(res => res.text())
     .then(csvText => {
       Papa.parse(csvText, {
         header: true,
@@ -38,14 +34,14 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'event-filter-wrapper';
 
-            // Säsong
+            // Skapa säsong-filter
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
 
-            // Hämta alla unika säsonger och sortera
+            // Alla säsonger
             const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
             allSeasons.forEach(season => {
               const option = document.createElement('option');
@@ -54,15 +50,15 @@ function loadEvents() {
               seasonSelect.appendChild(option);
             });
 
-            // Sätt förvald säsong enligt logik
+            // Sätt förvald säsong
             const currentSeason = getCurrentSeason();
             if (allSeasons.includes(currentSeason)) {
               seasonSelect.value = currentSeason;
             } else {
-              seasonSelect.selectedIndex = 0; // första om specialfallet ej finns
+              seasonSelect.selectedIndex = 0;
             }
 
-            // Typ av händelse
+            // Skapa typ-filter
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
@@ -81,7 +77,7 @@ function loadEvents() {
               typeSelect.appendChild(option);
             });
 
-            // Plats
+            // Skapa plats-filter
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
@@ -127,21 +123,21 @@ function loadEvents() {
             const selectedType = typeSelect.value;
             const selectedPlace = placeSelect.value;
 
-            // Uppdatera säsong baserat på andra filter (typ & plats)
+            // Filtrera och uppdatera säsong baserat på typ & plats
             const filteredForSeason = events.filter(e =>
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(seasonSelect, [...new Set(filteredForSeason.map(e => e['Säsong']))].sort().reverse(), selectedSeason, 'Alla säsonger');
 
-            // Uppdatera typ baserat på säsong & plats
+            // Filtrera och uppdatera typ baserat på säsong & plats
             const filteredForType = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(typeSelect, [...new Set(filteredForType.map(e => e['Typ av händelse']))].sort(), selectedType, 'Alla typer');
 
-            // Uppdatera plats baserat på säsong & typ
+            // Filtrera och uppdatera plats baserat på säsong & typ
             const filteredForPlace = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType)
@@ -263,16 +259,31 @@ function loadEvents() {
                   }
 
                   card.innerHTML = `
-                    <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
-                      ${e['Namn på händelse']}
+                    <div class="event-title">${e['Namn på händelse']}</div>
+
+                    <div class="event-line place-type">
+                      <span class="icon">📍</span><span class="label">Plats:</span> ${e['Plats']}
+                      <span class="icon" style="margin-left: 2rem;">🏷</span><span class="label">Typ:</span> ${e['Typ av händelse']}
                     </div>
-                    <strong><span class="icon">📍</span><span class="label"> Plats:</span></strong> ${e['Plats']} |
-                    <strong><span class="icon">🏷</span><span class="label"> Typ:</span></strong> ${e['Typ av händelse']}<br>
-                    <strong><span class="icon">📅</span><span class="label"> Period:</span></strong> ${e['Datum från']} – ${e['Datum till']}<br>
-                    ${samlingHTML}
-                    <strong><span class="icon">🏫</span><span class="label"> Ledig från skolan:</span></strong> ${e['Ledig från skolan?']}<br>
-                    <strong><span class="icon">💰</span><span class="label"> Kostnad:</span></strong> ${e['Kostnad per spelare']}<br>
-                    <strong><span class="icon">🚗</span><span class="label"> Färdsätt:</span></strong> ${e['Färdsätt'] || ''}<br>
+
+                    <div class="event-line">
+                      <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
+                    </div>
+
+                    ${samlingHTML ? `<div class="event-line">${samlingHTML}</div>` : ''}
+
+                    <div class="event-line">
+                      <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> ${e['Ledig från skolan?']}
+                    </div>
+
+                    <div class="event-line">
+                      <span class="icon">💰</span><span class="label">Kostnad:</span> ${e['Kostnad per spelare']}
+                    </div>
+
+                    <div class="event-line">
+                      <span class="icon">🚗</span><span class="label">Färdsätt:</span> ${e['Färdsätt'] || ''}
+                    </div>
+
                     ${hemsidaUrl}
                     ${bilderHtml}
                   `;
