@@ -255,34 +255,35 @@ function loadEvents() {
                     <div class="event-title">${e['Namn på händelse']}</div>
                   
                     <div class="event-line">
-                      <span class="icon">🏷️</span><span class="label">Typ:</span> ${e['Typ av händelse']}
+                      <span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span>
                     </div>
                   
                     <div class="event-line">
-                      <span class="icon">📍</span><span class="label">Plats:</span> ${e['Plats']}
+                      <span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span>
                     </div>
                   
                     <div class="event-line">
-                      <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
+                      <span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span>
                     </div>
                   
                     ${samlingHTML}
                   
                     <div class="event-line">
-                      <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> ${e['Ledig från skolan?']}
+                      <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span>
                     </div>
                   
                     <div class="event-line">
-                      <span class="icon">💰</span><span class="label">Kostnad:</span> ${e['Kostnad per spelare']}
+                      <span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span>
                     </div>
                   
                     <div class="event-line">
-                      <span class="icon">🚗</span><span class="label">Färdsätt:</span> ${e['Färdsätt'] || ''}
+                      <span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span>
                     </div>
                   
                     ${hemsidaUrl}
                     ${bilderHtml}
                   `;
+
 
 
                   groupDiv.appendChild(card);
