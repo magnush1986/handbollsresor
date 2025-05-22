@@ -287,7 +287,5 @@ function renderEventCard(e, target) {
   target.appendChild(card);
 }
 
-}
-
 
 document.addEventListener("DOMContentLoaded", loadEvents);
