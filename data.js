@@ -123,12 +123,24 @@ function loadEvents() {
             (!selectedPlace || e['Plats'] === selectedPlace)
           ).filter(e => {
             const typ = e['Typ av händelse']?.toLowerCase() || '';
-            const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
+          
             if (isUSM && typ !== 'usm') return false;
             if (isCup && typ !== 'cup') return false;
-            if (isLedigt && !ledighet.includes('ja')) return false;
+          
+            if (isLedigt) {
+              const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
+              if (!ledighet.includes('ja')) return false;
+          
+              const slutdatum = new Date(e['Datum till'] || e['Datum från']);
+              const gränsdatum = new Date(getEffectiveToday());
+              gränsdatum.setDate(gränsdatum.getDate() - 7);
+          
+              if (slutdatum < gränsdatum) return false;
+            }
+          
             return true;
           });
+
 
           container.innerHTML = '';
 
