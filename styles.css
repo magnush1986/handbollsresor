@@ -19,7 +19,7 @@ h1#page-title {
   text-align: left;
 }
 
-/* === Säsongsrubriker (används när man visar alla säsonger) === */
+/* === Säsongsrubriker (för "Alla säsonger") === */
 .season-header {
   font-size: 1.4rem;
   font-weight: bold;
@@ -55,30 +55,31 @@ h1#page-title {
 }
 
 .event-line {
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
   margin-bottom: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .event-line .icon {
-  margin-right: 0.15rem;
-  vertical-align: middle;
   font-size: 1.15rem;
   line-height: 1;
-  display: inline-block;
+  vertical-align: middle;
 }
 
 .event-line .label {
   font-weight: 600;
-  margin-right: 0.25rem;
-  vertical-align: middle;
   white-space: nowrap;
-  display: inline-block;
 }
 
 .event-line .value {
   font-weight: normal;
+  white-space: pre-wrap;
+  line-height: 1.4;
 }
 
+/* === Plats & Typ i block (endast om de ska visas bredvid varann) === */
 .event-line.place-type {
   display: flex;
   gap: 2rem;
@@ -179,6 +180,13 @@ h1#page-title {
   background-color: #007acc;
   color: white;
   outline: none;
+}
+
+.nav-links li a.active {
+  background-color: #007acc;
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid white;
 }
 
 /* === Responsiv meny + filtermobil === */
@@ -286,7 +294,7 @@ h1#page-title {
   }
 }
 
-/* === Tidigare händelser (kollapsbar) === */
+/* === Tidigare händelser (kollapsbar box) === */
 .past-events-box {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -322,11 +330,4 @@ h1#page-title {
     font-size: 1rem;
     margin-bottom: 0.6rem;
   }
-}
-
-.nav-links li a.active {
-  background-color: #007acc;
-  color: white;
-  font-weight: bold;
-  border-bottom: 2px solid white;
 }
