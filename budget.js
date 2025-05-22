@@ -14,8 +14,17 @@ function getCurrentSeason() {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
-  return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+
+  // 🟡 Undantag: Maj–december 2025 ska visa nästa säsong
+  if (year === 2025 && month >= 5) {
+    return '2025-2026';
+  }
+
+  return month >= 7
+    ? `${year}-${year + 1}`
+    : `${year - 1}-${year}`;
 }
+
 
 function loadBudget() {
   fetch(SHEET_URL)
