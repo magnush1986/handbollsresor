@@ -15,11 +15,102 @@ function loadEvents() {
         skipEmptyLines: true,
         complete: function(results) {
           const events = results.data;
+          const container = document.getElementById('event-container');
+          container.innerHTML = ''; // Rensa tidigare innehåll
 
+          // Skapa filter-element om de inte redan finns
+          let seasonSelect = document.getElementById('season-filter');
+          let typeSelect = document.getElementById('type-filter');
+          let placeSelect = document.getElementById('place-filter');
+
+          if (!seasonSelect || !typeSelect || !placeSelect) {
+            const filterWrapper = document.createElement('div');
+            filterWrapper.className = 'event-filter-wrapper';
+
+            // Säsong
+            seasonSelect = document.createElement('select');
+            seasonSelect.id = 'season-filter';
+            const seasonLabel = document.createElement('label');
+            seasonLabel.textContent = 'Säsong:';
+            seasonLabel.setAttribute('for', 'season-filter');
+
+            const seasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
+            seasons.forEach(season => {
+              const option = document.createElement('option');
+              option.value = season;
+              option.textContent = season;
+              seasonSelect.appendChild(option);
+            });
+
+            // Typ av händelse
+            typeSelect = document.createElement('select');
+            typeSelect.id = 'type-filter';
+            const typeLabel = document.createElement('label');
+            typeLabel.textContent = 'Typ:';
+            typeLabel.setAttribute('for', 'type-filter');
+
+            const types = [...new Set(events.map(e => e['Typ av händelse']))].sort();
+            const allTypeOption = document.createElement('option');
+            allTypeOption.value = '';
+            allTypeOption.textContent = 'Alla typer';
+            typeSelect.appendChild(allTypeOption);
+            types.forEach(type => {
+              const option = document.createElement('option');
+              option.value = type;
+              option.textContent = type;
+              typeSelect.appendChild(option);
+            });
+
+            // Plats
+            placeSelect = document.createElement('select');
+            placeSelect.id = 'place-filter';
+            const placeLabel = document.createElement('label');
+            placeLabel.textContent = 'Plats:';
+            placeLabel.setAttribute('for', 'place-filter');
+
+            const places = [...new Set(events.map(e => e['Plats']))].sort();
+            const allPlaceOption = document.createElement('option');
+            allPlaceOption.value = '';
+            allPlaceOption.textContent = 'Alla platser';
+            placeSelect.appendChild(allPlaceOption);
+            places.forEach(place => {
+              const option = document.createElement('option');
+              option.value = place;
+              option.textContent = place;
+              placeSelect.appendChild(option);
+            });
+
+            // Lägg till i wrapper
+            filterWrapper.appendChild(seasonLabel);
+            filterWrapper.appendChild(seasonSelect);
+            filterWrapper.appendChild(typeLabel);
+            filterWrapper.appendChild(typeSelect);
+            filterWrapper.appendChild(placeLabel);
+            filterWrapper.appendChild(placeSelect);
+
+            container.before(filterWrapper);
+
+            // Eventlyssnare för filtrering
+            [seasonSelect, typeSelect, placeSelect].forEach(select => {
+              select.addEventListener('change', loadEvents);
+            });
+          }
+
+          const selectedSeason = seasonSelect.value;
+          const selectedType = typeSelect.value;
+          const selectedPlace = placeSelect.value;
+
+          // Gruppera händelser i upcoming och past
           const upcomingGrouped = {};
           const pastGrouped = {};
 
           events.forEach(e => {
+            // Filtrera utifrån valda filter
+            if (selectedSeason && e['Säsong'] !== selectedSeason) return;
+            if (selectedType && selectedType !== '' && e['Typ av händelse'] !== selectedType) return;
+            if (selectedPlace && selectedPlace !== '' && e['Plats'] !== selectedPlace) return;
+
+            // Sida-specifik filtrering
             const typ = e['Typ av händelse']?.toLowerCase() || '';
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
             if (isUSM && typ !== 'usm') return;
@@ -42,8 +133,6 @@ function loadEvents() {
             target[key].data.push(e);
           });
 
-          const container = document.getElementById('event-container');
-
           function renderGrouped(grouped, targetContainer, reverse = false) {
             const keys = Object.keys(grouped).sort((a, b) => {
               const [ay, am] = a.split('-').map(Number);
@@ -51,32 +140,32 @@ function loadEvents() {
               return reverse
                 ? (by !== ay ? by - ay : bm - am)
                 : (ay !== by ? ay - by : am - bm);
-            }); // 👈 OBS: denna ska STÄNGA sort
-          
+            });
+
             keys.forEach(key => {
               const { namn, år, data } = grouped[key];
               const groupDiv = document.createElement('div');
               groupDiv.className = 'event-group';
               groupDiv.innerHTML = `<h2>📅 ${år} – ${namn}</h2>`;
-          
+
               data.forEach(e => {
                 const card = document.createElement('div');
                 card.className = 'event-card';
-          
+
                 const länk = e["Länk till hemsida"]?.trim();
                 const hemsidaUrl = (länk && länk.startsWith("http"))
                   ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
                   : "";
-          
+
                 const bilderLänk = e["Länk till bilder"]?.trim();
                 const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
                   ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
                   : "";
-          
+
                 let samlingHTML = '';
                 const samlingH = e['Samling Härnösand']?.trim();
                 const samlingP = e['Samling på plats']?.trim();
-          
+
                 if (samlingH && samlingP) {
                   samlingHTML = `
                     <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
@@ -87,7 +176,7 @@ function loadEvents() {
                 } else if (samlingP) {
                   samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
                 }
-          
+
                 card.innerHTML = `
                   <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 0.75rem;">
                     ${e['Namn på händelse']}
@@ -102,16 +191,15 @@ function loadEvents() {
                   ${hemsidaUrl}
                   ${bilderHtml}
                 `;
-          
+
                 groupDiv.appendChild(card);
               });
-          
+
               targetContainer.appendChild(groupDiv);
             });
           }
 
-
-          renderGrouped(upcomingGrouped, container); // sortering: äldst först
+          renderGrouped(upcomingGrouped, container);
 
           if (Object.keys(pastGrouped).length > 0) {
             const hr = document.createElement("hr");
@@ -138,7 +226,7 @@ function loadEvents() {
             details.appendChild(pastWrapper);
             container.appendChild(details);
 
-            renderGrouped(pastGrouped, pastWrapper, true); // sortering: nyast först
+            renderGrouped(pastGrouped, pastWrapper, true);
           }
         }
       });
