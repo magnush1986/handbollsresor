@@ -121,22 +121,21 @@ function loadEvents() {
             const selectedType = typeSelect.value;
             const selectedPlace = placeSelect.value;
 
-            // Uppdatera filterval baserat på andra filter
             const filteredForSeason = events.filter(e =>
-              (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
-              (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
+              (!selectedType || e['Typ av händelse'] === selectedType) &&
+              (!selectedPlace || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(seasonSelect, [...new Set(filteredForSeason.map(e => e['Säsong']))].sort().reverse(), selectedSeason, 'Alla säsonger');
 
             const filteredForType = events.filter(e =>
-              (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
-              (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
+              (!selectedSeason || e['Säsong'] === selectedSeason) &&
+              (!selectedPlace || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(typeSelect, [...new Set(filteredForType.map(e => e['Typ av händelse']))].sort(), selectedType, 'Alla typer');
 
             const filteredForPlace = events.filter(e =>
-              (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
-              (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType)
+              (!selectedSeason || e['Säsong'] === selectedSeason) &&
+              (!selectedType || e['Typ av händelse'] === selectedType)
             );
             updateSelectOptions(placeSelect, [...new Set(filteredForPlace.map(e => e['Plats']))].sort(), selectedPlace, 'Alla platser');
 
@@ -172,11 +171,10 @@ function loadEvents() {
 
             const filteredEvents = events.filter(e =>
               (!selectedSeason || e['Säsong'] === selectedSeason) &&
-              (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
-              (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
+              (!selectedType || e['Typ av händelse'] === selectedType) &&
+              (!selectedPlace || e['Plats'] === selectedPlace)
             );
 
-            // Sida-specifika filter
             const typFilter = e => {
               const typ = e['Typ av händelse']?.toLowerCase() || '';
               const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
@@ -188,7 +186,6 @@ function loadEvents() {
 
             const upcomingGrouped = {};
             const pastGrouped = {};
-
             const todayDate = new Date().toISOString().split("T")[0];
 
             filteredEvents.filter(typFilter).forEach(e => {
@@ -245,13 +242,13 @@ function loadEvents() {
 
                   if (samlingH && samlingP) {
                     samlingHTML = `
-                      <div class="event-line sampling-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>
-                      <div class="event-line sampling-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>
+                      <div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> ${samlingH}</div>
+                      <div class="event-line sampling-line"><span class="icon">📍</span><span class="label">Samling på plats:</span> ${samlingP}</div>
                     `;
                   } else if (samlingH) {
-                    samlingHTML = `<div class="event-line sampling-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>`;
+                    samlingHTML = `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> ${samlingH}</div>`;
                   } else if (samlingP) {
-                    samlingHTML = `<div class="event-line sampling-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>`;
+                    samlingHTML = `<div class="event-line sampling-line"><span class="icon">📍</span><span class="label">Samling på plats:</span> ${samlingP}</div>`;
                   }
 
                   card.innerHTML = `
@@ -322,7 +319,6 @@ function loadEvents() {
             }
           }
 
-          // Initiera första rendering och filteruppdatering
           updateFiltersAndRender();
         }
       });
