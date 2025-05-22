@@ -144,3 +144,11 @@ h1#page-title {
 #past-container {
   padding-left: 0.5rem;
 }
+
+/* Dölj underrubriker på små skärmar */
+@media (max-width: 600px) {
+  .label {
+    display: none;
+  }
+}
+
