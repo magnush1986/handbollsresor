@@ -304,3 +304,18 @@ details summary {
   font-weight: bold;
   border-bottom: 2px solid white;
 }
+
+.header-logo-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.header-logo {
+  max-height: 60px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
