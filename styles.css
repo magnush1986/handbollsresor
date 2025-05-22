@@ -2,23 +2,35 @@
 body {
   font-family: sans-serif;
   margin: 0 auto;
+  max-width: 800px;
   padding: 1rem;
   background-color: #f9f9f9;
-  max-width: 800px;
 }
 
-h1#page-title,
-h1 {
+h1#page-title {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
   color: #222;
-  text-align: center;
 }
 
-/* === Navigering === */
+/* === Händelsegrupp och kort === */
+.event-group {
+  margin-top: 2rem;
+}
+
+.event-card {
+  background: #fff;
+  border-left: 5px solid #007acc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* === Navigering & hamburgermeny === */
 .main-nav {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  position: relative;
   margin-bottom: 1rem;
 }
 
@@ -56,64 +68,165 @@ h1 {
   color: white;
 }
 
-/* === Budget-stil === */
-.budget-table {
-  width: 100%;
+/* === Responsiv meny === */
+@media (max-width: 600px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.97);
+    position: absolute;
+    top: 40px;
+    right: 0;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 140px;
+    z-index: 100;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    margin: 0.4rem 0;
+  }
+
+  .nav-links li a {
+    padding: 0.6rem 1rem;
+    display: block;
+    font-size: 1rem;
+  }
 }
 
-.budget-details {
-  margin-bottom: 1rem;
-  background-color: #f0f4f8;
+/* === Tidigare händelser-box === */
+.past-events-box {
+  border: 1px solid #ddd;
   border-radius: 6px;
-  overflow: hidden;
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+}
+
+.past-events-box summary {
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+  list-style: none;
+  margin: 0;
+}
+
+.past-events-box summary::marker,
+.past-events-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.past-events-box summary::before {
+  content: "▸";
+  transition: transform 0.2s ease;
+}
+
+.past-events-box[open] summary::before {
+  content: "▾";
+}
+
+/* Inre wrapper för gamla händelser */
+#past-container {
+  padding-left: 0.5rem;
+}
+
+/* Dölj underrubriker på små skärmar */
+@media (max-width: 600px) {
+  .label {
+    display: none;
+  }
+}
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.budget-table {
+  width: 100%;
 }
 
 .budget-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #eef4fb;
   padding: 0.8rem 1rem;
   font-weight: bold;
-  font-size: 1rem;
+  border-radius: 6px;
+  margin: 0.4rem 0;
   cursor: pointer;
-  background-color: #e8f0fb;
-  border-bottom: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 .budget-summary .toggle-icon {
+  margin-right: 0.5rem;
   font-weight: bold;
   font-size: 1.2rem;
-  margin-right: 0.5rem;
+}
+
+.budget-summary span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .budget-inner-table {
   width: 100%;
   border-collapse: collapse;
+  margin: 0.5rem 0 1rem;
 }
 
 .budget-inner-table th,
 .budget-inner-table td {
-  padding: 0.6rem 1rem;
+  padding: 0.5rem;
   text-align: left;
-  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   font-size: 0.95rem;
 }
 
 .budget-total {
-  font-weight: bold;
-  font-size: 1.2rem;
   margin-top: 1.5rem;
-  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-/* === Responsivitet för budgettabell === */
+/* RESPONSIVT */
 @media (max-width: 600px) {
   .budget-summary {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.4rem;
+    gap: 0.5rem;
   }
 
+  .budget-inner-table th,
+  .budget-inner-table td {
+    font-size: 0.9rem;
+  }
+
+  .budget-total {
+    font-size: 1rem;
+  }
+}
+/* === Mobilanpassad budget-tabell === */
+@media (max-width: 600px) {
   .budget-inner-table thead {
     display: none;
   }
@@ -128,27 +241,17 @@ h1 {
 
   .budget-inner-table td {
     display: block;
-    padding: 0.4rem 1rem;
+    padding: 0.5rem 1rem;
     border: none;
     font-size: 0.95rem;
   }
 
   .budget-inner-table td::before {
     content: attr(data-label);
-    display: block;
     font-weight: bold;
     color: #444;
-    margin-bottom: 0.2rem;
-  }
-
-  .budget-total {
-    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.25rem;
   }
 }
 
-/* === Dölj labels i händelsekort i responsivt läge === */
-@media (max-width: 600px) {
-  .label {
-    display: none;
-  }
-}
