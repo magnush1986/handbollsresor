@@ -90,6 +90,7 @@ function loadBudget() {
                 <td data-label="Datum">📅 ${ev.datum}</td>
                 <td data-label="Plats">📍 ${ev.plats}</td>
                 <td data-label="Kostnad">💰 ${ev.kostnad.toLocaleString('sv-SE')} kr</td>
+              `;
               tbody.appendChild(row);
             });
             innerTable.appendChild(tbody);
