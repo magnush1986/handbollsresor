@@ -14,6 +14,7 @@ function loadEvents() {
   const isCup = href.includes("cup.html");
   const isLedigt = href.includes("ledig.html");
   const today = new Date().toISOString().split("T")[0];
+  const currentSeason = getCurrentSeason();
 
   fetch(SHEET_URL)
     .then(res => res.text())
@@ -34,27 +35,25 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'season-filter-wrapper';
 
-            // Säsong
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
+
             const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
+            const allSeasonOption = document.createElement('option');
+            allSeasonOption.value = '';
+            allSeasonOption.textContent = 'Alla säsonger';
+            seasonSelect.appendChild(allSeasonOption);
             allSeasons.forEach(season => {
               const option = document.createElement('option');
               option.value = season;
               option.textContent = season;
               seasonSelect.appendChild(option);
             });
-            const currentSeason = getCurrentSeason();
-            if (allSeasons.includes(currentSeason)) {
-              seasonSelect.value = currentSeason;
-            } else {
-              seasonSelect.selectedIndex = 0;
-            }
+            seasonSelect.value = currentSeason;
 
-            // Typ
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
@@ -72,7 +71,6 @@ function loadEvents() {
               typeSelect.appendChild(option);
             });
 
-            // Plats
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
@@ -105,14 +103,11 @@ function loadEvents() {
           }
 
           const selectedSeason = seasonSelect.value;
-          const selectedType = typeSelect.value;
-          const selectedPlace = placeSelect.value;
-          const currentSeason = getCurrentSeason();
 
           const filtered = events.filter(e =>
             (!selectedSeason || e['Säsong'] === selectedSeason) &&
-            (!selectedType || e['Typ av händelse'] === selectedType) &&
-            (!selectedPlace || e['Plats'] === selectedPlace)
+            (!typeSelect.value || e['Typ av händelse'] === typeSelect.value) &&
+            (!placeSelect.value || e['Plats'] === placeSelect.value)
           ).filter(e => {
             const typ = e['Typ av händelse']?.toLowerCase() || '';
             const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
