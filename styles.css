@@ -1,6 +1,6 @@
 /* === Grundlayout === */
 html {
-  -webkit-text-size-adjust: 100%; /* förhindrar iOS att förstora små texter */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -17,6 +17,15 @@ h1#page-title {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
   text-align: left;
+}
+
+/* === Säsongsrubriker (används när man visar alla säsonger) === */
+.season-header {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 /* === Händelsegrupp och kort === */
