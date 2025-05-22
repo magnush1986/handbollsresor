@@ -253,41 +253,37 @@ function loadEvents() {
 
                   card.innerHTML = `
                     <div class="event-title">${e['Namn på händelse']}</div>
-
-                   <div class="event-line place-type">
-                      <span class="place-block">
-                        <span class="icon">📍</span>
-                        <span class="label">Plats:</span>
-                        <span class="value">${e['Plats']}</span>
-                      </span>
-                      <span class="type-block">
-                        <span class="icon">🏷️</span>
-                        <span class="label">Typ:</span>
-                        <span class="value">${e['Typ av händelse']}</span>
-                      </span>
+                  
+                    <div class="event-line">
+                      <span class="icon">🏷️</span><span class="label">Typ:</span> ${e['Typ av händelse']}
                     </div>
-
+                  
+                    <div class="event-line">
+                      <span class="icon">📍</span><span class="label">Plats:</span> ${e['Plats']}
+                    </div>
+                  
                     <div class="event-line">
                       <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
                     </div>
-
+                  
                     ${samlingHTML}
-
+                  
                     <div class="event-line">
                       <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> ${e['Ledig från skolan?']}
                     </div>
-
+                  
                     <div class="event-line">
                       <span class="icon">💰</span><span class="label">Kostnad:</span> ${e['Kostnad per spelare']}
                     </div>
-
+                  
                     <div class="event-line">
                       <span class="icon">🚗</span><span class="label">Färdsätt:</span> ${e['Färdsätt'] || ''}
                     </div>
-
+                  
                     ${hemsidaUrl}
                     ${bilderHtml}
                   `;
+
 
                   groupDiv.appendChild(card);
                 });
