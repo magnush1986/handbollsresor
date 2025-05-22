@@ -255,8 +255,12 @@ function renderEventCard(e, target) {
 
   const resväg = e['Resväg']?.trim();
   const resvägHtml = resväg
-    ? `<div class="event-line"><span class="icon">🗺️</span><span class="label">Resväg:</span> <span class="value">${resväg}</span></div>`
+    ? `<div class="event-line long-text">
+         <span class="icon">🗺️</span>
+         <span class="value">${resväg}</span>
+       </div>`
     : "";
+
 
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
