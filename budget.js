@@ -64,33 +64,29 @@ function loadBudget() {
 
             const expandCell = document.createElement('td');
             expandCell.colSpan = 3;
-
-            const detailsId = `details-${key}`;
-
             expandCell.innerHTML = `
-              <details id="${detailsId}">
-                <summary style="display: flex; justify-content: space-between; align-items: center; background-color: #f0f4f8; padding: 0.6rem 1rem; font-weight: bold; border-radius: 6px; margin-bottom: 0.5rem; cursor: pointer;">
-                  <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span class="toggle-icon" style="font-weight: bold; font-size: 1.2rem;">＋</span> 📅 ${g.year} – ${g.monthName}
-                  </span>
+              <details class="budget-details">
+                <summary class="budget-summary">
+                  <span class="toggle-icon">＋</span>
+                  <span>📅 ${g.year} – ${g.monthName}</span>
                   <span>${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}, <strong>${g.total.toFixed(0)} kr</strong></span>
                 </summary>
-                <table style="width: 100%; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
-                  <thead style="background-color: #fafafa; font-weight: bold;">
+                <table class="budget-inner-table">
+                  <thead>
                     <tr>
-                      <td style="padding: 0.5rem 1rem;">Händelse</td>
-                      <td style="padding: 0.5rem 1rem;">Datum</td>
-                      <td style="padding: 0.5rem 1rem;">Plats</td>
-                      <td style="padding: 0.5rem 1rem;">Kostnad</td>
+                      <td>Händelse</td>
+                      <td>Datum</td>
+                      <td>Plats</td>
+                      <td>Kostnad</td>
                     </tr>
                   </thead>
                   <tbody>
                     ${g.events.map(ev => `
-                      <tr style="border-top: 1px solid #eee;">
-                        <td style="padding: 0.5rem 1rem;">${ev.namn}</td>
-                        <td style="padding: 0.5rem 1rem; color: #555;">📅 ${ev.datum}</td>
-                        <td style="padding: 0.5rem 1rem; color: #555;">📍 ${ev.plats}</td>
-                        <td style="padding: 0.5rem 1rem; color: #555;">💰 ${ev.kostnad.toFixed(0)} kr</td>
+                      <tr>
+                        <td>${ev.namn}</td>
+                        <td>📅 ${ev.datum}</td>
+                        <td>📍 ${ev.plats}</td>
+                        <td>💰 ${ev.kostnad.toFixed(0)} kr</td>
                       </tr>`).join('')}
                   </tbody>
                 </table>
@@ -112,15 +108,15 @@ function loadBudget() {
           totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
           container.appendChild(totalDiv);
 
-          // Toggle +/− symbol
-          document.querySelectorAll('details').forEach(detail => {
-            const icon = detail.querySelector('.toggle-icon');
-            detail.addEventListener('toggle', () => {
-              if (detail.open) {
-                icon.textContent = '−';
-              } else {
-                icon.textContent = '＋';
-              }
+          // Ikonväxling
+          document.querySelectorAll('.budget-details summary').forEach(summary => {
+            const icon = summary.querySelector('.toggle-icon');
+            if (!icon) return;
+            const details = summary.parentElement;
+            summary.addEventListener('click', () => {
+              setTimeout(() => {
+                icon.textContent = details.open ? '−' : '＋';
+              }, 10);
             });
           });
         }
