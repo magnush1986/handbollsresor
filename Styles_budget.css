@@ -111,13 +111,13 @@ h1#page-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e6f0fa;
+  background-color: #e6f8ec;
   padding: 0.8rem 1rem;
   cursor: pointer;
   font-size: 1.05rem;
   font-weight: bold;
   border-radius: 5px;
-  border: 1px solid #c0d8ee;
+  border: 1px solid #b6e2c3;
   text-align: left;
   gap: 0.8rem;
 }
