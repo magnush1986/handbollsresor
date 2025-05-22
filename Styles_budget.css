@@ -122,8 +122,7 @@ h1#page-title {
 .budget-summary span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  justify-content: flex-start;
+  gap: 0;
 }
 
 .budget-inner-table {
@@ -133,7 +132,7 @@ h1#page-title {
   font-size: 0.95rem;
 }
 
-.budget-inner-table thead th {
+.budget-inner-table thead td {
   font-weight: bold;
   padding: 0.5rem;
   background: #f0f8ff;
@@ -165,6 +164,10 @@ h1#page-title {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.4rem;
+  }
+
+  .budget-summary span {
+    gap: 0.5rem;
   }
 
   .budget-inner-table thead {
