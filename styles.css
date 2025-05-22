@@ -225,4 +225,60 @@ body {
     font-size: 1rem;
   }
 }
+@media (max-width: 600px) {
+  /* Visa varje tabellrad som en staplad box */
+  .budget-inner-table {
+    display: block;
+    width: 100%;
+  }
+
+  .budget-inner-table thead {
+    display: none;
+  }
+
+  .budget-inner-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .budget-inner-table tr {
+    display: flex;
+    flex-direction: column;
+    padding: 0.8rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  .budget-inner-table td {
+    display: block;
+    padding: 0.3rem 0;
+  }
+
+  .budget-inner-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.2rem;
+    color: #333;
+  }
+
+  /* Separera etikett och värde i summary-rad */
+  .budget-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .budget-label {
+    font-size: 1rem;
+  }
+
+  .budget-value {
+    font-size: 0.95rem;
+    color: #333;
+  }
+}
 
