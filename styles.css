@@ -5,12 +5,14 @@ body {
   max-width: 800px;
   padding: 1rem;
   background-color: #f9f9f9;
+  color: #222;
+  line-height: 1.5;
 }
 
 h1#page-title {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  color: #222;
+  text-align: center;
 }
 
 /* === Händelsegrupp och kort === */
@@ -19,11 +21,17 @@ h1#page-title {
 }
 
 .event-card {
-  background: #fff;
+  background-color: #fff;
   border-left: 5px solid #007acc;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  transition: box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* === Navigering & hamburgermeny === */
@@ -63,9 +71,11 @@ h1#page-title {
   transition: background-color 0.2s ease;
 }
 
-.nav-links li a:hover {
+.nav-links li a:hover,
+.nav-links li a:focus {
   background-color: #007acc;
   color: white;
+  outline: none;
 }
 
 /* === Responsiv meny === */
@@ -82,7 +92,7 @@ h1#page-title {
     top: 40px;
     right: 0;
     border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     min-width: 140px;
     z-index: 100;
@@ -109,7 +119,7 @@ h1#page-title {
   border-radius: 6px;
   background-color: #fff;
   padding: 0.5rem 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
 }
 
