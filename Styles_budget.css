@@ -209,6 +209,24 @@ details summary {
   list-style: none;
 }
 
+/* === Säsongsfilter (dropdown) === */
+label[for="season-filter"] {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+
+#season-filter {
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
 details summary::-webkit-details-marker {
   display: none;
 }
