@@ -34,14 +34,13 @@ function loadEvents() {
             const filterWrapper = document.createElement('div');
             filterWrapper.className = 'event-filter-wrapper';
 
-            // Skapa säsong-filter
+            // Säsong-filter
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
             const seasonLabel = document.createElement('label');
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
 
-            // Alla säsonger
             const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
             allSeasons.forEach(season => {
               const option = document.createElement('option');
@@ -50,7 +49,6 @@ function loadEvents() {
               seasonSelect.appendChild(option);
             });
 
-            // Sätt förvald säsong
             const currentSeason = getCurrentSeason();
             if (allSeasons.includes(currentSeason)) {
               seasonSelect.value = currentSeason;
@@ -58,7 +56,7 @@ function loadEvents() {
               seasonSelect.selectedIndex = 0;
             }
 
-            // Skapa typ-filter
+            // Typ-filter
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
@@ -77,7 +75,7 @@ function loadEvents() {
               typeSelect.appendChild(option);
             });
 
-            // Skapa plats-filter
+            // Plats-filter
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
@@ -123,21 +121,19 @@ function loadEvents() {
             const selectedType = typeSelect.value;
             const selectedPlace = placeSelect.value;
 
-            // Filtrera och uppdatera säsong baserat på typ & plats
+            // Uppdatera filterval baserat på andra filter
             const filteredForSeason = events.filter(e =>
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(seasonSelect, [...new Set(filteredForSeason.map(e => e['Säsong']))].sort().reverse(), selectedSeason, 'Alla säsonger');
 
-            // Filtrera och uppdatera typ baserat på säsong & plats
             const filteredForType = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedPlace || selectedPlace === '' || e['Plats'] === selectedPlace)
             );
             updateSelectOptions(typeSelect, [...new Set(filteredForType.map(e => e['Typ av händelse']))].sort(), selectedType, 'Alla typer');
 
-            // Filtrera och uppdatera plats baserat på säsong & typ
             const filteredForPlace = events.filter(e =>
               (!selectedSeason || selectedSeason === '' || e['Säsong'] === selectedSeason) &&
               (!selectedType || selectedType === '' || e['Typ av händelse'] === selectedType)
@@ -235,12 +231,12 @@ function loadEvents() {
 
                   const länk = e["Länk till hemsida"]?.trim();
                   const hemsidaUrl = (länk && länk.startsWith("http"))
-                    ? `<br><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a>`
+                    ? `<div class="event-line"><strong>🔗 Hemsida:</strong> <a href="${länk}" target="_blank">${new URL(länk).hostname.replace("www.", "")}</a></div>`
                     : "";
 
                   const bilderLänk = e["Länk till bilder"]?.trim();
                   const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
-                    ? `<br>📷 <a href="${bilderLänk}" target="_blank">Se bilder</a>`
+                    ? `<div class="event-line">📷 <a href="${bilderLänk}" target="_blank">Se bilder</a></div>`
                     : "";
 
                   let samlingHTML = '';
@@ -249,13 +245,13 @@ function loadEvents() {
 
                   if (samlingH && samlingP) {
                     samlingHTML = `
-                      <strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>
-                      <strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>
+                      <div class="event-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>
+                      <div class="event-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>
                     `;
                   } else if (samlingH) {
-                    samlingHTML = `<strong><span class="icon">🚍</span><span class="label"> Samling Härnösand:</span></strong> ${samlingH}<br>`;
+                    samlingHTML = `<div class="event-line"><strong>🚍 Samling Härnösand:</strong> ${samlingH}</div>`;
                   } else if (samlingP) {
-                    samlingHTML = `<strong><span class="icon">📍</span><span class="label"> Samling på plats:</span></strong> ${samlingP}<br>`;
+                    samlingHTML = `<div class="event-line"><strong>📍 Samling på plats:</strong> ${samlingP}</div>`;
                   }
 
                   card.innerHTML = `
@@ -270,7 +266,7 @@ function loadEvents() {
                       <span class="icon">📅</span><span class="label">Period:</span> ${e['Datum från']} – ${e['Datum till']}
                     </div>
 
-                    ${samlingHTML ? `<div class="event-line">${samlingHTML}</div>` : ''}
+                    ${samlingHTML}
 
                     <div class="event-line">
                       <span class="icon">🏫</span><span class="label">Ledig från skolan:</span> ${e['Ledig från skolan?']}
