@@ -19,7 +19,7 @@ h1#page-title {
   text-align: left;
 }
 
-/* === Säsongsrubriker (för "Alla säsonger") === */
+/* === Säsongsrubriker === */
 .season-header {
   font-size: 1.4rem;
   font-weight: bold;
@@ -77,12 +77,10 @@ h1#page-title {
   font-weight: normal;
   white-space: pre-wrap;
   line-height: 1.4;
-  display: inline-block;
-  text-indent: -1.8rem;
-  padding-left: 1.8rem;
+  display: inline;
 }
 
-/* === Plats & Typ i block (endast om de ska visas bredvid varann) === */
+/* === Plats & Typ i block (om visas sida vid sida) === */
 .event-line.place-type {
   display: flex;
   gap: 2rem;
@@ -297,7 +295,7 @@ h1#page-title {
   }
 }
 
-/* === Tidigare händelser (kollapsbar box) === */
+/* === Tidigare händelser (kollapsbar) === */
 .past-events-box {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -321,16 +319,4 @@ h1#page-title {
 
 .past-events-box .event-card {
   margin-top: 0.8rem;
-}
-
-@media (max-width: 812px) and (orientation: landscape) {
-  .past-events-box {
-    font-size: 0.85rem;
-    padding: 0.8rem;
-  }
-
-  .past-events-box summary {
-    font-size: 1rem;
-    margin-bottom: 0.6rem;
-  }
 }
