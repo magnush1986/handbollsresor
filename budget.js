@@ -102,7 +102,7 @@ function loadBudget() {
 
           const totalDiv = document.createElement('div');
           totalDiv.className = 'budget-total';
-          totalDiv.innerHTML = `Totalt: ${total.toFixed(0)} kr`;
+          totalDiv.innerHTML = `Totalt: ${total.toLocaleString('sv-SE'))} kr`;
           container.appendChild(totalDiv);
 
           document.querySelectorAll('.budget-details summary').forEach(summary => {
