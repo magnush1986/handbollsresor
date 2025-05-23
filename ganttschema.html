@@ -13,13 +13,12 @@
       position: relative;
       border-top: 2px solid #333;
       margin-top: 2rem;
-      height: 200px;
-      overflow-x: scroll;
+      height: 250px;
+      overflow-x: auto;
       white-space: nowrap;
     }
     .event {
       position: absolute;
-      top: 20px;
       height: 40px;
       background: #4CAF50;
       color: white;
@@ -29,17 +28,31 @@
       font-size: 0.9rem;
       overflow: hidden;
     }
-    .date-labels {
+    .date-labels, .month-labels, .year-labels {
       position: absolute;
-      top: 0;
-      left: 0;
-      height: 20px;
       font-size: 0.8rem;
+      white-space: nowrap;
+      display: flex;
     }
-    .date-labels div {
-      display: inline-block;
-      width: 20px;
-      text-align: center;
+    .date-labels {
+      top: 0;
+    }
+    .month-labels {
+      top: 20px;
+      font-weight: bold;
+    }
+    .year-labels {
+      top: 40px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .swimlane {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 50px;
+      border-top: 1px dashed rgba(0,0,0,0.2);
+      z-index: 0;
     }
   </style>
 </head>
@@ -50,26 +63,62 @@
   <script>
     const timeline = document.getElementById('timeline');
 
-    // Konfigurera datumintervall
     const startDate = new Date('2025-07-01');
     const endDate = new Date('2025-10-31');
     const dayMs = 24 * 60 * 60 * 1000;
     const totalDays = Math.ceil((endDate - startDate) / dayMs);
+    const pxPerDay = 20;
 
-    // Lägg till datumetiketter
-    const labels = document.createElement('div');
-    labels.className = 'date-labels';
+    const yearLabels = document.createElement('div');
+    yearLabels.className = 'year-labels';
+    const monthLabels = document.createElement('div');
+    monthLabels.className = 'month-labels';
+    const dateLabels = document.createElement('div');
+    dateLabels.className = 'date-labels';
+
+    let currentMonth = -1;
+    let currentYear = -1;
+
     for (let i = 0; i <= totalDays; i++) {
-      const label = document.createElement('div');
-      label.style.left = `${i * 20}px`;
-      label.style.width = '20px';
       const date = new Date(startDate.getTime() + i * dayMs);
-      label.innerText = date.getDate();
-      labels.appendChild(label);
-    }
-    timeline.appendChild(labels);
+      const left = `${i * pxPerDay}px`;
 
-    // Händelser att visa
+      const dateDiv = document.createElement('div');
+      dateDiv.style.width = `${pxPerDay}px`;
+      dateDiv.style.textAlign = 'center';
+      dateDiv.style.left = left;
+      dateDiv.innerText = date.getDate();
+      dateLabels.appendChild(dateDiv);
+
+      if (date.getMonth() !== currentMonth) {
+        const monthDiv = document.createElement('div');
+        monthDiv.style.width = `${pxPerDay * 30}px`;
+        monthDiv.innerText = date.toLocaleString('sv-SE', { month: 'long' });
+        monthLabels.appendChild(monthDiv);
+        currentMonth = date.getMonth();
+      }
+
+      if (date.getFullYear() !== currentYear) {
+        const yearDiv = document.createElement('div');
+        yearDiv.style.width = `${pxPerDay * 365}px`;
+        yearDiv.innerText = date.getFullYear();
+        yearLabels.appendChild(yearDiv);
+        currentYear = date.getFullYear();
+      }
+    }
+
+    timeline.appendChild(yearLabels);
+    timeline.appendChild(monthLabels);
+    timeline.appendChild(dateLabels);
+
+    // Simbanor
+    for (let i = 0; i < 5; i++) {
+      const lane = document.createElement('div');
+      lane.className = 'swimlane';
+      lane.style.top = `${70 + i * 50}px`;
+      timeline.appendChild(lane);
+    }
+
     const events = [
       {
         namn: 'Örebrocupen',
@@ -100,9 +149,9 @@
       const div = document.createElement('div');
       div.className = 'event';
       div.innerText = e.namn;
-      div.style.left = `${offset * 20}px`;
-      div.style.width = `${width * 20}px`;
-      div.style.top = `${50 + index * 50}px`;
+      div.style.left = `${offset * pxPerDay}px`;
+      div.style.width = `${width * pxPerDay}px`;
+      div.style.top = `${80 + index * 50}px`;
       div.style.background = e.färg;
 
       timeline.appendChild(div);
