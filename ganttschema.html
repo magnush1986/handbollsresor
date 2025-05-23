@@ -2,147 +2,82 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ganttschema Säsong</title>
-  <link rel="stylesheet" href="https://unpkg.com/frappe-gantt@0.6.1/dist/frappe-gantt.css">
+  <title>Ganttschema Handboll</title>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
       margin: 0 auto;
-      max-width: 900px;
-      padding: 1rem;
-      background: #f9f9f9;
+      max-width: 1200px;
+      padding: 2rem;
     }
-    #gantt {
-      overflow-x: auto;
-      min-height: 500px;
-    }
-    h1 {
-      text-align: left;
-      margin-bottom: 1rem;
-    }
-    .controls {
-      margin-bottom: 1rem;
-    }
-    button {
-      margin-right: 0.5rem;
-      padding: 0.4rem 0.8rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #148424;
-      color: white;
-      cursor: pointer;
-    }
-    .event-type-cup .bar {
-      fill: #FF8C00 !important;
-    }
-    .event-type-seriematcher .bar {
-      fill: #007ACC !important;
-    }
-    .event-type-usm .bar {
-      fill: #D7263D !important;
-    }
-    .event-type-ledighet .bar {
-      fill: #6A4C93 !important;
-    }
-    .event-type-träning .bar {
-      fill: #2E8B57 !important;
-    }
-    .event-type-övrigt .bar {
-      fill: #8B8B8B !important;
+    #chart_div {
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
-  <h1>Säsongsschema</h1>
-  <div class="controls">
-    <button onclick="setView('Day')">Dag</button>
-    <button onclick="setView('Week')">Vecka</button>
-    <button onclick="setView('Month')">Månad</button>
-  </div>
-  <div id="gantt"></div>
+  <h1>Ganttschema – Handbollssäsong</h1>
+  <div id="chart_div"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://unpkg.com/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
-      let gantt;
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1JEO_AArVxbSDKoNmSp40J5Jco_QDDO-OMrUgcn0Pb3Q/gviz/tq?tqx=out:csv&sheet=Händelser';
 
-      function setView(mode) {
-        if (gantt) gantt.change_view_mode(mode);
-      }
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(loadAndDraw);
 
-      window.setView = setView;
+    function extractDateOnly(dateStr) {
+      if (!dateStr) return null;
+      const cleaned = dateStr.trim().slice(0, 10); // Tar YYYY-MM-DD
+      return new Date(cleaned);
+    }
 
-      function extractDateOnly(str) {
-        if (!str) return null;
-        const cleaned = str.trim();
-        const match = cleaned.match(/\d{4}-\d{2}-\d{2}/);
-        const result = match ? match[0] : null;
-        console.log(`extractDateOnly() input: '${str}' → cleaned: '${cleaned}' → result: '${result}'`);
-        return result;
-      }
+    function loadAndDraw() {
+      Papa.parse(SHEET_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const rawData = results.data;
+          const dataTable = new google.visualization.DataTable();
 
-      fetch(SHEET_URL)
-        .then(res => res.text())
-        .then(csv => {
-          Papa.parse(csv, {
-            header: true,
-            skipEmptyLines: true,
-            complete: results => {
-              const events = results.data;
-              const tasks = events.map((e, i) => {
-                const startStr = extractDateOnly(e['Datum från']);
-                const endStr = extractDateOnly(e['Datum till']) || startStr;
+          dataTable.addColumn('string', 'Task ID');
+          dataTable.addColumn('string', 'Händelse');
+          dataTable.addColumn('string', 'Typ');
+          dataTable.addColumn('date', 'Startdatum');
+          dataTable.addColumn('date', 'Slutdatum');
+          dataTable.addColumn('number', 'Duration');
+          dataTable.addColumn('number', 'Progress');
+          dataTable.addColumn('string', 'Resurs');
 
-                const startDate = new Date(startStr);
-                const endDate = new Date(endStr);
+          let counter = 1;
+          rawData.forEach(e => {
+            const start = extractDateOnly(e['Datum från']);
+            const end = extractDateOnly(e['Datum till']);
+            if (!start || !end) return;
 
-                if (isNaN(startDate) || isNaN(endDate)) {
-                  console.warn(`⛔ Ogiltigt datum i rad ${i}:`, {
-                    startStr,
-                    endStr,
-                    startDate,
-                    endDate,
-                    originalRow: e
-                  });
-                  return null;
-                }
+            dataTable.addRow([
+              'task-' + counter++,
+              e['Namn på händelse'],
+              e['Typ av händelse'],
+              start,
+              end,
+              null,
+              100,
+              e['Typ av händelse']
+            ]);
+          });
 
-                const task = {
-                  id: `event-${i}`,
-                  name: e['Namn på händelse'] || 'Händelse',
-                  start: startDate,
-                  end: endDate,
-                  progress: 100,
-                  custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
-                };
-
-                console.group(`📦 Task ${i}`);
-                Object.entries(task).forEach(([key, val]) => {
-                  console.log(`${key} (${typeof val}):`, val);
-                });
-                console.groupEnd();
-
-                return task;
-              }).filter(Boolean);
-
-              console.log('✅ Alla tasks till Gantt:', tasks);
-
-              if (tasks.length === 0) {
-                document.getElementById('gantt').innerHTML = '<p>Inga giltiga händelser att visa.</p>';
-                return;
-              }
-
-              gantt = new Gantt("#gantt", tasks, {
-                view_mode: 'Month',
-                language: 'sv'
-              });
+          const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+          chart.draw(dataTable, {
+            height: 400 + rawData.length * 30,
+            gantt: {
+              trackHeight: 30
             }
           });
-        });
-    });
+        }
+      });
+    }
   </script>
 </body>
 </html>
