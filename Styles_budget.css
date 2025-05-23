@@ -98,29 +98,21 @@ h1#page-title {
 
 .budget-summary .summary-block {
   display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.summary-block .row-1 {
-  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  gap: 1rem;
 }
 
-.summary-block .summary-icon {
-  display: inline-block;
-  width: 1.5rem;
-}
-
-.summary-block .budget-label {
+.budget-summary .budget-label {
   font-weight: bold;
 }
 
-.summary-block .budget-value {
-  padding-left: 1.5rem;
-  margin-top: 0.1rem;
-  font-size: 0.95rem;
-  font-weight: normal;
+.budget-summary .budget-value {
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 1rem;
 }
 
 .budget-inner-table {
@@ -238,6 +230,32 @@ h1#page-title {
     font-size: 1.3rem;
     margin-top: 0.2rem;
     line-height: 1;
+  }
+
+  .summary-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary-block .row-1 {
+    display: flex;
+    align-items: center;
+  }
+
+  .summary-block .summary-icon {
+    display: inline-block;
+    width: 1.5rem;
+  }
+
+  .summary-block .budget-label {
+    font-weight: bold;
+  }
+
+  .summary-block .budget-value {
+    padding-left: 1.5rem;
+    margin-top: 0.1rem;
+    font-size: 0.95rem;
+    font-weight: normal;
   }
 
   .budget-inner-table thead {
