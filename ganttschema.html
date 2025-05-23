@@ -16,10 +16,7 @@
   <h1>Test Gantt</h1>
   <div id="chart_div"></div>
 
-  <!-- ✅ Viktigt: Google Charts laddas innan du anropar det -->
   <script src="https://www.gstatic.com/charts/loader.js"></script>
-
-  <!-- ✅ Din kod kommer efter att Google Charts är tillgängligt -->
   <script>
     google.charts.load('current', { packages: ['gantt'] });
     google.charts.setOnLoadCallback(loadAndDraw);
@@ -31,7 +28,7 @@
           namn: 'Testcup',
           typ: 'Cup',
           start: new Date('2025-09-12'),
-          end: new Date('2025-09-14'),
+          end: new Date('2025-09-17'), // 5 dagar
           färg: '#4CAF50'
         },
         {
@@ -39,8 +36,16 @@
           namn: 'USM Steg 1',
           typ: 'USM',
           start: new Date('2025-10-18'),
-          end: new Date('2025-10-19'),
+          end: new Date('2025-10-23'), // 5 dagar
           färg: '#2196F3'
+        },
+        {
+          id: 'spacer',
+          namn: 'Tvinga x-axel',
+          typ: 'Dummy',
+          start: new Date('2025-07-01'),
+          end: new Date('2025-07-10'),
+          färg: '#FFFFFF'
         }
       ];
 
