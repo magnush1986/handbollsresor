@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Testa Gantt – Felsökning</title>
+  <title>Felsök Gantt</title>
   <style>
     #chart_div {
       margin-top: 2rem;
@@ -13,38 +13,38 @@
   </style>
 </head>
 <body>
-  <h1>Test Gantt</h1>
+  <h1>Test Gantt med felsökning</h1>
   <div id="chart_div"></div>
 
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
     google.charts.load('current', { packages: ['gantt'] });
-    google.charts.setOnLoadCallback(loadAndDraw);
+    google.charts.setOnLoadCallback(drawGantt);
 
-    function loadAndDraw() {
+    function drawGantt() {
       const testData = [
         {
           id: 'task-1',
           namn: 'Testcup',
           typ: 'Cup',
-          start: new Date('2025-09-12'),
-          end: new Date('2025-09-17'), // 5 dagar
+          start: '2025-09-12',
+          end: '2025-09-14',
           färg: '#4CAF50'
         },
         {
           id: 'task-2',
           namn: 'USM Steg 1',
           typ: 'USM',
-          start: new Date('2025-10-18'),
-          end: new Date('2025-10-23'), // 5 dagar
+          start: '2025-10-18',
+          end: '2025-10-18', // exakt samma datum
           färg: '#2196F3'
         },
         {
-          id: 'spacer',
-          namn: 'Tvinga x-axel',
+          id: 'task-3',
+          namn: 'Padding',
           typ: 'Dummy',
-          start: new Date('2025-07-01'),
-          end: new Date('2025-07-10'),
+          start: '2025-07-01',
+          end: '2025-07-10',
           färg: '#FFFFFF'
         }
       ];
@@ -60,14 +60,46 @@
       dataTable.addColumn('string', 'Resurs');
       dataTable.addColumn({ type: 'string', role: 'style' });
 
-      testData.forEach(row => {
+      testData.forEach((row, i) => {
+        const start = new Date(row.start);
+        const end = new Date(row.end);
+
+        if (!(start instanceof Date) || isNaN(start)) {
+          console.warn(`⛔ Ogiltigt startdatum i rad ${i}:`, row.start);
+          return;
+        }
+
+        let safeEnd = end instanceof Date && !isNaN(end) ? end : null;
+
+        let duration = null;
+
+        if (safeEnd) {
+          const msDiff = safeEnd.getTime() - start.getTime();
+          if (msDiff < 24 * 60 * 60 * 1000) {
+            // för kort → byt till duration
+            console.warn(`⚠️ Kort spann i rad ${i}, använder duration i stället:`, msDiff, 'ms');
+            duration = 2 * 24 * 60 * 60 * 1000; // 2 dagar
+            safeEnd = null;
+          }
+        } else {
+          duration = 3 * 24 * 60 * 60 * 1000; // fallback 3 dagar
+        }
+
+        console.log(`✅ Lägger till rad ${i}:`, {
+          id: row.id,
+          namn: row.namn,
+          start,
+          end: safeEnd,
+          duration
+        });
+
         dataTable.addRow([
           row.id,
           row.namn,
           row.typ,
-          row.start,
-          row.end,
-          null,
+          start,
+          safeEnd,
+          duration,
           100,
           row.typ,
           row.färg
@@ -82,9 +114,9 @@
             trackHeight: 30
           }
         });
-        console.log('✅ Gantt med testdata renderad!');
+        console.log('✅ Gantt renderad utan krascher!');
       } catch (err) {
-        console.error('❌ Google Charts error:', err);
+        console.error('❌ Google Charts Gantt fel:', err);
       }
     }
   </script>
