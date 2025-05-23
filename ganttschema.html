@@ -1,95 +1,70 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Testa Gantt – Felsökning</title>
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <style>
-    #chart_div {
-      margin-top: 2rem;
-      height: 600px;
-      border: 1px solid #ccc;
-    }
-  </style>
-</head>
-<body>
-  <h1>Test Gantt</h1>
-  <div id="chart_div"></div>
+<script>
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
-  <script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
-
-    function extractDateOnly(str) {
-      const match = str?.match(/^(\d{4}-\d{2}-\d{2})/);
-      return match ? new Date(match[1]) : null;
-    }
-
-    google.charts.load('current', { packages: ['gantt'] });
-    google.charts.setOnLoadCallback(loadAndDraw);
-
-    function loadAndDraw() {
-  const testData = [
-    {
-      id: 'task-1',
-      namn: 'Testcup',
-      typ: 'Cup',
-      start: new Date('2025-09-12'),
-      end: new Date('2025-09-14'),
-      färg: '#4CAF50'
-    },
-    {
-      id: 'task-2',
-      namn: 'USM Steg 1',
-      typ: 'USM',
-      start: new Date('2025-10-18'),
-      end: new Date('2025-10-19'),
-      färg: '#2196F3'
-    }
-  ];
-
-  const dataTable = new google.visualization.DataTable();
-  dataTable.addColumn('string', 'Task ID');
-  dataTable.addColumn('string', 'Händelse');
-  dataTable.addColumn('string', 'Typ');
-  dataTable.addColumn('date', 'Start');
-  dataTable.addColumn('date', 'End');
-  dataTable.addColumn('number', 'Duration');
-  dataTable.addColumn('number', 'Progress');
-  dataTable.addColumn('string', 'Resurs');
-  dataTable.addColumn({ type: 'string', role: 'style' });
-
-  testData.forEach(row => {
-    dataTable.addRow([
-      row.id,
-      row.namn,
-      row.typ,
-      row.start,
-      row.end,
-      null,
-      100,
-      row.typ,
-      row.färg
-    ]);
-  });
-
-  const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-  try {
-    chart.draw(dataTable, {
-      height: Math.max(600, dataTable.getNumberOfRows() * 40),
-      gantt: {
-        trackHeight: 30
-      }
-    });
-    console.log('✅ Gantt med testdata renderad!');
-  } catch (err) {
-    console.error('❌ Google Charts error:', err);
+  function extractDateOnly(str) {
+    const match = str?.match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? new Date(match[1]) : null;
   }
-}
 
+  google.charts.load('current', { packages: ['gantt'] });
+  google.charts.setOnLoadCallback(loadAndDraw);  // <- denna fungerar nu
+
+  function loadAndDraw() {
+    const testData = [
+      {
+        id: 'task-1',
+        namn: 'Testcup',
+        typ: 'Cup',
+        start: new Date('2025-09-12'),
+        end: new Date('2025-09-14'),
+        färg: '#4CAF50'
+      },
+      {
+        id: 'task-2',
+        namn: 'USM Steg 1',
+        typ: 'USM',
+        start: new Date('2025-10-18'),
+        end: new Date('2025-10-19'),
+        färg: '#2196F3'
+      }
+    ];
+
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn('string', 'Task ID');
+    dataTable.addColumn('string', 'Händelse');
+    dataTable.addColumn('string', 'Typ');
+    dataTable.addColumn('date', 'Start');
+    dataTable.addColumn('date', 'End');
+    dataTable.addColumn('number', 'Duration');
+    dataTable.addColumn('number', 'Progress');
+    dataTable.addColumn('string', 'Resurs');
+    dataTable.addColumn({ type: 'string', role: 'style' });
+
+    testData.forEach(row => {
+      dataTable.addRow([
+        row.id,
+        row.namn,
+        row.typ,
+        row.start,
+        row.end,
+        null,
+        100,
+        row.typ,
+        row.färg
+      ]);
+    });
+
+    const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+    try {
+      chart.draw(dataTable, {
+        height: Math.max(600, dataTable.getNumberOfRows() * 40),
+        gantt: {
+          trackHeight: 30
+        }
       });
+      console.log('✅ Gantt med testdata renderad!');
+    } catch (err) {
+      console.error('❌ Google Charts error:', err);
     }
-  </script>
-</body>
-</html>
+  }
+</script>
