@@ -3,70 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ganttschema Handboll</title>
+  <title>Testa Gantt – Felsökning</title>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0 auto;
-      max-width: 1200px;
-      padding: 2rem;
-    }
-    #chart_div {
-      margin-top: 2rem;
-    }
-    #type-filter-wrapper {
-      margin-bottom: 1rem;
-    }
-    select {
-      padding: 5px;
-      font-size: 1rem;
-    }
-  </style>
 </head>
 <body>
-  <h1>Ganttschema – Handbollssäsong</h1>
-  <div id="type-filter-wrapper">
-    <label for="type-filter">Typ av händelse:</label>
-    <select id="type-filter">
-      <option value="">Alla typer</option>
-    </select>
-  </div>
-  <div id="chart_div"></div>
+  <h1>Test Gantt</h1>
+  <div id="chart_div" style="margin-top: 2rem;"></div>
 
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
-    function getCurrentSeason() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth() + 1;
-      if (year === 2025 && month >= 5) return '2025-2026';
-      return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    function extractDateOnly(str) {
+      const match = str?.match(/^(\d{4}-\d{2}-\d{2})/);
+      return match ? new Date(match[1]) : null;
     }
 
-    function extractDateOnly(dateStr) {
-      if (!dateStr) return null;
-      const match = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
-      if (!match) {
-        console.warn('❌ Ogiltigt datumformat:', dateStr);
-        return null;
-      }
-      const d = new Date(match[1]);
-      if (isNaN(d)) console.warn('❌ Datum kunde inte tolkas:', match[1]);
-      return d;
-    }
-
-    const colorMap = {
-      'Cup': '#4CAF50',
-      'USM': '#2196F3',
-      'Träningsmatch': '#FF9800',
-      'Seriematcher': '#9C27B0',
-      'Övrigt': '#9E9E9E'
-    };
-
-    google.charts.load('current', {'packages':['gantt']});
+    google.charts.load('current', { packages: ['gantt'] });
     google.charts.setOnLoadCallback(loadAndDraw);
 
     function loadAndDraw() {
@@ -74,86 +27,70 @@
         download: true,
         header: true,
         complete: function(results) {
-          console.log('✅ Data laddad:', results.data);
-          const currentSeason = getCurrentSeason();
-          const allData = results.data.filter(e => e['Säsong'] === currentSeason);
-          console.log('🔎 Filtrerad för säsong:', currentSeason, '→', allData.length, 'rader');
+          const all = results.data.filter(e => e['Säsong'] === '2025-2026').slice(0, 3);
+          console.log('🔍 Testdata:', all);
 
-          const types = [...new Set(allData.map(e => e['Typ av händelse']).filter(Boolean))].sort();
-          const filterSelect = document.getElementById('type-filter');
+          const dataTable = new google.visualization.DataTable();
+          dataTable.addColumn('string', 'Task ID');
+          dataTable.addColumn('string', 'Händelse');
+          dataTable.addColumn('string', 'Typ');
+          dataTable.addColumn('date', 'Start');
+          dataTable.addColumn('date', 'End');
+          dataTable.addColumn('number', 'Duration');
+          dataTable.addColumn('number', 'Progress');
+          dataTable.addColumn('string', 'Resurs');
+          dataTable.addColumn({ type: 'string', role: 'style' });
 
-          types.forEach(type => {
-            const opt = document.createElement('option');
-            opt.value = type;
-            opt.textContent = type;
-            filterSelect.appendChild(opt);
+          let counter = 1;
+
+          all.forEach(e => {
+            const id = 'task-' + counter++;
+            const namn = e['Namn på händelse']?.trim() || 'Okänd';
+            const typ = e['Typ av händelse']?.trim() || 'Övrigt';
+            const start = extractDateOnly(e['Datum från']);
+            const end = extractDateOnly(e['Datum till']);
+            const färg = {
+              'Cup': '#4CAF50',
+              'USM': '#2196F3',
+              'Seriematcher': '#9C27B0',
+              'Träningsmatch': '#FF9800',
+              'Övrigt': '#9E9E9E'
+            }[typ] || '#757575';
+
+            if (!start || !end || isNaN(start) || isNaN(end)) {
+              console.warn('⛔ Ogiltigt datum i rad:', e);
+              return;
+            }
+
+            if (!namn || !typ) {
+              console.warn('⚠️ Saknad textinfo i rad:', e);
+            }
+
+            dataTable.addRow([
+              id,
+              namn,
+              typ,
+              start,
+              end,
+              null,
+              100,
+              typ,
+              färg
+            ]);
           });
 
-          filterSelect.addEventListener('change', () => drawChart(allData, filterSelect.value));
-          drawChart(allData, filterSelect.value);
-        },
-        error: function(err) {
-          console.error('❌ Fel vid inläsning:', err);
+          const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+          try {
+            chart.draw(dataTable, {
+              height: 400 + dataTable.getNumberOfRows() * 30,
+              gantt: { trackHeight: 30 }
+            });
+            console.log('✅ Gantt renderad!');
+          } catch (err) {
+            console.error('❌ Fel vid draw():', err);
+          }
         }
       });
-    }
-
-    function drawChart(dataRows, selectedType) {
-      const dataTable = new google.visualization.DataTable();
-
-      dataTable.addColumn('string', 'Task ID');
-      dataTable.addColumn('string', 'Händelse');
-      dataTable.addColumn('string', 'Typ');
-      dataTable.addColumn('date', 'Startdatum');
-      dataTable.addColumn('date', 'Slutdatum');
-      dataTable.addColumn('number', 'Duration');
-      dataTable.addColumn('number', 'Progress');
-      dataTable.addColumn('string', 'Resurs');
-      dataTable.addColumn({ type: 'string', role: 'style' });
-
-      let counter = 1;
-      let addedRows = 0;
-
-      dataRows.forEach(e => {
-        if (selectedType && e['Typ av händelse'] !== selectedType) return;
-
-        const start = extractDateOnly(e['Datum från']);
-        const end = extractDateOnly(e['Datum till']);
-
-        if (!(start instanceof Date) || isNaN(start) || !(end instanceof Date) || isNaN(end)) {
-          console.warn('⛔️ Skippad rad pga ogiltiga datum:', e);
-          return;
-        }
-
-        const typ = e['Typ av händelse'] || 'Övrigt';
-        const color = colorMap[typ] || '#757575';
-
-        dataTable.addRow([
-          'task-' + counter++,
-          e['Namn på händelse'],
-          typ,
-          start,
-          end,
-          null,
-          100,
-          typ,
-          color
-        ]);
-        addedRows++;
-      });
-
-      console.log('✅ Rader i tabell:', addedRows);
-
-      const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-
-      try {
-        chart.draw(dataTable, {
-          height: 400 + dataTable.getNumberOfRows() * 30,
-          gantt: { trackHeight: 30 }
-        });
-      } catch (err) {
-        console.error('❌ Fel vid renderingen av Gantt:', err);
-      }
     }
   </script>
 </body>
