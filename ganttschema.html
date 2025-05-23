@@ -63,82 +63,86 @@
   <div id="gantt"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
+  <script src="https://unpkg.com/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
   <script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
-    let gantt;
+    document.addEventListener("DOMContentLoaded", function () {
+      const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+      let gantt;
 
-    function setView(mode) {
-      if (gantt) gantt.change_view_mode(mode);
-    }
+      function setView(mode) {
+        if (gantt) gantt.change_view_mode(mode);
+      }
 
-    function extractDateOnly(str) {
-      if (!str) return null;
-      const cleaned = str.trim();
-      const match = cleaned.match(/\d{4}-\d{2}-\d{2}/);
-      const result = match ? match[0] : null;
-      console.log(`extractDateOnly() input: '${str}' → cleaned: '${cleaned}' → result: '${result}'`);
-      return result;
-    }
+      window.setView = setView;
 
-    fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(csv => {
-        Papa.parse(csv, {
-          header: true,
-          skipEmptyLines: true,
-          complete: results => {
-            const events = results.data;
-            const tasks = events.map((e, i) => {
-              const startStr = extractDateOnly(e['Datum från']);
-              const endStr = extractDateOnly(e['Datum till']) || startStr;
+      function extractDateOnly(str) {
+        if (!str) return null;
+        const cleaned = str.trim();
+        const match = cleaned.match(/\d{4}-\d{2}-\d{2}/);
+        const result = match ? match[0] : null;
+        console.log(`extractDateOnly() input: '${str}' → cleaned: '${cleaned}' → result: '${result}'`);
+        return result;
+      }
 
-              const startDate = new Date(startStr);
-              const endDate = new Date(endStr);
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(csv => {
+          Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true,
+            complete: results => {
+              const events = results.data;
+              const tasks = events.map((e, i) => {
+                const startStr = extractDateOnly(e['Datum från']);
+                const endStr = extractDateOnly(e['Datum till']) || startStr;
 
-              if (isNaN(startDate) || isNaN(endDate)) {
-                console.warn(`⛔ Ogiltigt datum i rad ${i}:`, {
-                  startStr,
-                  endStr,
-                  startDate,
-                  endDate,
-                  originalRow: e
+                const startDate = new Date(startStr);
+                const endDate = new Date(endStr);
+
+                if (isNaN(startDate) || isNaN(endDate)) {
+                  console.warn(`⛔ Ogiltigt datum i rad ${i}:`, {
+                    startStr,
+                    endStr,
+                    startDate,
+                    endDate,
+                    originalRow: e
+                  });
+                  return null;
+                }
+
+                const task = {
+                  id: `event-${i}`,
+                  name: e['Namn på händelse'] || 'Händelse',
+                  start: startDate.toISOString().split('T')[0],
+                  end: endDate.toISOString().split('T')[0],
+                  progress: 100,
+                  custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
+                };
+
+                console.group(`📦 Task ${i}`);
+                Object.entries(task).forEach(([key, val]) => {
+                  console.log(`${key} (${typeof val}):`, val);
                 });
-                return null;
+                console.groupEnd();
+
+                return task;
+              }).filter(Boolean);
+
+              console.log('✅ Alla tasks till Gantt:', tasks);
+
+              if (tasks.length === 0) {
+                document.getElementById('gantt').innerHTML = '<p>Inga giltiga händelser att visa.</p>';
+                return;
               }
 
-              const task = {
-                id: `event-${i}`,
-                name: e['Namn på händelse'] || 'Händelse',
-                start: startDate.toISOString().split('T')[0],
-                end: endDate.toISOString().split('T')[0],
-                progress: 100,
-                custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
-              };
-
-              console.group(`📦 Task ${i}`);
-              Object.entries(task).forEach(([key, val]) => {
-                console.log(`${key} (${typeof val}):`, val);
+              gantt = new Gantt("#gantt", tasks, {
+                view_mode: 'Month',
+                language: 'sv'
               });
-              console.groupEnd();
-
-              return task;
-            }).filter(Boolean);
-
-            console.log('✅ Alla tasks till Gantt:', tasks);
-
-            if (tasks.length === 0) {
-              document.getElementById('gantt').innerHTML = '<p>Inga giltiga händelser att visa.</p>';
-              return;
             }
-
-            gantt = new Gantt("#gantt", tasks, {
-              view_mode: 'Month',
-              language: 'sv'
-            });
-          }
+          });
         });
-      });
+    });
   </script>
 </body>
 </html>
