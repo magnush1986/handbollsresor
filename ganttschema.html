@@ -15,6 +15,7 @@
     }
     #gantt {
       overflow-x: auto;
+      min-height: 500px;
     }
     h1 {
       text-align: left;
@@ -47,6 +48,9 @@
     .event-type-träning .bar {
       fill: #2E8B57 !important;
     }
+    .event-type-\u00f6vrigt .bar {
+      fill: #8B8B8B !important;
+    }
   </style>
 </head>
 <body>
@@ -77,18 +81,24 @@
           complete: results => {
             const events = results.data;
             const tasks = events.map((e, i) => {
-              const start = e['Datum från']?.trim();
-              const end = e['Datum till']?.trim() || start;
-              if (!start) return null;
+              const rawStart = e['Datum från']?.trim();
+              const rawEnd = e['Datum till']?.trim();
+              if (!rawStart) return null;
+              const start = new Date(rawStart);
+              const end = rawEnd ? new Date(rawEnd) : new Date(rawStart);
+              if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+
               return {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start,
-                end,
+                start: start.toISOString().slice(0, 10),
+                end: end.toISOString().slice(0, 10),
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
             }).filter(Boolean);
+
+            console.log('Tasks:', tasks);
 
             gantt = new Gantt("#gantt", tasks, {
               view_mode: 'Month',
