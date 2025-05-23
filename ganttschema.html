@@ -30,84 +30,64 @@
     google.charts.setOnLoadCallback(loadAndDraw);
 
     function loadAndDraw() {
-      Papa.parse(SHEET_URL, {
-        download: true,
-        header: true,
-        complete: function(results) {
-          const all = results.data.filter(e => e['Säsong'] === '2025-2026').slice(0, 3);
-          console.log('🔍 Testdata:', all);
+  const testData = [
+    {
+      id: 'task-1',
+      namn: 'Testcup',
+      typ: 'Cup',
+      start: new Date('2025-09-12'),
+      end: new Date('2025-09-14'),
+      färg: '#4CAF50'
+    },
+    {
+      id: 'task-2',
+      namn: 'USM Steg 1',
+      typ: 'USM',
+      start: new Date('2025-10-18'),
+      end: new Date('2025-10-19'),
+      färg: '#2196F3'
+    }
+  ];
 
-          const dataTable = new google.visualization.DataTable();
-          dataTable.addColumn('string', 'Task ID');
-          dataTable.addColumn('string', 'Händelse');
-          dataTable.addColumn('string', 'Typ');
-          dataTable.addColumn('date', 'Start');
-          dataTable.addColumn('date', 'End');
-          dataTable.addColumn('number', 'Duration');
-          dataTable.addColumn('number', 'Progress');
-          dataTable.addColumn('string', 'Resurs');
-          dataTable.addColumn({ type: 'string', role: 'style' });
+  const dataTable = new google.visualization.DataTable();
+  dataTable.addColumn('string', 'Task ID');
+  dataTable.addColumn('string', 'Händelse');
+  dataTable.addColumn('string', 'Typ');
+  dataTable.addColumn('date', 'Start');
+  dataTable.addColumn('date', 'End');
+  dataTable.addColumn('number', 'Duration');
+  dataTable.addColumn('number', 'Progress');
+  dataTable.addColumn('string', 'Resurs');
+  dataTable.addColumn({ type: 'string', role: 'style' });
 
-          let counter = 1;
+  testData.forEach(row => {
+    dataTable.addRow([
+      row.id,
+      row.namn,
+      row.typ,
+      row.start,
+      row.end,
+      null,
+      100,
+      row.typ,
+      row.färg
+    ]);
+  });
 
-          all.forEach(e => {
-            const id = 'task-' + counter++;
-            const namn = e['Namn på händelse']?.trim() || 'Okänd';
-            const typ = e['Typ av händelse']?.trim() || 'Övrigt';
-            const start = extractDateOnly(e['Datum från']);
-            const end = extractDateOnly(e['Datum till']);
-            const färg = {
-              'Cup': '#4CAF50',
-              'USM': '#2196F3',
-              'Seriematcher': '#9C27B0',
-              'Träningsmatch': '#FF9800',
-              'Övrigt': '#9E9E9E'
-            }[typ] || '#757575';
+  const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+  try {
+    chart.draw(dataTable, {
+      height: Math.max(600, dataTable.getNumberOfRows() * 40),
+      gantt: {
+        trackHeight: 30
+      }
+    });
+    console.log('✅ Gantt med testdata renderad!');
+  } catch (err) {
+    console.error('❌ Google Charts error:', err);
+  }
+}
 
-            if (!start || !end || isNaN(start) || isNaN(end)) {
-              console.warn('⛔ Ogiltigt datum i rad:', e);
-              return;
-            }
-
-            dataTable.addRow([
-              id,
-              namn,
-              typ,
-              start,
-              end,
-              null,
-              100,
-              typ,
-              färg
-            ]);
-          });
-
-          // Lägg till dummy-rad för att bredda axel
-          dataTable.addRow([
-            'padding',
-            'Start av säsong',
-            'Dummy',
-            new Date('2025-07-01'),
-            new Date('2025-07-03'),
-            null,
-            0,
-            'Dummy',
-            '#FFFFFF'
-          ]);
-
-          const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-          try {
-            chart.draw(dataTable, {
-              height: Math.max(600, dataTable.getNumberOfRows() * 40),
-              gantt: {
-                trackHeight: 30
-              }
-            });
-            console.log('✅ Gantt renderad!');
-          } catch (err) {
-            console.error('❌ Fel vid draw():', err);
-          }
-        }
       });
     }
   </script>
