@@ -96,14 +96,19 @@
               const startDate = new Date(startStr);
               const endDate = new Date(endStr);
 
-              if (isNaN(startDate) || isNaN(endDate)) {
-                console.warn(`Ogiltigt datum i rad ${i}:`, e);
+              if (!(startDate instanceof Date) || isNaN(startDate.getTime()) ||
+                  !(endDate instanceof Date) || isNaN(endDate.getTime())) {
+                console.warn(`⛔ Ogiltigt datum i rad ${i}:`, {
+                  startStr,
+                  endStr,
+                  startDate,
+                  endDate,
+                  originalRow: e
+                });
                 return null;
               }
 
-              console.log(`Event ${i}: startStr = '${startStr}', endStr = '${endStr}' → startDate =`, startDate, ', endDate =', endDate);
-
-              return {
+              const task = {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
                 start: startDate,
@@ -111,9 +116,12 @@
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
+
+              console.log(`✅ Task ${i} skickas vidare:`, task);
+              return task;
             }).filter(Boolean);
 
-            console.log('Tasks:', tasks);
+            console.log('✅ Alla tasks till Gantt:', tasks);
 
             if (tasks.length === 0) {
               document.getElementById('gantt').innerHTML = '<p>Inga giltiga händelser att visa.</p>';
