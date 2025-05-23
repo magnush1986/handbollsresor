@@ -96,8 +96,7 @@
               const startDate = new Date(startStr);
               const endDate = new Date(endStr);
 
-              if (!(startDate instanceof Date) || isNaN(startDate.getTime()) ||
-                  !(endDate instanceof Date) || isNaN(endDate.getTime())) {
+              if (isNaN(startDate) || isNaN(endDate)) {
                 console.warn(`⛔ Ogiltigt datum i rad ${i}:`, {
                   startStr,
                   endStr,
@@ -111,8 +110,8 @@
               const task = {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start: startDate,
-                end: endDate,
+                start: startDate.toISOString().split('T')[0],
+                end: endDate.toISOString().split('T')[0],
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
