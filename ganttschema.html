@@ -47,15 +47,15 @@
 
     function extractDateOnly(dateStr) {
       if (!dateStr) return null;
-      const cleaned = dateStr.trim().slice(0, 10);
-      return new Date(cleaned);
+      const match = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
+      return match ? new Date(match[1]) : null;
     }
 
     const colorMap = {
       'Cup': '#4CAF50',
       'USM': '#2196F3',
       'Träningsmatch': '#FF9800',
-      'Seriematch': '#9C27B0',
+      'Seriematcher': '#9C27B0',
       'Övrigt': '#9E9E9E'
     };
 
@@ -81,7 +81,6 @@
           });
 
           filterSelect.addEventListener('change', () => drawChart(allData, filterSelect.value));
-
           drawChart(allData, filterSelect.value);
         }
       });
@@ -98,7 +97,7 @@
       dataTable.addColumn('number', 'Duration');
       dataTable.addColumn('number', 'Progress');
       dataTable.addColumn('string', 'Resurs');
-      dataTable.addColumn({ type: 'string', role: 'style' }); // för färg
+      dataTable.addColumn({ type: 'string', role: 'style' });
 
       let counter = 1;
       dataRows.forEach(e => {
@@ -106,7 +105,7 @@
 
         const start = extractDateOnly(e['Datum från']);
         const end = extractDateOnly(e['Datum till']);
-        if (!start || !end) return;
+        if (!(start instanceof Date) || isNaN(start) || !(end instanceof Date) || isNaN(end)) return;
 
         const typ = e['Typ av händelse'] || 'Övrigt';
         const color = colorMap[typ] || '#757575';
