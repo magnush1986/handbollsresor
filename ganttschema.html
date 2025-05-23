@@ -15,66 +15,120 @@
     #chart_div {
       margin-top: 2rem;
     }
+    #type-filter-wrapper {
+      margin-bottom: 1rem;
+    }
+    select {
+      padding: 5px;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>Ganttschema – Handbollssäsong</h1>
+  <div id="type-filter-wrapper">
+    <label for="type-filter">Typ av händelse:</label>
+    <select id="type-filter">
+      <option value="">Alla typer</option>
+    </select>
+  </div>
   <div id="chart_div"></div>
 
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
-    google.charts.load('current', {'packages':['gantt']});
-    google.charts.setOnLoadCallback(loadAndDraw);
+    function getCurrentSeason() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      if (year === 2025 && month >= 5) return '2025-2026';
+      return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    }
 
     function extractDateOnly(dateStr) {
       if (!dateStr) return null;
-      const cleaned = dateStr.trim().slice(0, 10); // Tar YYYY-MM-DD
+      const cleaned = dateStr.trim().slice(0, 10);
       return new Date(cleaned);
     }
+
+    const colorMap = {
+      'Cup': '#4CAF50',
+      'USM': '#2196F3',
+      'Träningsmatch': '#FF9800',
+      'Seriematch': '#9C27B0',
+      'Övrigt': '#9E9E9E'
+    };
+
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(loadAndDraw);
 
     function loadAndDraw() {
       Papa.parse(SHEET_URL, {
         download: true,
         header: true,
         complete: function(results) {
-          const rawData = results.data;
-          const dataTable = new google.visualization.DataTable();
+          const currentSeason = getCurrentSeason();
+          const allData = results.data.filter(e => e['Säsong'] === currentSeason);
+          const types = [...new Set(allData.map(e => e['Typ av händelse']).filter(Boolean))].sort();
 
-          dataTable.addColumn('string', 'Task ID');
-          dataTable.addColumn('string', 'Händelse');
-          dataTable.addColumn('string', 'Typ');
-          dataTable.addColumn('date', 'Startdatum');
-          dataTable.addColumn('date', 'Slutdatum');
-          dataTable.addColumn('number', 'Duration');
-          dataTable.addColumn('number', 'Progress');
-          dataTable.addColumn('string', 'Resurs');
-
-          let counter = 1;
-          rawData.forEach(e => {
-            const start = extractDateOnly(e['Datum från']);
-            const end = extractDateOnly(e['Datum till']);
-            if (!start || !end) return;
-
-            dataTable.addRow([
-              'task-' + counter++,
-              e['Namn på händelse'],
-              e['Typ av händelse'],
-              start,
-              end,
-              null,
-              100,
-              e['Typ av händelse']
-            ]);
+          // Fyll filter-dropdown
+          const filterSelect = document.getElementById('type-filter');
+          types.forEach(type => {
+            const opt = document.createElement('option');
+            opt.value = type;
+            opt.textContent = type;
+            filterSelect.appendChild(opt);
           });
 
-          const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-          chart.draw(dataTable, {
-            height: 400 + rawData.length * 30,
-            gantt: {
-              trackHeight: 30
-            }
-          });
+          filterSelect.addEventListener('change', () => drawChart(allData, filterSelect.value));
+
+          drawChart(allData, filterSelect.value);
+        }
+      });
+    }
+
+    function drawChart(dataRows, selectedType) {
+      const dataTable = new google.visualization.DataTable();
+
+      dataTable.addColumn('string', 'Task ID');
+      dataTable.addColumn('string', 'Händelse');
+      dataTable.addColumn('string', 'Typ');
+      dataTable.addColumn('date', 'Startdatum');
+      dataTable.addColumn('date', 'Slutdatum');
+      dataTable.addColumn('number', 'Duration');
+      dataTable.addColumn('number', 'Progress');
+      dataTable.addColumn('string', 'Resurs');
+      dataTable.addColumn({ type: 'string', role: 'style' }); // för färg
+
+      let counter = 1;
+      dataRows.forEach(e => {
+        if (selectedType && e['Typ av händelse'] !== selectedType) return;
+
+        const start = extractDateOnly(e['Datum från']);
+        const end = extractDateOnly(e['Datum till']);
+        if (!start || !end) return;
+
+        const typ = e['Typ av händelse'] || 'Övrigt';
+        const color = colorMap[typ] || '#757575';
+
+        dataTable.addRow([
+          'task-' + counter++,
+          e['Namn på händelse'],
+          typ,
+          start,
+          end,
+          null,
+          100,
+          typ,
+          color
+        ]);
+      });
+
+      const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+      chart.draw(dataTable, {
+        height: 400 + dataTable.getNumberOfRows() * 30,
+        gantt: {
+          trackHeight: 30
         }
       });
     }
