@@ -74,8 +74,11 @@
 
     function extractDateOnly(str) {
       if (!str) return null;
-      const match = str.trim().match(/\d{4}-\d{2}-\d{2}/);
-      return match ? match[0] : null;
+      const cleaned = str.trim();
+      const match = cleaned.match(/\d{4}-\d{2}-\d{2}/);
+      const result = match ? match[0] : null;
+      console.log(`extractDateOnly() input: '${str}' → cleaned: '${cleaned}' → result: '${result}'`);
+      return result;
     }
 
     fetch(SHEET_URL)
@@ -89,13 +92,22 @@
             const tasks = events.map((e, i) => {
               const startStr = extractDateOnly(e['Datum från']);
               const endStr = extractDateOnly(e['Datum till']) || startStr;
-              if (!startStr || !endStr) return null;
+
+              const startDate = new Date(startStr);
+              const endDate = new Date(endStr);
+
+              if (isNaN(startDate) || isNaN(endDate)) {
+                console.warn(`Ogiltigt datum i rad ${i}:`, e);
+                return null;
+              }
+
+              console.log(`Event ${i}: startStr = '${startStr}', endStr = '${endStr}' → startDate =`, startDate, ', endDate =', endDate);
 
               return {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start: new Date(startStr),
-                end: new Date(endStr),
+                start: startDate,
+                end: endDate,
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
