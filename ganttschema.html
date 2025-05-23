@@ -6,10 +6,17 @@
   <title>Testa Gantt – Felsökning</title>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    #chart_div {
+      margin-top: 2rem;
+      height: 600px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
   <h1>Test Gantt</h1>
-  <div id="chart_div" style="margin-top: 2rem;"></div>
+  <div id="chart_div"></div>
 
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
@@ -62,10 +69,6 @@
               return;
             }
 
-            if (!namn || !typ) {
-              console.warn('⚠️ Saknad textinfo i rad:', e);
-            }
-
             dataTable.addRow([
               id,
               namn,
@@ -79,11 +82,26 @@
             ]);
           });
 
+          // Lägg till dummy-rad för att bredda axel
+          dataTable.addRow([
+            'padding',
+            'Start av säsong',
+            'Dummy',
+            new Date('2025-07-01'),
+            new Date('2025-07-03'),
+            null,
+            0,
+            'Dummy',
+            '#FFFFFF'
+          ]);
+
           const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
           try {
             chart.draw(dataTable, {
-              height: 400 + dataTable.getNumberOfRows() * 30,
-              gantt: { trackHeight: 30 }
+              height: Math.max(600, dataTable.getNumberOfRows() * 40),
+              gantt: {
+                trackHeight: 30
+              }
             });
             console.log('✅ Gantt renderad!');
           } catch (err) {
