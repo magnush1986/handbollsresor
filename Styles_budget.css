@@ -98,21 +98,28 @@ h1#page-title {
 
 .budget-summary .summary-block {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
-.budget-summary .budget-label {
+.budget-summary .summary-block .row-1 {
+  display: flex;
+  align-items: baseline;
+}
+
+.budget-summary .summary-block .summary-icon {
+  width: 1.3rem;
+  display: inline-block;
+}
+
+.budget-summary .summary-block .budget-label {
   font-weight: bold;
 }
 
-.budget-summary .budget-value {
-  white-space: nowrap;
-  font-weight: bold;
-  font-size: 1rem;
+.budget-summary .summary-block .budget-value {
+  padding-left: 1.3rem;
+  font-weight: normal;
+  font-size: 0.95rem;
 }
 
 .budget-inner-table {
@@ -218,44 +225,13 @@ h1#page-title {
   }
 
   .budget-summary {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: 0.6rem;
+    flex-direction: row;
+    align-items: flex-start;
     padding: 0.6rem 0.8rem;
   }
 
-  .budget-summary .toggle-icon {
-    grid-row: span 2;
-    font-size: 1.3rem;
-    margin-top: 0.2rem;
-    line-height: 1;
-  }
-
-  .summary-block {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .summary-block .row-1 {
-    display: flex;
-    align-items: center;
-  }
-
-  .summary-block .summary-icon {
-    display: inline-block;
-    width: 1.5rem;
-  }
-
-  .summary-block .budget-label {
-    font-weight: bold;
-  }
-
-  .summary-block .budget-value {
-    padding-left: 1.5rem;
-    margin-top: 0.1rem;
-    font-size: 0.95rem;
-    font-weight: normal;
+  .budget-summary .summary-block {
+    flex: 1;
   }
 
   .budget-inner-table thead {
