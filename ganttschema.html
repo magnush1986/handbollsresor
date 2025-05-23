@@ -84,21 +84,31 @@
               const rawStart = e['Datum från']?.trim();
               const rawEnd = e['Datum till']?.trim();
               if (!rawStart) return null;
-              const start = new Date(rawStart);
-              const end = rawEnd ? new Date(rawEnd) : new Date(rawStart);
-              if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+
+              const startDate = new Date(rawStart);
+              const endDate = rawEnd ? new Date(rawEnd) : new Date(rawStart);
+
+              if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return null;
+
+              const start = startDate.toISOString().split('T')[0];
+              const end = endDate.toISOString().split('T')[0];
 
               return {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start: start.toISOString().slice(0, 10),
-                end: end.toISOString().slice(0, 10),
+                start: start,
+                end: end,
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
             }).filter(Boolean);
 
             console.log('Tasks:', tasks);
+
+            if (tasks.length === 0) {
+              document.getElementById('gantt').innerHTML = '<p>Inga giltiga händelser att visa.</p>';
+              return;
+            }
 
             gantt = new Gantt("#gantt", tasks, {
               view_mode: 'Month',
