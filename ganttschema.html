@@ -116,7 +116,12 @@
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
 
-              console.log(`✅ Task ${i} skickas vidare:`, task);
+              console.group(`📦 Task ${i}`);
+              Object.entries(task).forEach(([key, val]) => {
+                console.log(`${key} (${typeof val}):`, val);
+              });
+              console.groupEnd();
+
               return task;
             }).filter(Boolean);
 
