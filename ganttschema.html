@@ -72,6 +72,12 @@
       if (gantt) gantt.change_view_mode(mode);
     }
 
+    function extractDateOnly(str) {
+      if (!str) return null;
+      const match = str.trim().match(/^\d{4}-\d{2}-\d{2}/);
+      return match ? match[0] : null;
+    }
+
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(csv => {
@@ -81,23 +87,15 @@
           complete: results => {
             const events = results.data;
             const tasks = events.map((e, i) => {
-              const rawStart = e['Datum från']?.trim();
-              const rawEnd = e['Datum till']?.trim();
-              if (!rawStart) return null;
-
-              const startDate = new Date(rawStart);
-              const endDate = rawEnd ? new Date(rawEnd) : new Date(rawStart);
-
-              if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return null;
-
-              const start = startDate.toISOString().split('T')[0];
-              const end = endDate.toISOString().split('T')[0];
+              const startStr = extractDateOnly(e['Datum från']);
+              const endStr = extractDateOnly(e['Datum till']) || startStr;
+              if (!startStr || !endStr) return null;
 
               return {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start: start,
-                end: end,
+                start: startStr,
+                end: endStr,
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
