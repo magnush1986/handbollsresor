@@ -3,122 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Felsök Gantt</title>
+  <title>Ren Gantt</title>
   <style>
-    #chart_div {
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    .timeline {
+      position: relative;
+      border-top: 2px solid #333;
       margin-top: 2rem;
-      height: 600px;
-      border: 1px solid #ccc;
+      height: 200px;
+      overflow-x: scroll;
+      white-space: nowrap;
+    }
+    .event {
+      position: absolute;
+      top: 20px;
+      height: 40px;
+      background: #4CAF50;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+      padding-top: 10px;
+      font-size: 0.9rem;
+      overflow: hidden;
+    }
+    .date-labels {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 20px;
+      font-size: 0.8rem;
+    }
+    .date-labels div {
+      display: inline-block;
+      width: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Test Gantt med felsökning</h1>
-  <div id="chart_div"></div>
+  <h1>Ganttschema (ren HTML/JS)</h1>
+  <div id="timeline" class="timeline"></div>
 
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
-    google.charts.load('current', { packages: ['gantt'] });
-    google.charts.setOnLoadCallback(drawGantt);
+    const timeline = document.getElementById('timeline');
 
-    function drawGantt() {
-      const testData = [
-        {
-          id: 'task-1',
-          namn: 'Testcup',
-          typ: 'Cup',
-          start: '2025-09-12',
-          end: '2025-09-14',
-          färg: '#4CAF50'
-        },
-        {
-          id: 'task-2',
-          namn: 'USM Steg 1',
-          typ: 'USM',
-          start: '2025-10-18',
-          end: '2025-10-18', // exakt samma datum
-          färg: '#2196F3'
-        },
-        {
-          id: 'task-3',
-          namn: 'Padding',
-          typ: 'Dummy',
-          start: '2025-07-01',
-          end: '2025-07-10',
-          färg: '#FFFFFF'
-        }
-      ];
+    // Konfigurera datumintervall
+    const startDate = new Date('2025-07-01');
+    const endDate = new Date('2025-10-31');
+    const dayMs = 24 * 60 * 60 * 1000;
+    const totalDays = Math.ceil((endDate - startDate) / dayMs);
 
-      const dataTable = new google.visualization.DataTable();
-      dataTable.addColumn('string', 'Task ID');
-      dataTable.addColumn('string', 'Händelse');
-      dataTable.addColumn('string', 'Typ');
-      dataTable.addColumn('date', 'Start');
-      dataTable.addColumn('date', 'End');
-      dataTable.addColumn('number', 'Duration');
-      dataTable.addColumn('number', 'Progress');
-      dataTable.addColumn('string', 'Resurs');
-      dataTable.addColumn({ type: 'string', role: 'style' });
-
-      testData.forEach((row, i) => {
-        const start = new Date(row.start);
-        const end = new Date(row.end);
-
-        if (!(start instanceof Date) || isNaN(start)) {
-          console.warn(`⛔ Ogiltigt startdatum i rad ${i}:`, row.start);
-          return;
-        }
-
-        let safeEnd = end instanceof Date && !isNaN(end) ? end : null;
-
-        let duration = null;
-
-        if (safeEnd) {
-          const msDiff = safeEnd.getTime() - start.getTime();
-          if (msDiff < 24 * 60 * 60 * 1000) {
-            // för kort → byt till duration
-            console.warn(`⚠️ Kort spann i rad ${i}, använder duration i stället:`, msDiff, 'ms');
-            duration = 2 * 24 * 60 * 60 * 1000; // 2 dagar
-            safeEnd = null;
-          }
-        } else {
-          duration = 3 * 24 * 60 * 60 * 1000; // fallback 3 dagar
-        }
-
-        console.log(`✅ Lägger till rad ${i}:`, {
-          id: row.id,
-          namn: row.namn,
-          start,
-          end: safeEnd,
-          duration
-        });
-
-        dataTable.addRow([
-          row.id,
-          row.namn,
-          row.typ,
-          start,
-          safeEnd,
-          duration,
-          100,
-          row.typ,
-          row.färg
-        ]);
-      });
-
-      const chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-      try {
-        chart.draw(dataTable, {
-          height: Math.max(600, dataTable.getNumberOfRows() * 40),
-          gantt: {
-            trackHeight: 30
-          }
-        });
-        console.log('✅ Gantt renderad utan krascher!');
-      } catch (err) {
-        console.error('❌ Google Charts Gantt fel:', err);
-      }
+    // Lägg till datumetiketter
+    const labels = document.createElement('div');
+    labels.className = 'date-labels';
+    for (let i = 0; i <= totalDays; i++) {
+      const label = document.createElement('div');
+      label.style.left = `${i * 20}px`;
+      label.style.width = '20px';
+      const date = new Date(startDate.getTime() + i * dayMs);
+      label.innerText = date.getDate();
+      labels.appendChild(label);
     }
+    timeline.appendChild(labels);
+
+    // Händelser att visa
+    const events = [
+      {
+        namn: 'Örebrocupen',
+        från: '2025-09-12',
+        till: '2025-09-14',
+        färg: '#4CAF50'
+      },
+      {
+        namn: 'USM Steg 1',
+        från: '2025-10-18',
+        till: '2025-10-19',
+        färg: '#2196F3'
+      },
+      {
+        namn: 'Eken Cup',
+        från: '2025-08-15',
+        till: '2025-08-20',
+        färg: '#FF9800'
+      }
+    ];
+
+    events.forEach((e, index) => {
+      const from = new Date(e.från);
+      const to = new Date(e.till);
+      const offset = Math.floor((from - startDate) / dayMs);
+      const width = Math.max(1, Math.ceil((to - from) / dayMs) + 1);
+
+      const div = document.createElement('div');
+      div.className = 'event';
+      div.innerText = e.namn;
+      div.style.left = `${offset * 20}px`;
+      div.style.width = `${width * 20}px`;
+      div.style.top = `${50 + index * 50}px`;
+      div.style.background = e.färg;
+
+      timeline.appendChild(div);
+    });
   </script>
 </body>
 </html>
