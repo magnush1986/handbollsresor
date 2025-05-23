@@ -60,51 +60,12 @@ h1#page-title {
   transition: background-color 0.2s ease;
 }
 
-.nav-links li a:hover {
-  background-color: #148424;
-  color: white;
-}
-
+.nav-links li a:hover,
 .nav-links li a.active {
   background-color: #148424;
   color: white;
   font-weight: bold;
   border-bottom: 2px solid white;
-}
-
-/* === Responsiv meny === */
-@media (max-width: 600px) {
-  .menu-toggle {
-    display: block;
-  }
-
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.97);
-    position: absolute;
-    top: 40px;
-    right: 0;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    min-width: 140px;
-    z-index: 100;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .nav-links li {
-    margin: 0.4rem 0;
-  }
-
-  .nav-links li a {
-    padding: 0.6rem 1rem;
-    display: block;
-    font-size: 1rem;
-  }
 }
 
 /* === Budgetspecifik layout === */
@@ -137,21 +98,29 @@ h1#page-title {
 
 .budget-summary .summary-block {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
-  gap: 1rem;
 }
 
-.budget-summary .budget-label {
+.summary-block .row-1 {
+  display: flex;
+  align-items: center;
+}
+
+.summary-block .summary-icon {
+  display: inline-block;
+  width: 1.5rem;
+}
+
+.summary-block .budget-label {
   font-weight: bold;
 }
 
-.budget-summary .budget-value {
-  white-space: nowrap;
-  font-weight: bold;
-  font-size: 1rem;
+.summary-block .budget-value {
+  padding-left: 1.5rem;
+  margin-top: 0.1rem;
+  font-size: 0.95rem;
+  font-weight: normal;
 }
 
 .budget-inner-table {
@@ -188,63 +157,6 @@ h1#page-title {
   font-weight: bold;
 }
 
-/* Mobilanpassning för budget */
-@media (max-width: 600px) {
-  .budget-summary {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: 0.6rem;
-  }
-
-  .budget-summary .toggle-icon {
-    grid-row: span 2;
-    font-size: 1.3rem;
-    margin-top: 0.2rem;
-  }
-
-  .budget-summary .summary-block {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .budget-summary .budget-label {
-    font-weight: bold;
-  }
-
-  .budget-summary .budget-value {
-    margin-top: 0.2rem;
-    font-weight: normal;
-    font-size: 0.95rem;
-  }
-
-  .budget-inner-table thead {
-    display: none;
-  }
-
-  .budget-inner-table tr {
-    display: block;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-
-  .budget-inner-table td {
-    display: block;
-    padding: 0.2rem 0;
-    margin-bottom: 0.2rem;
-  }
-
-  .budget-inner-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    margin-right: 0.5rem;
-  }
-}
-
 /* === Filterwrapper och dropdowns === */
 .season-filter-wrapper {
   display: flex;
@@ -279,8 +191,81 @@ h1#page-title {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Mobilanpassning av filter */
+/* === Responsivitet === */
 @media (max-width: 600px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.97);
+    position: absolute;
+    top: 40px;
+    right: 0;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    min-width: 140px;
+    z-index: 100;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    margin: 0.4rem 0;
+  }
+
+  .nav-links li a {
+    padding: 0.6rem 1rem;
+    display: block;
+    font-size: 1rem;
+  }
+
+  .budget-summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .budget-summary .toggle-icon {
+    grid-row: span 2;
+    font-size: 1.3rem;
+    margin-top: 0.2rem;
+    line-height: 1;
+  }
+
+  .budget-inner-table thead {
+    display: none;
+  }
+
+  .budget-inner-table tr {
+    display: block;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .budget-inner-table td {
+    display: block;
+    padding: 0.2rem 0;
+    margin-bottom: 0.2rem;
+  }
+
+  .budget-inner-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
   .season-filter-wrapper {
     flex-wrap: wrap;
     flex-direction: column;
@@ -295,7 +280,6 @@ h1#page-title {
   }
 }
 
-/* Mobil – landskapsläge */
 @media (max-width: 812px) and (orientation: landscape) {
   body {
     font-size: 0.85rem;
