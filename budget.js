@@ -142,9 +142,12 @@ function loadBudget() {
             summary.className = 'budget-summary';
             summary.innerHTML = `
               <span class="toggle-icon">＋</span>
-              <span class="budget-label">📅 ${g.year} – ${g.monthName}</span>
-              <span class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}&nbsp;<strong>${g.total.toLocaleString('sv-SE')} kr</strong></span>
+              <div class="summary-block">
+                <div class="budget-label">📅 ${g.year} – ${g.monthName}</div>
+                <div class="budget-value">${g.events.length} händelse${g.events.length > 1 ? 'r' : ''}&nbsp;<strong>${g.total.toLocaleString('sv-SE')} kr</strong></div>
+              </div>
             `;
+
             details.appendChild(summary);
 
             const innerTable = document.createElement('table');
