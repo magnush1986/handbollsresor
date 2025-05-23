@@ -346,3 +346,33 @@ details summary {
   object-fit: contain;
 }
 
+@media (max-width: 600px) {
+  .budget-summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.6rem;
+  }
+
+  .budget-summary .toggle-icon {
+    grid-row: span 2;
+    font-size: 1.3rem;
+    margin-top: 0.2rem;
+  }
+
+  .budget-summary .summary-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .budget-summary .budget-label {
+    font-weight: bold;
+  }
+
+  .budget-summary .budget-value {
+    margin-top: 0.2rem;
+    font-weight: normal;
+    font-size: 0.95rem;
+  }
+}
+
