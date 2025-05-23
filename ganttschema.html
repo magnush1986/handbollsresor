@@ -94,8 +94,8 @@
               return {
                 id: `event-${i}`,
                 name: e['Namn på händelse'] || 'Händelse',
-                start: startStr,
-                end: endStr,
+                start: new Date(startStr),
+                end: new Date(endStr),
                 progress: 100,
                 custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
               };
