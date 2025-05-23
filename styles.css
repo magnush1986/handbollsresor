@@ -360,3 +360,23 @@ h1#page-title {
   margin-right: auto;
   margin-left: 0.5rem;
 }
+
+.site-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #f4f4f4;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #ddd;
+  margin-top: 2rem;
+}
+
+.footer-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
