@@ -229,18 +229,43 @@ h1#page-title {
   }
 
   .budget-summary {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.6rem 0.8rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.6rem;
+  }
+
+  .budget-summary .toggle-icon {
+    grid-row: span 2;
+    font-size: 1.3rem;
+    margin-top: 0.2rem;
+    line-height: 1;
   }
 
   .budget-summary .summary-block {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
   }
 
-  .budget-summary .summary-block .budget-value {
-    padding-left: 1.4rem;
+  .summary-block .row-1 {
+    display: flex;
+    align-items: center;
+  }
+
+  .summary-block .summary-icon {
+    display: inline-block;
+    width: 1.5rem;
+  }
+
+  .summary-block .budget-label {
+    font-weight: bold;
+  }
+
+  .summary-block .budget-value {
+    padding-left: 1.5rem;
+    margin-top: 0.1rem;
+    font-size: 0.95rem;
+    font-weight: normal;
   }
 
   .budget-inner-table thead {
