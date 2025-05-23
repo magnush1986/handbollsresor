@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ganttschema Säsong</title>
+  <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0 auto;
+      max-width: 900px;
+      padding: 1rem;
+      background: #f9f9f9;
+    }
+    #gantt {
+      overflow-x: auto;
+    }
+    h1 {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+    .controls {
+      margin-bottom: 1rem;
+    }
+    button {
+      margin-right: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      background-color: #148424;
+      color: white;
+      cursor: pointer;
+    }
+    .event-type-cup .bar {
+      fill: #FF8C00 !important;
+    }
+    .event-type-seriematcher .bar {
+      fill: #007ACC !important;
+    }
+    .event-type-usm .bar {
+      fill: #D7263D !important;
+    }
+    .event-type-ledighet .bar {
+      fill: #6A4C93 !important;
+    }
+    .event-type-träning .bar {
+      fill: #2E8B57 !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>Säsongsschema</h1>
+  <div class="controls">
+    <button onclick="setView('Day')">Dag</button>
+    <button onclick="setView('Week')">Vecka</button>
+    <button onclick="setView('Month')">Månad</button>
+  </div>
+  <div id="gantt"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
+  <script>
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+    let gantt;
+
+    function setView(mode) {
+      if (gantt) gantt.change_view_mode(mode);
+    }
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          skipEmptyLines: true,
+          complete: results => {
+            const events = results.data;
+            const tasks = events.map((e, i) => {
+              const start = e['Datum från']?.trim();
+              const end = e['Datum till']?.trim() || start;
+              if (!start) return null;
+              return {
+                id: `event-${i}`,
+                name: e['Namn på händelse'] || 'Händelse',
+                start,
+                end,
+                progress: 100,
+                custom_class: 'event-type-' + (e['Typ av händelse'] || '').toLowerCase().replace(/\s/g, '-')
+              };
+            }).filter(Boolean);
+
+            gantt = new Gantt("#gantt", tasks, {
+              view_mode: 'Month',
+              language: 'sv'
+            });
+          }
+        });
+      });
+  </script>
+</body>
+</html>
