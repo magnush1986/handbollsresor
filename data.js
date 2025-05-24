@@ -48,17 +48,56 @@ function loadEvents() {
             seasonLabel.textContent = 'Säsong:';
             seasonLabel.setAttribute('for', 'season-filter');
 
+            const allSeasons = [...new Set(events.map(e => e['Säsong']))].sort().reverse();
+            const allOption = document.createElement('option');
+            allOption.value = '';
+            allOption.textContent = 'Alla säsonger';
+            seasonSelect.appendChild(allOption);
+            allSeasons.forEach(season => {
+              const option = document.createElement('option');
+              option.value = season;
+              option.textContent = season;
+              seasonSelect.appendChild(option);
+            });
+
+            const currentSeason = getCurrentSeason();
+            seasonSelect.value = allSeasons.includes(currentSeason) ? currentSeason : '';
+
             typeSelect = document.createElement('select');
             typeSelect.id = 'type-filter';
             const typeLabel = document.createElement('label');
             typeLabel.textContent = 'Typ:';
             typeLabel.setAttribute('for', 'type-filter');
 
+            const allTypes = [...new Set(events.map(e => e['Typ av händelse']))].sort();
+            const allTypeOption = document.createElement('option');
+            allTypeOption.value = '';
+            allTypeOption.textContent = 'Alla typer';
+            typeSelect.appendChild(allTypeOption);
+            allTypes.forEach(type => {
+              const option = document.createElement('option');
+              option.value = type;
+              option.textContent = type;
+              typeSelect.appendChild(option);
+            });
+
             placeSelect = document.createElement('select');
             placeSelect.id = 'place-filter';
             const placeLabel = document.createElement('label');
             placeLabel.textContent = 'Plats:';
             placeLabel.setAttribute('for', 'place-filter');
+
+            const allPlaces = [...new Set(events.map(e => e['Plats']))].sort();
+            const allPlaceOption = document.createElement('option');
+            allPlaceOption.value = '';
+            allPlaceOption.textContent = 'Alla platser';
+            placeSelect.appendChild(allPlaceOption);
+            allPlaces.forEach(place => {
+              const option = document.createElement('option');
+              option.value = place;
+              option.textContent = place;
+              placeSelect.appendChild(option);
+            });
 
             filterWrapper.appendChild(seasonLabel);
             filterWrapper.appendChild(seasonSelect);
@@ -68,160 +107,130 @@ function loadEvents() {
             filterWrapper.appendChild(placeSelect);
             container.before(filterWrapper);
 
-            seasonSelect.addEventListener('change', () => updateFiltersAndRender(events));
-            typeSelect.addEventListener('change', () => updateFiltersAndRender(events));
-            placeSelect.addEventListener('change', () => updateFiltersAndRender(events));
+            seasonSelect.addEventListener('change', loadEvents);
+            typeSelect.addEventListener('change', loadEvents);
+            placeSelect.addEventListener('change', loadEvents);
           }
 
-          updateFiltersAndRender(events);
+          const selectedSeason = seasonSelect.value;
+          const selectedType = typeSelect.value;
+          const selectedPlace = placeSelect.value;
+          const currentSeason = getCurrentSeason();
 
-          function updateFiltersAndRender(allEvents) {
-            const selectedSeason = seasonSelect.value;
-            const selectedType = typeSelect.value;
-            const selectedPlace = placeSelect.value;
+          const filtered = events.filter(e =>
+            (!selectedSeason || e['Säsong'] === selectedSeason) &&
+            (!selectedType || e['Typ av händelse'] === selectedType) &&
+            (!selectedPlace || e['Plats'] === selectedPlace)
+          ).filter(e => {
+            const typ = e['Typ av händelse']?.toLowerCase() || '';
+          
+            if (isUSM && typ !== 'usm') return false;
+            if (isCup && typ !== 'cup') return false;
+          
+            if (isLedigt) {
+              const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
+              if (!ledighet.includes('ja')) return false;
+          
+              const slutdatum = new Date(e['Datum till'] || e['Datum från']);
+              const gränsdatum = new Date(getEffectiveToday());
+              gränsdatum.setDate(gränsdatum.getDate() - 7);
+          
+              if (slutdatum < gränsdatum) return false;
+            }
+          
+            return true;
+          });
 
-            const filteredEvents = allEvents.filter(e =>
-              (!selectedSeason || e['Säsong'] === selectedSeason) &&
-              (!selectedType || e['Typ av händelse'] === selectedType) &&
-              (!selectedPlace || e['Plats'] === selectedPlace)
-            ).filter(e => {
-              const typ = e['Typ av händelse']?.toLowerCase() || '';
-              if (isUSM && typ !== 'usm') return false;
-              if (isCup && typ !== 'cup') return false;
-              if (isLedigt) {
-                const ledighet = e['Ledig från skolan?']?.toLowerCase() || '';
-                if (!ledighet.includes('ja')) return false;
-                const slutdatum = new Date(e['Datum till'] || e['Datum från']);
-                const gränsdatum = new Date(getEffectiveToday());
-                gränsdatum.setDate(gränsdatum.getDate() - 7);
-                if (slutdatum < gränsdatum) return false;
+
+          container.innerHTML = '';
+
+          function renderGroup(title, list, target) {
+            const grouped = {};
+            list.forEach(e => {
+              const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
+              if (!grouped[key]) {
+                grouped[key] = {
+                  year: e['År'],
+                  name: e['Månadsnamn'],
+                  data: []
+                };
               }
-              return true;
+              grouped[key].data.push(e);
             });
 
-            const uniqueSeasons = [...new Set(filteredEvents.map(e => e['Säsong']))].sort().reverse();
-            const uniqueTypes = [...new Set(filteredEvents.map(e => e['Typ av händelse']))].sort();
-            const uniquePlaces = [...new Set(filteredEvents.map(e => e['Plats']))].sort();
+            const keys = Object.keys(grouped).sort();
+            if (title) {
+              const h2 = document.createElement('h2');
+              h2.textContent = title;
+              target.appendChild(h2);
+            }
 
-            updateSelectOptions(seasonSelect, uniqueSeasons, selectedSeason, 'Alla säsonger');
-            updateSelectOptions(typeSelect, uniqueTypes, selectedType, 'Alla typer');
-            updateSelectOptions(placeSelect, uniquePlaces, selectedPlace, 'Alla platser');
-
-            renderFilteredEvents(filteredEvents);
+            keys.forEach(key => {
+              const group = grouped[key];
+              const groupDiv = document.createElement('div');
+              groupDiv.className = 'event-group';
+              groupDiv.innerHTML = `<h2>📅 ${group.year} – ${group.name}</h2>`;
+              group.data.forEach(e => renderEventCard(e, groupDiv));
+              target.appendChild(groupDiv);
+            });
           }
 
-          function updateSelectOptions(selectElement, optionsArray, selectedValue, defaultLabel) {
-            const currentValue = selectElement.value;
-            selectElement.innerHTML = '';
-
-            const allOption = document.createElement('option');
-            allOption.value = '';
-            allOption.textContent = defaultLabel;
-            selectElement.appendChild(allOption);
-
-            optionsArray.forEach(optionValue => {
-              const option = document.createElement('option');
-              option.value = optionValue;
-              option.textContent = optionValue;
-              selectElement.appendChild(option);
+          if (!selectedSeason) {
+            const groupedBySeason = {};
+            filtered.forEach(e => {
+              const season = e['Säsong'] || 'Okänd';
+              if (!groupedBySeason[season]) groupedBySeason[season] = [];
+              groupedBySeason[season].push(e);
             });
 
-            selectElement.value = optionsArray.includes(currentValue) ? currentValue : '';
-          }
+            Object.keys(groupedBySeason).sort().reverse().forEach(season => {
+              renderGroup(`📆 ${season}`, groupedBySeason[season], container);
+            });
 
-          function renderFilteredEvents(filtered) {
-            container.innerHTML = '';
+          } else if (selectedSeason === currentSeason) {
+            const upcoming = [];
+            const past = [];
 
-            const currentSeason = getCurrentSeason();
-
-            function renderGroup(title, list, target) {
-              const grouped = {};
-              list.forEach(e => {
-                const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
-                if (!grouped[key]) {
-                  grouped[key] = {
-                    year: e['År'],
-                    name: e['Månadsnamn'],
-                    data: []
-                  };
-                }
-                grouped[key].data.push(e);
-              });
-
-              const keys = Object.keys(grouped).sort();
-              if (title) {
-                const h2 = document.createElement('h2');
-                h2.textContent = title;
-                target.appendChild(h2);
+            filtered.forEach(e => {
+              const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+              if (end && end < todayDate) {
+                past.push(e);
+              } else {
+                upcoming.push(e);
               }
+            });
 
-              keys.forEach(key => {
-                const group = grouped[key];
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'event-group';
-                groupDiv.innerHTML = `<h2>📅 ${group.year} – ${group.name}</h2>`;
-                group.data.forEach(e => renderEventCard(e, groupDiv));
-                target.appendChild(groupDiv);
-              });
+            renderGroup(null, upcoming, container);
+
+            if (past.length > 0) {
+              const hr = document.createElement("hr");
+              container.appendChild(hr);
+
+              const details = document.createElement("details");
+              details.className = "past-events-box";
+              details.style.marginTop = "2rem";
+
+              const summary = document.createElement("summary");
+              summary.style.fontSize = "1.2rem";
+              summary.style.cursor = "pointer";
+              summary.style.fontWeight = "bold";
+              summary.style.marginBottom = "1rem";
+              summary.innerHTML = "⬇️ <strong>Tidigare händelser</strong>";
+              details.appendChild(summary);
+
+              const pastWrapper = document.createElement("div");
+              pastWrapper.id = "past-container";
+              pastWrapper.style.paddingLeft = "1rem";
+              pastWrapper.style.paddingBottom = "1rem";
+              pastWrapper.style.marginTop = "1rem";
+              details.appendChild(pastWrapper);
+              container.appendChild(details);
+
+              renderGroup(null, past, pastWrapper);
             }
 
-            if (!seasonSelect.value) {
-              const groupedBySeason = {};
-              filtered.forEach(e => {
-                const season = e['Säsong'] || 'Okänd';
-                if (!groupedBySeason[season]) groupedBySeason[season] = [];
-                groupedBySeason[season].push(e);
-              });
-
-              Object.keys(groupedBySeason).sort().reverse().forEach(season => {
-                renderGroup(`📆 ${season}`, groupedBySeason[season], container);
-              });
-
-            } else if (seasonSelect.value === currentSeason) {
-              const upcoming = [];
-              const past = [];
-
-              filtered.forEach(e => {
-                const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
-                if (end && end < todayDate) {
-                  past.push(e);
-                } else {
-                  upcoming.push(e);
-                }
-              });
-
-              renderGroup(null, upcoming, container);
-
-              if (past.length > 0) {
-                const hr = document.createElement("hr");
-                container.appendChild(hr);
-
-                const details = document.createElement("details");
-                details.className = "past-events-box";
-                details.style.marginTop = "2rem";
-
-                const summary = document.createElement("summary");
-                summary.style.fontSize = "1.2rem";
-                summary.style.cursor = "pointer";
-                summary.style.fontWeight = "bold";
-                summary.style.marginBottom = "1rem";
-                summary.innerHTML = "⬇️ <strong>Tidigare händelser</strong>";
-                details.appendChild(summary);
-
-                const pastWrapper = document.createElement("div");
-                pastWrapper.id = "past-container";
-                pastWrapper.style.paddingLeft = "1rem";
-                pastWrapper.style.paddingBottom = "1rem";
-                pastWrapper.style.marginTop = "1rem";
-                details.appendChild(pastWrapper);
-                container.appendChild(details);
-
-                renderGroup(null, past, pastWrapper);
-              }
-
-            } else {
-              renderGroup(null, filtered, container);
-            }
+          } else {
+            renderGroup(null, filtered, container);
           }
         }
       });
@@ -289,5 +298,6 @@ function renderEventCard(e, target) {
 
   target.appendChild(card);
 }
+
 
 document.addEventListener("DOMContentLoaded", loadEvents);
