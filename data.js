@@ -349,20 +349,56 @@ function renderEventCard(e, target) {
       </div>`
     : "";
 
+  const typAvBoende = e['Typ av Boende']?.trim();
+  const typAvBoendeHtml = typAvBoende
+    ? `<div class="event-line"><span class="icon">🛏️</span><span class="label">Typ av boende:</span> <span class="value">${typAvBoende}</span></div>`
+    : "";
+  
+  const namnPåBoende = e['Namn på Boende']?.trim();
+  const namnPåBoendeHtml = namnPåBoende
+    ? `<div class="event-line"><span class="icon">🪧</span><span class="label">Namn på boende:</span> <span class="value">${namnPåBoende}</span></div>`
+    : "";
+  
+  const tillgångTillBoende = e['Tillgång till boende']?.trim();
+  const tillgångTillBoendeHtml = tillgångTillBoende
+    ? `<div class="event-line"><span class="icon">🔑</span><span class="label">Tillgång till boende:</span> <span class="value">${tillgångTillBoende}</span></div>`
+    : "";
+  
+  const ledighet = e['Ledighet']?.trim();
+  const ledighetHtml = ledighet
+    ? `<div class="event-line long-text"><span class="icon">📝</span><span class="label">Lediga dagar:</span> <span class="value">${ledighet}</span></div>`
+    : "";
+
+  const kostnad = e['Kostnad per spelare']?.trim();
+  const kostnadHtml = kostnad
+    ? `<div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${kostnad}</span></div>`
+    : "";
+  
+  const färdsätt = e['Färdsätt']?.trim();
+  const färdsättHtml = färdsätt
+    ? `<div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${färdsätt}</span></div>`
+    : "";
+  
+  const ledigFrånSkolan = e['Ledig från skolan?']?.trim();
+  const ledigFrånSkolanHtml = ledigFrånSkolan
+    ? `<div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${ledigFrånSkolan}</span></div>`
+    : "";
+
+
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
     <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
     <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
     <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
     ${samlingHTML}
-    <div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${e['Ledig från skolan?']}</span></div>
+    ${ledigFrånSkolanHtml}
     ${ledighetHtml}
-    <div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span></div>
-    <div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span></div>
+    ${kostnadHtml}
+    ${färdsättHtml}
     ${resvägHtml}
-    <div class="event-line"><span class="icon">🛏️</span><span class="label">Typ av boende:</span> <span class="value">${e['Typ av Boende'] || ''}</span></div>
-    <div class="event-line"><span class="icon">🪧</span><span class="label">Namn på boende:</span> <span class="value">${e['Namn på Boende'] || ''}</span></div>
-    <div class="event-line"><span class="icon">🔑</span><span class="label">Tillgång till boende:</span> <span class="value">${e['Tillgång till boende'] || ''}</span></div>
+    ${typAvBoendeHtml}
+    ${namnPåBoendeHtml}
+    ${tillgångTillBoendeHtml}
     ${hemsidaUrl}
     ${bilderHtml}
   `;
