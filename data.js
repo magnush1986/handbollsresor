@@ -402,7 +402,7 @@ function renderEventCard(e, target) {
     ${typAvBoendeHtml}
     ${namnPåBoendeHtml}
     ${tillgångTillBoendeHtml}
-    ${adressTillBoendeHtml}
+    ${adressHtml}
     ${hemsidaUrl}
     ${bilderHtml}
   `;
