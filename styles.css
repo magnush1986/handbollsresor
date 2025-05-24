@@ -412,3 +412,20 @@ h1#page-title {
     font-size: 0.95rem;
   }
 }
+
+.google-link {
+  display: block;
+  margin-left: 1.3rem; /* Justerat exakt efter icon + spacing */
+  font-size: 0.95rem;
+  color: #148424;
+}
+
+.google-link a {
+  text-decoration: none;
+  color: #148424;
+}
+
+.google-link a:hover {
+  text-decoration: underline;
+}
+
