@@ -379,6 +379,14 @@ function renderEventCard(e, target) {
     ? `<div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${ledigFrånSkolan}</span></div>`
     : "";
 
+  const adressTillBoende = e['Adress till boende']?.trim();
+  const adressTillBoendeHtml = adressTillBoende
+    ? `<div class="event-line">
+         <span class="icon">📪</span>
+         <span class="label">Adress till boende:</span>
+         <span class="value">${adressTillBoende} <a href="https://www.google.com/maps/search/${encodeURIComponent(adressTillBoende)}" target="_blank">(Visa på karta)</a></span>
+       </div>`
+    : "";
 
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
@@ -394,6 +402,7 @@ function renderEventCard(e, target) {
     ${typAvBoendeHtml}
     ${namnPåBoendeHtml}
     ${tillgångTillBoendeHtml}
+    ${adressTillBoendeHtml}
     ${hemsidaUrl}
     ${bilderHtml}
   `;
