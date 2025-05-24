@@ -349,12 +349,12 @@ function renderEventCard(e, target) {
       </div>`
     : "";
 
-  const typAvBoende = e['Typ av Boende']?.trim();
+  const typAvBoende = e['Typ av boende']?.trim();
   const typAvBoendeHtml = typAvBoende
     ? `<div class="event-line"><span class="icon">🛏️</span><span class="label">Typ av boende:</span> <span class="value">${typAvBoende}</span></div>`
     : "";
   
-  const namnPåBoende = e['Namn på Boende']?.trim();
+  const namnPåBoende = e['Namn på boende']?.trim();
   const namnPåBoendeHtml = namnPåBoende
     ? `<div class="event-line"><span class="icon">🪧</span><span class="label">Namn på boende:</span> <span class="value">${namnPåBoende}</span></div>`
     : "";
