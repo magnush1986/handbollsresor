@@ -305,6 +305,7 @@ function loadFilteredEvents() {
 }
 
 function renderEventCard(e, target) {
+  console.log("DEBUG Boende:", e['Typ av Boende'], e['Namn på Boende'], e['Tillgång till boende']);
   const card = document.createElement('div');
   card.className = 'event-card';
 
