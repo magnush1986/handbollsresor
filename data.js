@@ -344,7 +344,6 @@ function renderEventCard(e, target) {
   const ledighetHtml = ledighet
     ? `<div class="event-line long-text">
         <span class="icon">📝</span>
-        <span class="label">Lediga dagar:</span>
         <span class="value">${ledighet}</span>
       </div>`
     : "";
@@ -362,11 +361,6 @@ function renderEventCard(e, target) {
   const tillgångTillBoende = e['Tillgång till boende']?.trim();
   const tillgångTillBoendeHtml = tillgångTillBoende
     ? `<div class="event-line"><span class="icon">🔑</span><span class="label">Tillgång till boende:</span> <span class="value">${tillgångTillBoende}</span></div>`
-    : "";
-  
-  const ledighet = e['Ledighet']?.trim();
-  const ledighetHtml = ledighet
-    ? `<div class="event-line long-text"><span class="icon">📝</span><span class="label">Lediga dagar:</span> <span class="value">${ledighet}</span></div>`
     : "";
 
   const kostnad = e['Kostnad per spelare']?.trim();
