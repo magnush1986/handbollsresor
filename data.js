@@ -343,9 +343,10 @@ function renderEventCard(e, target) {
   const ledighet = e['Ledighet']?.trim();
   const ledighetHtml = ledighet
     ? `<div class="event-line long-text">
-         <span class="icon">📝</span>
-         <span class="value">${ledighet}</span>
-       </div>`
+        <span class="icon">📝</span>
+        <span class="label">Lediga dagar:</span>
+        <span class="value">${ledighet}</span>
+      </div>`
     : "";
 
   card.innerHTML = `
@@ -359,6 +360,9 @@ function renderEventCard(e, target) {
     <div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${e['Kostnad per spelare']}</span></div>
     <div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${e['Färdsätt'] || ''}</span></div>
     ${resvägHtml}
+    <div class="event-line"><span class="icon">🛏️</span><span class="label">Typ av boende:</span> <span class="value">${e['Typ av Boende'] || ''}</span></div>
+    <div class="event-line"><span class="icon">🪧</span><span class="label">Namn på boende:</span> <span class="value">${e['Namn på Boende'] || ''}</span></div>
+    <div class="event-line"><span class="icon">🔑</span><span class="label">Tillgång till boende:</span> <span class="value">${e['Tillgång till boende'] || ''}</span></div>
     ${hemsidaUrl}
     ${bilderHtml}
   `;
