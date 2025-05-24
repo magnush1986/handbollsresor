@@ -25,6 +25,32 @@ function getCurrentSeason() {
     : `${year - 1}-${year}`;
 }
 
+function updateBudgetFilters(data) {
+  const seasonSelect = document.getElementById('season-filter');
+  const typeSelect = document.getElementById('type-filter');
+
+  const selectedSeason = seasonSelect.value;
+
+  const filteredForTypes = data.filter(e => !selectedSeason || e['Säsong'] === selectedSeason);
+
+  const allTypes = [...new Set(filteredForTypes.map(e => e['Typ av händelse']))].sort();
+  const currentType = typeSelect.value;
+
+  typeSelect.innerHTML = '';
+  const allOption = document.createElement('option');
+  allOption.value = '';
+  allOption.textContent = 'Alla typer';
+  typeSelect.appendChild(allOption);
+
+  allTypes.forEach(type => {
+    const option = document.createElement('option');
+    option.value = type;
+    option.textContent = type;
+    if (type === currentType) option.selected = true;
+    typeSelect.appendChild(option);
+  });
+}
+
 function loadBudget() {
   fetch(SHEET_URL)
     .then(response => response.text())
@@ -86,7 +112,12 @@ function loadBudget() {
             wrapper.appendChild(typeSelect);
             container.before(wrapper);
 
-            seasonSelect.addEventListener('change', loadBudget);
+            updateBudgetFilters(data);
+
+            seasonSelect.addEventListener('change', () => {
+              updateBudgetFilters(data);
+              loadBudget();
+            });
             typeSelect.addEventListener('change', loadBudget);
           }
 
@@ -153,7 +184,6 @@ function loadBudget() {
                 </div>
               </div>
             `;
-
 
             details.appendChild(summary);
 
