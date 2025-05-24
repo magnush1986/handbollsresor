@@ -380,3 +380,35 @@ h1#page-title {
   object-fit: contain;
 }
 
+/* Adress till boende - en rad på desktop, två rader på mobil med indrag */
+.event-line.adress-line {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.event-line.adress-line .main-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.event-line.adress-line .map-link {
+  margin-left: 1.6rem;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+@media (min-width: 601px) {
+  .event-line.adress-line {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .event-line.adress-line .map-link {
+    margin-left: 0.4rem;
+    font-size: 0.95rem;
+  }
+}
