@@ -380,13 +380,15 @@ function renderEventCard(e, target) {
     : "";
 
   const adress = e['Adress till boende']?.trim();
-  const adressLänk = e['Adress till boende länk']?.trim();
-  const adressHtml = adress
-    ? `<div class="event-line adress-line">
-          <div class="main-row"><span class="icon">📬</span><span class="value">${adress}</span></div>
-          ${adressLänk ? `<div class="map-link"><a href="${adressLänk}" target="_blank">Visa på karta</a></div>` : ''}
-      </div>`
-    : '';
+  const adressTillBoendeHtml = adress
+    ? `<div class="event-line long-text">
+         <span class="icon">📬</span>
+         <span class="value">${adress}</span>
+         <br>
+         <span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a></span>
+       </div>`
+    : "";
+
 
   card.innerHTML = `
     <div class="event-title">${e['Namn på händelse']}</div>
@@ -402,7 +404,7 @@ function renderEventCard(e, target) {
     ${typAvBoendeHtml}
     ${namnPåBoendeHtml}
     ${tillgångTillBoendeHtml}
-    ${adressHtml}
+    ${adressTillBoendeHtml}
     ${hemsidaUrl}
     ${bilderHtml}
   `;
