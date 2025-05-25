@@ -193,10 +193,97 @@ function loadFilteredEvents() {
 
   let firstEventRendered = false;
 
-  filtered.forEach(e => {
-    renderEventCard(e, container, !firstEventRendered);
-    firstEventRendered = true;
-  });
+  function renderGroup(title, list, target) {
+    const grouped = {};
+    list.forEach(e => {
+      const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
+      if (!grouped[key]) {
+        grouped[key] = {
+          year: e['År'],
+          name: e['Månadsnamn'],
+          data: []
+        };
+      }
+      grouped[key].data.push(e);
+    });
+
+    const keys = Object.keys(grouped).sort();
+    if (title) {
+      const h2 = document.createElement('h2');
+      h2.textContent = title;
+      target.appendChild(h2);
+    }
+
+    keys.forEach(key => {
+      const group = grouped[key];
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'event-group';
+      groupDiv.innerHTML = `<h2>📅 ${group.year} – ${group.name}</h2>`;
+      group.data.forEach(e => {
+        renderEventCard(e, groupDiv, !firstEventRendered);
+        firstEventRendered = true;
+      });
+      target.appendChild(groupDiv);
+    });
+  }
+
+  if (!selectedSeason) {
+    const groupedBySeason = {};
+    filtered.forEach(e => {
+      const season = e['Säsong'] || 'Okänd';
+      if (!groupedBySeason[season]) groupedBySeason[season] = [];
+      groupedBySeason[season].push(e);
+    });
+
+    Object.keys(groupedBySeason).sort().reverse().forEach(season => {
+      renderGroup(`📆 ${season}`, groupedBySeason[season], container);
+    });
+
+  } else if (selectedSeason === currentSeason) {
+    const upcoming = [];
+    const past = [];
+
+    filtered.forEach(e => {
+      const end = (e['Datum till'] || e['Datum från'])?.substring(0, 10);
+      if (end && end < todayDate) {
+        past.push(e);
+      } else {
+        upcoming.push(e);
+      }
+    });
+
+    renderGroup(null, upcoming, container);
+
+    if (past.length > 0) {
+      const hr = document.createElement("hr");
+      container.appendChild(hr);
+
+      const details = document.createElement("details");
+      details.className = "past-events-box";
+      details.style.marginTop = "2rem";
+
+      const summary = document.createElement("summary");
+      summary.style.fontSize = "1.2rem";
+      summary.style.cursor = "pointer";
+      summary.style.fontWeight = "bold";
+      summary.style.marginBottom = "1rem";
+      summary.innerHTML = "⬇️ <strong>Tidigare händelser</strong>";
+      details.appendChild(summary);
+
+      const pastWrapper = document.createElement("div");
+      pastWrapper.id = "past-container";
+      pastWrapper.style.paddingLeft = "1rem";
+      pastWrapper.style.paddingBottom = "1rem";
+      pastWrapper.style.marginTop = "1rem";
+      details.appendChild(pastWrapper);
+      container.appendChild(details);
+
+      renderGroup(null, past, pastWrapper);
+    }
+
+  } else {
+    renderGroup(null, filtered, container);
+  }
 }
 
 function renderEventCard(e, target, isFirst = false) {
