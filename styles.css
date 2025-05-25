@@ -539,3 +539,20 @@ details[open] .summary-icon {
 #school-filter {
   flex-basis: 100%;
 }
+
+@media (max-width: 600px) {
+  .event-title {
+    font-size: 1rem; /* Minska storleken för eventrubriker */
+  }
+
+  .season-header {
+    font-size: 1.1rem; /* Minska storleken för säsongstitlar */
+  }
+
+  #season-filter,
+  #type-filter,
+  #place-filter,
+  #school-filter {
+    font-size: 0.9rem; /* Minska storlek på filterdropdowns */
+  }
+}
