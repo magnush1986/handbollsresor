@@ -427,3 +427,31 @@ h1#page-title {
   }
 }
 
+.event-section {
+  margin-top: 1.2rem;
+  padding: 0.8rem;
+  border-left: 3px solid #148424;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.event-section h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 0.6rem 0;
+  color: #148424;
+}
+
+.event-section .event-line {
+  margin-left: 1.4rem;
+}
+
+.event-section .event-line.adress-line {
+  margin-left: 1.4rem;
+}
+
+@media (max-width: 600px) {
+  .event-section {
+    padding: 0.6rem;
+  }
+}
