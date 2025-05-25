@@ -459,3 +459,16 @@ h1#page-title {
   }
 }
 
+.event-card {
+  position: relative;
+}
+
+.event-card + .event-card::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: #ccc;
+  margin: 1.2rem 0;
+  opacity: 0.4;
+}
+
