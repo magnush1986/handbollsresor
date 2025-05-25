@@ -175,7 +175,8 @@ function loadFilteredEvents() {
   const seasonSelect = document.getElementById('season-filter');
   const typeSelect = document.getElementById('type-filter');
   const placeSelect = document.getElementById('place-filter');
-
+  const href = window.location.href.toLowerCase();
+  const isLedigt = href.includes("ledig.html");
   const selectedSeason = seasonSelect.value;
   const selectedType = typeSelect.value;
   const selectedPlace = placeSelect.value;
