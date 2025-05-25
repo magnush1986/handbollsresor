@@ -377,10 +377,22 @@ function renderEventCard(e, target, isFirst = false) {
     ? `<div class="event-line"><span class="icon">🚗</span><span class="label">Färdsätt:</span> <span class="value">${färdsätt}</span></div>`
     : "";
   
-  const ledigFrånSkolan = e['Ledig från skolan?']?.trim();
-  const ledigFrånSkolanHtml = ledigFrånSkolan
-    ? `<div class="event-line"><span class="icon">🏫</span><span class="label">Ledig från skolan:</span> <span class="value">${ledigFrånSkolan}</span></div>`
-    : "";
+  const ledigFrånSkolan = e['Ledig från skolan?']?.trim().toLowerCase();
+  let ledigFrånSkolanHtml = '';
+  
+  if (ledigFrånSkolan === 'ja') {
+    ledigFrånSkolanHtml = `<div class="event-line">
+      <span class="icon">✅</span>
+      <span class="label">Ledig från skolan:</span>
+      <span class="value">Ja</span>
+    </div>`;
+  } else if (ledigFrånSkolan === 'nej') {
+    ledigFrånSkolanHtml = `<div class="event-line">
+      <span class="icon">❌</span>
+      <span class="label">Ledig från skolan:</span>
+      <span class="value">Nej</span>
+    </div>`;
+  }
 
   const adress = e['Adress till boende']?.trim();
   const adressTillBoendeHtml = adress
