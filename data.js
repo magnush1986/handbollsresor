@@ -101,6 +101,26 @@ function loadEvents() {
               option.textContent = place;
               placeSelect.appendChild(option);
             });
+            
+            const schoolSelect = document.createElement('select');
+            schoolSelect.id = 'school-filter';
+            const schoolLabel = document.createElement('label');
+            schoolLabel.textContent = 'Ledig från skolan:';
+            schoolLabel.setAttribute('for', 'school-filter');
+            
+            const allSchoolOption = document.createElement('option');
+            allSchoolOption.value = '';
+            allSchoolOption.textContent = 'Alla';
+            schoolSelect.appendChild(allSchoolOption);
+            ['Ja', 'Nej'].forEach(val => {
+              const option = document.createElement('option');
+              option.value = val.toLowerCase();
+              option.textContent = val;
+              schoolSelect.appendChild(option);
+            });
+            
+            filterWrapper.appendChild(schoolLabel);
+            filterWrapper.appendChild(schoolSelect);
 
             filterWrapper.appendChild(seasonLabel);
             filterWrapper.appendChild(seasonSelect);
@@ -111,6 +131,7 @@ function loadEvents() {
             container.before(filterWrapper);
 
             seasonSelect.addEventListener('change', updateFiltersAndRender);
+            schoolSelect.addEventListener('change', updateFiltersAndRender);
             typeSelect.addEventListener('change', updateFiltersAndRender);
             placeSelect.addEventListener('change', updateFiltersAndRender);
           }
@@ -125,17 +146,20 @@ function updateFiltersAndRender() {
   const seasonSelect = document.getElementById('season-filter');
   const typeSelect = document.getElementById('type-filter');
   const placeSelect = document.getElementById('place-filter');
-
+  const schoolSelect = document.getElementById('school-filter');
+  const selectedSchool = schoolSelect.value;
   const selectedSeason = seasonSelect.value;
   const selectedType = typeSelect.value;
 
   const filteredForTypes = allEvents.filter(e =>
-    (!selectedSeason || e['Säsong'] === selectedSeason)
+    (!selectedSeason || e['Säsong'] === selectedSeason) &&
+    (!selectedSchool || (e['Ledig från skolan?']?.toLowerCase() === selectedSchool))
   );
-
+  
   const filteredForPlaces = allEvents.filter(e =>
     (!selectedSeason || e['Säsong'] === selectedSeason) &&
-    (!selectedType || e['Typ av händelse'] === selectedType)
+    (!selectedType || e['Typ av händelse'] === selectedType) &&
+    (!selectedSchool || (e['Ledig från skolan?']?.toLowerCase() === selectedSchool))
   );
 
   const allTypes = [...new Set(filteredForTypes.map(e => e['Typ av händelse']))].sort();
@@ -182,13 +206,15 @@ function loadFilteredEvents() {
   const selectedPlace = placeSelect.value;
   const currentSeason = getCurrentSeason();
   const todayDate = getEffectiveToday().toISOString().split("T")[0];
+  const schoolSelect = document.getElementById('school-filter');
+  const selectedSchool = schoolSelect.value;
 
   const filtered = allEvents.filter(e =>
     (!selectedSeason || e['Säsong'] === selectedSeason) &&
     (!selectedType || e['Typ av händelse'] === selectedType) &&
     (!selectedPlace || e['Plats'] === selectedPlace) &&
-    (!isLedigt || (e['Ledig från skolan?'] && e['Ledig från skolan?'].toLowerCase() === 'ja'))
-  );
+    (!selectedSchool || (e['Ledig från skolan?']?.toLowerCase() === selectedSchool))
+  ););
 
   const container = document.getElementById('event-container');
   container.innerHTML = '';
