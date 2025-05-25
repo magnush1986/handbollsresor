@@ -130,8 +130,6 @@ function loadEvents() {
             filterWrapper.appendChild(placeSelect);
             filterWrapper.appendChild(schoolLabel);
             filterWrapper.appendChild(schoolSelect);
-
-            filterWrapper.appendChild(schoolWrapper);
             container.before(filterWrapper);
 
             seasonSelect.addEventListener('change', updateFiltersAndRender);
