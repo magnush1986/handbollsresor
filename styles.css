@@ -527,3 +527,10 @@ details[open] .summary-icon {
   transition: transform 0.3s ease;
 }
 
+.school-filter-wrapper {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
