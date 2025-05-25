@@ -305,16 +305,17 @@ function loadFilteredEvents() {
 }
 
 function renderEventCard(e, target) {
-  console.log("DEBUG Boende:", e['Typ av Boende'], e['Namn på Boende'], e['Tillgång till boende']);
   const card = document.createElement('details');
   card.className = 'event-card';
-  card.open = true; // Öppna kortet som standard
-  
+
   const summary = document.createElement('summary');
   summary.className = 'event-title';
-  summary.textContent = e['Namn på händelse'];
+  summary.innerHTML = `
+    <span class="summary-text">${e['Namn på händelse']}</span>
+    <span class="summary-icon">▶</span>
+  `;
   card.appendChild(summary);
-  
+
   const contentDiv = document.createElement('div');
   contentDiv.className = 'event-content';
 
@@ -442,6 +443,7 @@ function renderEventCard(e, target) {
 `;
 
 
+  card.appendChild(contentDiv);
   target.appendChild(card);
 }
 
