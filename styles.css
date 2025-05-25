@@ -528,12 +528,6 @@ details[open] .summary-icon {
   transition: transform 0.3s ease;
 }
 
-.school-filter-wrapper {
-  display: block;
-  width: 100%;
-  margin-top: 1rem;
-}
-
 #school-filter {
   flex-basis: 100%;
 }
