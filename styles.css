@@ -227,10 +227,20 @@ h1#page-title {
 
   .season-filter-wrapper {
     display: flex;
-    flex-wrap: wrap; /* Ändrat från nowrap */
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    flex-wrap: wrap; /* Tillåter att rader bryts */
+    align-items: flex-start;
+    gap: 1rem 1.5rem; /* Vertikal och horisontell marginal */
+  }
+  
+  .season-filter-wrapper > label {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  .season-filter-wrapper > select {
+    width: 100%;
+    max-width: 300px;
   }
 
   #season-filter,
