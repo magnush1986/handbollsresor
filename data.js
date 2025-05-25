@@ -128,8 +128,12 @@ function loadEvents() {
             filterWrapper.appendChild(typeSelect);
             filterWrapper.appendChild(placeLabel);
             filterWrapper.appendChild(placeSelect);
-            filterWrapper.appendChild(schoolLabel);
-            filterWrapper.appendChild(schoolSelect);
+            const schoolWrapper = document.createElement('div');
+            schoolWrapper.className = 'school-filter-wrapper';
+            schoolWrapper.appendChild(schoolLabel);
+            schoolWrapper.appendChild(schoolSelect);
+
+            filterWrapper.appendChild(schoolWrapper);
             container.before(filterWrapper);
 
             seasonSelect.addEventListener('change', updateFiltersAndRender);
