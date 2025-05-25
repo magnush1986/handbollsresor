@@ -534,11 +534,11 @@ details[open] .summary-icon {
 
 @media (max-width: 600px) {
   .event-title {
-    font-size: 1rem; /* Minska storleken för eventrubriker */
+    font-size: 0.9rem; /* Minska storleken för eventrubriker */
   }
 
   .season-header {
-    font-size: 1.1rem; /* Minska storleken för säsongstitlar */
+    font-size: 1rem; /* Minska storleken för säsongstitlar */
   }
 
   #season-filter,
