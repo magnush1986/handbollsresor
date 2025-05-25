@@ -306,8 +306,17 @@ function loadFilteredEvents() {
 
 function renderEventCard(e, target) {
   console.log("DEBUG Boende:", e['Typ av Boende'], e['Namn på Boende'], e['Tillgång till boende']);
-  const card = document.createElement('div');
+  const card = document.createElement('details');
   card.className = 'event-card';
+  card.open = true; // Öppna kortet som standard
+  
+  const summary = document.createElement('summary');
+  summary.className = 'event-title';
+  summary.textContent = e['Namn på händelse'];
+  card.appendChild(summary);
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'event-content';
 
   const länk = e["Länk till hemsida"]?.trim();
   const hemsidaUrl = (länk && länk.startsWith("http"))
