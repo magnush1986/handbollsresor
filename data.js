@@ -208,7 +208,6 @@ function renderEventCard(e, target, isFirst = false) {
   summary.className = 'event-title';
   summary.innerHTML = `
     <span class="summary-text">${e['Namn på händelse']}</span>
-    <span class="summary-icon">${isFirst ? '▲' : '▼'}</span>
   `;
   card.appendChild(summary);
 
