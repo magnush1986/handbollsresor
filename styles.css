@@ -226,10 +226,11 @@ h1#page-title {
   }
 
   .season-filter-wrapper {
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap; /* Ändrat från nowrap */
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   #season-filter,
@@ -533,4 +534,8 @@ details[open] .summary-icon {
   align-items: center;
   gap: 1.5rem;
   margin-top: 0.5rem;
+}
+
+#school-filter {
+  flex-basis: 100%;
 }
