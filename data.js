@@ -43,7 +43,8 @@ function loadEvents() {
           let placeSelect = document.getElementById('place-filter');
 
           if (!seasonSelect || !typeSelect || !placeSelect) {
-            
+            const filterWrapper = document.createElement('div');
+            filterWrapper.className = 'season-filter-wrapper';
 
             seasonSelect = document.createElement('select');
             seasonSelect.id = 'season-filter';
