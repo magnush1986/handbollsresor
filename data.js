@@ -446,33 +446,33 @@ function renderEventCard(e, target, isFirst = false) {
       <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
       ${kostnadHtml}
     </div>
-
+    ${ (ledigFrånSkolanHtml || ledighetHtml) ? `
     <div class="event-section">
       <h3>Ledig från skolan</h3>
       ${ledigFrånSkolanHtml}
       ${ledighetHtml}
-    </div>
-
+    </div>` : '' }
+    ${ (samlingHTML || resvägHtml || färdsättHtml) ? `
     <div class="event-section">
       <h3>Resan</h3>
       ${samlingHTML}
       ${resvägHtml}
       ${färdsättHtml}
-    </div>
-
+    </div>` : '' }
+    ${ (typAvBoendeHtml || namnPåBoendeHtml || tillgångTillBoendeHtml || adressTillBoendeHtml) ? `
     <div class="event-section">
       <h3>Boende</h3>
       ${typAvBoendeHtml}
       ${namnPåBoendeHtml}
       ${tillgångTillBoendeHtml}
       ${adressTillBoendeHtml}
-    </div>
-
+    </div>` : '' }
+    ${ (hemsidaUrl || bilderHtml) ? `
     <div class="event-section">
       <h3>Länkar</h3>
       ${hemsidaUrl}
       ${bilderHtml}
-    </div>
+    </div>` : '' }
   `;
 
   card.appendChild(contentDiv);
