@@ -472,3 +472,33 @@ h1#page-title {
   opacity: 0.4;
 }
 
+/* === Collapsable event cards === */
+.event-card summary {
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.4rem 0;
+  outline: none;
+}
+
+.event-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.event-card[open] summary::after {
+  content: "▲";
+  float: right;
+  font-size: 0.9rem;
+  color: #148424;
+}
+
+.event-card summary::after {
+  content: "▼";
+  float: right;
+  font-size: 0.9rem;
+  color: #148424;
+}
+
+.event-content {
+  padding: 0.6rem 0 0 0;
+}
