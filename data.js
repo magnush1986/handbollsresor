@@ -438,3 +438,4 @@ function renderEventCard(e, target) {
 
 
 document.addEventListener("DOMContentLoaded", loadEvents);
+ 
