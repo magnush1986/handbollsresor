@@ -462,7 +462,7 @@ h1#page-title {
 .event-card {
   position: relative;
 }
-
+/*
 .event-card + .event-card::before {
   content: "";
   display: block;
@@ -471,7 +471,7 @@ h1#page-title {
   margin: 1.2rem 0;
   opacity: 0.4;
 }
-
+*/
 /* === Collapsable event cards === */
 .event-card summary {
   cursor: pointer;
