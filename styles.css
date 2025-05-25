@@ -98,7 +98,7 @@ h1#page-title {
 /* === Filterwrapper och dropdowns === */
 .season-filter-wrapper {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /* Se till att det tillåts radbrytning vid behov */
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
