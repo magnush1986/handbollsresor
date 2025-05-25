@@ -428,11 +428,13 @@ h1#page-title {
 }
 
 .event-section {
-  margin-top: 1.2rem;
-  padding: 0.8rem;
-  border-left: 3px solid #148424;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 1rem 1.2rem;
+  border-left: 4px solid #6ecf7d; /* Ljusare grön kant */
+  background-color: #f0fdf4; /* Ljus grön ton */
+  border-radius: 6px;
 }
 
 .event-section h3 {
@@ -443,15 +445,17 @@ h1#page-title {
 }
 
 .event-section .event-line {
-  margin-left: 1.4rem;
+  margin-left: 0.6rem; /* Litet indrag för rader */
+  margin-bottom: 0.4rem;
 }
 
 .event-section .event-line.adress-line {
-  margin-left: 1.4rem;
+  margin-left: 0.6rem;
 }
 
 @media (max-width: 600px) {
   .event-section {
-    padding: 0.6rem;
+    padding: 0.8rem 1rem;
   }
 }
+
