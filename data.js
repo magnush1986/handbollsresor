@@ -34,6 +34,7 @@ function loadEvents() {
         complete: function(results) {
           const events = results.data;
           allEvents = events;
+          console.log(allEvents.map(e => e['Ledig från skolan?']));
           const container = document.getElementById('event-container');
           container.innerHTML = '';
 
