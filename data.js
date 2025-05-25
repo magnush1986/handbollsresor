@@ -214,7 +214,7 @@ function loadFilteredEvents() {
     (!selectedType || e['Typ av händelse'] === selectedType) &&
     (!selectedPlace || e['Plats'] === selectedPlace) &&
     (!selectedSchool || (e['Ledig från skolan?']?.toLowerCase() === selectedSchool))
-  ););
+  );
 
   const container = document.getElementById('event-container');
   container.innerHTML = '';
