@@ -185,7 +185,8 @@ function loadFilteredEvents() {
   const filtered = allEvents.filter(e =>
     (!selectedSeason || e['Säsong'] === selectedSeason) &&
     (!selectedType || e['Typ av händelse'] === selectedType) &&
-    (!selectedPlace || e['Plats'] === selectedPlace)
+    (!selectedPlace || e['Plats'] === selectedPlace) &&
+    (!isLedigt || (e['Ledig från skolan?'] && e['Ledig från skolan?'].toLowerCase() === 'ja'))
   );
 
   const container = document.getElementById('event-container');
