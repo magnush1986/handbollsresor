@@ -206,7 +206,10 @@ function renderEventCard(e, target, isFirst = false) {
 
   const summary = document.createElement('summary');
   summary.className = 'event-title';
-  summary.innerHTML = `<span class="summary-text">${e['Namn på händelse']}</span> <span class="summary-icon"></span>`;
+  summary.innerHTML = `
+    <span class="summary-text">${e['Namn på händelse']}</span>
+    <span class="summary-icon">${isFirst ? '▲' : '▼'}</span>
+  `;
   card.appendChild(summary);
 
   card.addEventListener('toggle', () => {
@@ -303,47 +306,42 @@ function renderEventCard(e, target, isFirst = false) {
        </div>`
     : "";
 
+  contentDiv.innerHTML = `
+    <div class="event-section">
+      <h3>Grundläggande info</h3>
+      <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
+      <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
+      <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
+    </div>
 
+    <div class="event-section">
+      <h3>Inför resa</h3>
+      ${ledigFrånSkolanHtml}
+      ${ledighetHtml}
+      ${kostnadHtml}
+    </div>
 
-  card.innerHTML = `
-  <div class="event-title">${e['Namn på händelse']}</div>
-  
-  <div class="event-section">
-    <h3>Grundläggande info</h3>
-    <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
-    <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
-    <div class="event-line"><span class="icon">📅</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
-  </div>
+    <div class="event-section">
+      <h3>Resan</h3>
+      ${samlingHTML}
+      ${resvägHtml}
+      ${färdsättHtml}
+    </div>
 
-  <div class="event-section">
-    <h3>Inför resa</h3>
-    ${ledigFrånSkolanHtml}
-    ${ledighetHtml}
-    ${kostnadHtml}
-  </div>
+    <div class="event-section">
+      <h3>Boende</h3>
+      ${typAvBoendeHtml}
+      ${namnPåBoendeHtml}
+      ${tillgångTillBoendeHtml}
+      ${adressTillBoendeHtml}
+    </div>
 
-  <div class="event-section">
-    <h3>Resan</h3>
-    ${samlingHTML}
-    ${resvägHtml}
-    ${färdsättHtml}
-  </div>
-
-  <div class="event-section">
-    <h3>Boende</h3>
-    ${typAvBoendeHtml}
-    ${namnPåBoendeHtml}
-    ${tillgångTillBoendeHtml}
-    ${adressTillBoendeHtml}
-  </div>
-
-  <div class="event-section">
-    <h3>Länkar</h3>
-    ${hemsidaUrl}
-    ${bilderHtml}
-  </div>
-`;
-
+    <div class="event-section">
+      <h3>Länkar</h3>
+      ${hemsidaUrl}
+      ${bilderHtml}
+    </div>
+  `;
 
   card.appendChild(contentDiv);
   target.appendChild(card);
