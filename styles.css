@@ -113,7 +113,8 @@ h1#page-title {
 
 #season-filter,
 #type-filter,
-#place-filter {
+#place-filter,
+#school-filter {
   font-size: 1rem;
   padding: 0.4rem 0.8rem;
   border: 1px solid #ccc;
@@ -233,7 +234,8 @@ h1#page-title {
 
   #season-filter,
   #type-filter,
-  #place-filter {
+  #place-filter,
+  #school-filter {
     width: 100%;
     max-width: 300px;
   }
