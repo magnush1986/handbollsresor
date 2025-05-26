@@ -647,3 +647,15 @@ details[open] .summary-icon {
   }
 }
   
+@media (max-width: 600px) {
+  .event-group h2,
+  .event-card,
+  .event-title {
+    font-size: 1rem; /* Lika stora rubrik och kortets titel */
+  }
+
+  .event-line .label,
+  .event-line .value {
+    font-size: 0.95rem; /* Innehållet lite mindre */
+  }
+}
