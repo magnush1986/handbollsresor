@@ -633,8 +633,8 @@ details[open] .summary-icon {
     padding: 0.8rem;
     font-size: 0.95rem;
   }
+}
 
-  .event-group {
+.event-group {
     margin-bottom: 3rem; /* Ökar avståndet mellan varje månad */
   } 
-}
