@@ -122,14 +122,18 @@ function loadEvents() {
             
             
 
-            filterWrapper.appendChild(seasonLabel);
-            filterWrapper.appendChild(seasonSelect);
-            filterWrapper.appendChild(typeLabel);
-            filterWrapper.appendChild(typeSelect);
-            filterWrapper.appendChild(placeLabel);
-            filterWrapper.appendChild(placeSelect);
-            filterWrapper.appendChild(schoolLabel);
-            filterWrapper.appendChild(schoolSelect);
+            function addFilter(wrapper, label, select) {
+              const filterDiv = document.createElement('div');
+              filterDiv.className = 'filter-item';
+              filterDiv.appendChild(label);
+              filterDiv.appendChild(select);
+              wrapper.appendChild(filterDiv);
+            }
+            
+            addFilter(filterWrapper, seasonLabel, seasonSelect);
+            addFilter(filterWrapper, typeLabel, typeSelect);
+            addFilter(filterWrapper, placeLabel, placeSelect);
+            addFilter(filterWrapper, schoolLabel, schoolSelect);
             container.before(filterWrapper);
 
             seasonSelect.addEventListener('change', updateFiltersAndRender);
