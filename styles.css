@@ -623,39 +623,20 @@ details[open] .summary-icon {
 
 @media (max-width: 600px) {
   .event-group h2 {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin: 2.5rem 0 1rem 0;
-    color: #333;
+    font-size: 1.2rem;
   }
 
   .event-card {
+    font-size: 1rem;
     padding: 0.8rem;
-    font-size: 0.95rem;
   }
-}
 
-.event-group {
-    margin-bottom: 5rem; /* Ökar avståndet mellan varje månad */
-  } 
-  
-  @media (max-width: 600px) {
-  .event-group h2,
-  .event-card,
   .event-title {
-    font-size: 1rem; /* Justera detta värde som du önskar, t.ex. 0.95rem */
-  }
-}
-  
-@media (max-width: 600px) {
-  .event-group h2,
-  .event-card,
-  .event-title {
-    font-size: 1rem; /* Lika stora rubrik och kortets titel */
+    font-size: 1rem;
   }
 
   .event-line .label,
   .event-line .value {
-    font-size: 0.95rem; /* Innehållet lite mindre */
+    font-size: 0.95rem;
   }
 }
