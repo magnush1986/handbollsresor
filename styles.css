@@ -578,3 +578,26 @@ details[open] .summary-icon {
     font-size: 0.9rem; /* Minska storlek på filterdropdowns */
   }
 }
+
+@media (min-width: 768px) {
+  .filter-item label {
+    margin-right: 0.4rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .filter-item {
+    width: 100%;
+    margin-bottom: 0.6rem;
+  }
+
+  .filter-item label {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .filter-item select {
+    width: 100%;
+    max-width: 300px;
+  }
+}
