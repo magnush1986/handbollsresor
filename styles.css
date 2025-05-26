@@ -601,3 +601,22 @@ details[open] .summary-icon {
     max-width: 300px;
   }
 }
+
+@media (min-width: 768px) {
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+  }
+
+  .filter-item label {
+    margin-right: 0.4rem;
+    width: auto;
+  }
+
+  .filter-item select {
+    width: auto;
+    max-width: 300px;
+  }
+}
