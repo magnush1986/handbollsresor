@@ -636,7 +636,7 @@ details[open] .summary-icon {
 }
 
 .event-group {
-    margin-bottom: 3rem; /* Ökar avståndet mellan varje månad */
+    margin-bottom: 5rem; /* Ökar avståndet mellan varje månad */
   } 
   
   @media (max-width: 600px) {
