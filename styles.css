@@ -641,12 +641,16 @@ details[open] .summary-icon {
   }
 }
 /* === Varannan månad randig === */
+.event-group {
+  padding: 0; /* Ingen extra padding */
+  margin-bottom: 3rem;
+}
+
 .event-group:nth-of-type(odd) {
   background-color: #DFF5E3;
-  padding: 1rem;
   border-radius: 6px;
 }
 
-.event-group {
-  margin-bottom: 3rem; /* Ökar avståndet mellan varje månad */
+.event-card {
+  margin: 0.8rem 0; /* Behåll luft mellan korten */
 }
