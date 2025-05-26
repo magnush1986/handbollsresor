@@ -643,6 +643,6 @@ details[open] .summary-icon {
 /* === Varannan månad randig === */
 .event-group:nth-of-type(odd) {
   background-color: #DFF5E3;
-  padding: 0rem;
+  padding: 1rem;
   margin-bottom: 3.5rem;
 }
