@@ -140,11 +140,11 @@ h1#page-title {
     margin-bottom: 1.5rem;
   }
 
-  .season-filter-wrapper > label:nth-child(-n+6) {
+  .season-filter-wrapper .filter-item:nth-child(-n+3) {
     order: 1;
   }
 
-  .season-filter-wrapper > label:nth-child(n+7) {
+  .season-filter-wrapper .filter-item:nth-child(4) {
     order: 2;
     width: 100%;
     margin-top: 0.5rem;
