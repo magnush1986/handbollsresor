@@ -640,6 +640,12 @@ details[open] .summary-icon {
     font-size: 0.95rem;
   }
 }
+/* === Varannan månad randig === */
+.event-group:nth-of-type(odd) {
+  background-color: #DFF5E3;
+  padding: 1rem;
+  border-radius: 6px;
+}
 
 .event-group {
   margin-bottom: 3rem; /* Ökar avståndet mellan varje månad */
