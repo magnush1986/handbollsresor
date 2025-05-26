@@ -131,6 +131,26 @@ h1#page-title {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+@media (min-width: 768px) {
+  .season-filter-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .season-filter-wrapper > label:nth-child(-n+6) {
+    order: 1;
+  }
+
+  .season-filter-wrapper > label:nth-child(n+7) {
+    order: 2;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
 /* === Navigering & hamburgermeny === */
 .main-nav {
   display: flex;
