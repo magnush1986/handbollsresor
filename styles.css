@@ -640,3 +640,7 @@ details[open] .summary-icon {
     font-size: 0.95rem;
   }
 }
+
+.event-group {
+  margin-bottom: 2rem; /* Ökar avståndet mellan varje månad */
+}
