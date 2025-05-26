@@ -638,3 +638,12 @@ details[open] .summary-icon {
 .event-group {
     margin-bottom: 3rem; /* Ökar avståndet mellan varje månad */
   } 
+  
+  @media (max-width: 600px) {
+  .event-group h2,
+  .event-card,
+  .event-title {
+    font-size: 1rem; /* Justera detta värde som du önskar, t.ex. 0.95rem */
+  }
+}
+  
