@@ -431,13 +431,12 @@ function renderEventCard(e, target, isFirst = false) {
   ? `<div class="event-line adress-line">
        <div class="main-row">
          <span class="icon">📬</span>
-         <div class="adress-content">
-           <div class="value">${adress}</div>
-           <div class="maps-links">
-             <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a><br>
-             <a href="https://maps.apple.com/?q=${encodeURIComponent(adress)}" target="_blank">Visa på Apple Kartor</a>
-           </div>
-         </div>
+         <span class="label">Adress till boende:</span>
+         <span class="value">${adress}</span><br>
+       </div>
+       <div class="maps-links">
+         <span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a></span><br>
+         <span class="google-link"><a href="https://maps.apple.com/?q=${encodeURIComponent(adress)}" target="_blank">Visa på Apple Kartor</a></span>
        </div>
      </div>`
   : "";
