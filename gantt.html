@@ -12,43 +12,53 @@
         padding: 0;
       }
 
-      #gantt {
+      #gantt-container {
         width: 100%;
         height: 600px;
+        overflow: auto;
+        margin: 20px;
+        border: 1px solid #ccc;
+      }
+
+      svg {
+        width: 100% !important;
+        height: auto !important;
       }
     </style>
   </head>
   <body>
     <h1 style="text-align:center; margin-top:20px;">Gantt-schema för säsongen</h1>
-    <div id="gantt"></div>
+    <div id="gantt-container"></div>
 
     <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
     <script>
-      var tasks = [
-        {
-          id: 'Task 1',
-          name: 'Design',
-          start: '2025-06-01',
-          end: '2025-06-05',
-          progress: 20
-        },
-        {
-          id: 'Task 2',
-          name: 'Development',
-          start: '2025-06-06',
-          end: '2025-06-20',
-          progress: 0
-        },
-        {
-          id: 'Task 3',
-          name: 'Test',
-          start: '2025-06-21',
-          end: '2025-06-25',
-          progress: 50
-        }
-      ];
+      document.addEventListener("DOMContentLoaded", function() {
+        var tasks = [
+          {
+            id: 'Task 1',
+            name: 'Design',
+            start: '2025-06-01',
+            end: '2025-06-05',
+            progress: 20
+          },
+          {
+            id: 'Task 2',
+            name: 'Development',
+            start: '2025-06-06',
+            end: '2025-06-20',
+            progress: 0
+          },
+          {
+            id: 'Task 3',
+            name: 'Test',
+            start: '2025-06-21',
+            end: '2025-06-25',
+            progress: 50
+          }
+        ];
 
-      var gantt = new Gantt("#gantt", tasks);
+        var gantt = new Gantt("#gantt-container", tasks);
+      });
     </script>
   </body>
 </html>
