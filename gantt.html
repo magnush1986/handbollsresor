@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gantt-schema</title>
-  <link rel="stylesheet" href="frappe-gantt.css" />
+  <link rel="stylesheet" href="frappe-gantt.css">
   <style>
-    body { margin: 0; padding: 0; }
-    #gantt-container { width: 100%; height: 600px; }
+    #gantt-container {
+      height: 600px;
+      width: 100%;
+      border: 1px solid black;
+    }
   </style>
 </head>
 <body>
-  <h1 style="text-align:center;">Gantt-schema för säsongen</h1>
+  <h1 style="text-align: center;">Gantt-schema för säsongen</h1>
   <div id="gantt-container"></div>
 
   <script src="frappe-gantt.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
       var tasks = [
-        { id: "1", name: "Test", start: "2025-06-01", end: "2025-06-05", progress: 20 }
+        { id: "1", name: "Planering", start: "2025-06-01", end: "2025-06-05", progress: 40 },
+        { id: "2", name: "Utförande", start: "2025-06-06", end: "2025-06-15", progress: 60 }
       ];
       var gantt = new Gantt("#gantt-container", tasks);
     });
