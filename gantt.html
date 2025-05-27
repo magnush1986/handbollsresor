@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Frappe Gantt-schema</title>
+    <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
+  </head>
+  <body>
+    <svg id="gantt"></svg>
+
+    <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
+    <script>
+      var tasks = [
+        {
+          id: 'Task 1',
+          name: 'Design',
+          start: '2025-06-01',
+          end: '2025-06-05',
+          progress: 20
+        },
+        {
+          id: 'Task 2',
+          name: 'Development',
+          start: '2025-06-06',
+          end: '2025-06-20',
+          progress: 0
+        }
+      ];
+
+      var gantt = new Gantt("#gantt", tasks);
+    </script>
+  </body>
+</html>
