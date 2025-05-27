@@ -1,39 +1,83 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gantt-schema för säsongen</title>
-  <link rel="stylesheet" href="frappe-gantt.css">
+  <link rel="stylesheet" href="frappe-gantt.css" />
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
     #gantt-container {
       height: 600px;
       width: 100%;
       border: 1px solid black;
+      margin-bottom: 20px;
+    }
+    #form-container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    #form-container input,
+    #form-container button {
+      margin: 5px 0;
+      padding: 5px;
+      width: 100%;
+    }
+    .button-container {
+      text-align: center;
+    }
+    .button-container button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1 style="text-align: center;">Gantt-schema för säsongen</h1>
+  <h1>Gantt-schema för säsongen</h1>
+
+  <div id="form-container">
+    <h3>Lägg till uppgift</h3>
+    <input type="text" id="task-name" placeholder="Uppgiftsnamn" required />
+    <input type="date" id="task-start" />
+    <input type="date" id="task-end" />
+    <input type="number" id="task-progress" placeholder="Progress %" min="0" max="100" />
+    <button id="add-task">Lägg till uppgift</button>
+  </div>
+
   <div id="gantt-container"></div>
+
+  <div class="button-container">
+    <button onclick="gantt.change_view_mode('Day')">Dag</button>
+    <button onclick="gantt.change_view_mode('Week')">Vecka</button>
+    <button onclick="gantt.change_view_mode('Month')">Månad</button>
+  </div>
 
   <script src="frappe-gantt.min.js"></script>
   <script>
-    console.log("Scriptet körs...");
-
     document.addEventListener("DOMContentLoaded", function() {
-      console.log("DOM laddad");
-
       const tasks = [
         {
-          id: 'Task 1',
+          id: 'Task1',
           name: 'Planering',
           start: '2025-06-01',
           end: '2025-06-05',
           progress: 30,
         },
         {
-          id: 'Task 2',
+          id: 'Task2',
           name: 'Utförande',
           start: '2025-06-06',
           end: '2025-06-15',
@@ -41,10 +85,57 @@
         }
       ];
 
-      console.log("Tasks definierade: ", tasks);
+      const gantt = new Gantt("#gantt-container", tasks, {
+        view_mode: 'Week',
+        bar_height: 30,
+        custom_popup_html: function(task) {
+          return `
+            <div style="padding:10px;">
+              <strong>${task.name}</strong><br>
+              ${task.start} – ${task.end}<br>
+              ${task.progress}% klart
+            </div>
+          `;
+        },
+        on_date_change: function(task, start, end) {
+          console.log('Datum ändrat för', task.name);
+        },
+        on_progress_change: function(task, progress) {
+          console.log('Progress ändrat för', task.name);
+        },
+        on_click: function(task) {
+          console.log('Klickade på', task.name);
+        }
+      });
 
-      const gantt = new Gantt("#gantt-container", tasks);
-      console.log("Gantt-instans skapad: ", gantt);
+      window.gantt = gantt; // Så att knapparna kan ändra vy
+
+      document.getElementById("add-task").addEventListener("click", function() {
+        const name = document.getElementById("task-name").value;
+        const start = document.getElementById("task-start").value;
+        const end = document.getElementById("task-end").value;
+        const progress = parseInt(document.getElementById("task-progress").value) || 0;
+
+        if (!name || !start || !end) {
+          alert("Fyll i alla fält!");
+          return;
+        }
+
+        const newTask = {
+          id: "Task" + (tasks.length + 1),
+          name: name,
+          start: start,
+          end: end,
+          progress: progress
+        };
+
+        tasks.push(newTask);
+        gantt.refresh(tasks);
+        document.getElementById("task-name").value = "";
+        document.getElementById("task-start").value = "";
+        document.getElementById("task-end").value = "";
+        document.getElementById("task-progress").value = "";
+      });
     });
   </script>
 </body>
