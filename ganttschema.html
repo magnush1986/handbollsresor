@@ -83,7 +83,7 @@
       return date.toISOString().split('T')[0];
     }
 
-    function translateMonths() {
+    function translateMonthsAndYears() {
       const monthMap = {
         January: 'Januari',
         February: 'Februari',
@@ -110,6 +110,25 @@
           }
         }
       });
+
+      // Lägg till tydligare år på egen rad
+      const yearRowExists = document.querySelector('.grid-header .year-row');
+      if (!yearRowExists) {
+        const header = document.querySelector('.grid-header .grid-row').parentElement;
+        const yearRow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        yearRow.classList.add('year-row');
+        header.insertBefore(yearRow, header.firstChild);
+
+        const years = [...new Set(Array.from(document.querySelectorAll('.grid-header .grid-row .tick text')).map(el => el.textContent.trim().split(' ')[1]))];
+        years.forEach((year, index) => {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', 50 + index * 300); // Anpassa x vid behov
+          text.setAttribute('y', 12);
+          text.setAttribute('font-weight', 'bold');
+          text.textContent = year;
+          yearRow.appendChild(text);
+        });
+      }
     }
 
     function translateTodayButton() {
@@ -231,7 +250,7 @@
           });
         });
 
-        translateMonths();
+        translateMonthsAndYears();
         translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
