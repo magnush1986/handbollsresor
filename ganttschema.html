@@ -107,7 +107,7 @@
         }
       });
 
-      // Lägg till år-rad ovanför månader
+      // Lägg till år som en egen rad överst
       const existingYearRow = document.querySelector('.year-row');
       if (existingYearRow) existingYearRow.remove();
 
@@ -135,6 +135,23 @@
       });
 
       svg.appendChild(yearRow);
+
+      // Lägg till linjer för månadsbryt
+      document.querySelectorAll('.month-line').forEach(line => line.remove());
+      ticks.forEach(tick => {
+        const x = tick.getAttribute('transform')?.match(/translate\(([^,]+)/)?.[1];
+        if (x) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', x);
+          line.setAttribute('y1', 0);
+          line.setAttribute('x2', x);
+          line.setAttribute('y2', 600);
+          line.setAttribute('stroke', '#999');
+          line.setAttribute('stroke-dasharray', '2,2');
+          line.classList.add('month-line');
+          svg.appendChild(line);
+        }
+      });
     }
 
     function translateTodayButton() {
@@ -246,13 +263,12 @@
           bar_height: 30
         });
 
-        document.querySelectorAll('.bar').forEach(bar => {
-          const taskName = bar.querySelector('text')?.textContent?.trim();
-          const taskData = tasks.find(t => t.name === taskName);
-          if (taskData) {
-            const rect = bar.querySelector('rect');
-            if (rect) rect.style.fill = getColorForType(taskData.type || 'Övrigt');
-          }
+        tasks.forEach(task => {
+          const typeColor = getColorForType(task.type || 'Övrigt');
+          const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
+          bars.forEach(rect => {
+            rect.style.fill = typeColor;
+          });
         });
 
         translateMonthsAndAddYears();
