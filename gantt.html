@@ -26,9 +26,11 @@
   <h1>Gantt-schema för säsongen</h1>
   <div id="gantt-container"></div>
 
-  <script src="frappe-gantt.min.js"></script>
+  <script src="frappe-gantt.umd.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOM laddad");
+
       const tasks = [
         {
           id: 'Task1',
@@ -66,6 +68,8 @@
           `;
         }
       });
+
+      console.log("Gantt-schemat initierat:", gantt);
     });
   </script>
 </body>
