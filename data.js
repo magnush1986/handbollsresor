@@ -432,10 +432,10 @@ function renderEventCard(e, target, isFirst = false) {
        <div class="main-row">
          <span class="icon">📬</span>
          <span class="label">Adress till boende:</span>
-         <span class="value">${adress}</span><br>
+         <span class="value">${adress}</span>
        </div>
        <div class="maps-links">
-         <span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a></span><br>
+         <br><span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a></span><br>
          <span class="google-link"><a href="https://maps.apple.com/?q=${encodeURIComponent(adress)}" target="_blank">Visa på Apple Kartor</a></span>
        </div>
      </div>`
