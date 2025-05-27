@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gantt-schema</title>
+  <title>Gantt-schema för säsongen</title>
   <link rel="stylesheet" href="frappe-gantt.css">
   <style>
     #gantt-container {
@@ -19,12 +19,32 @@
 
   <script src="frappe-gantt.min.js"></script>
   <script>
+    console.log("Scriptet körs...");
+
     document.addEventListener("DOMContentLoaded", function() {
-      var tasks = [
-        { id: "1", name: "Planering", start: "2025-06-01", end: "2025-06-05", progress: 40 },
-        { id: "2", name: "Utförande", start: "2025-06-06", end: "2025-06-15", progress: 60 }
+      console.log("DOM laddad");
+
+      const tasks = [
+        {
+          id: 'Task 1',
+          name: 'Planering',
+          start: '2025-06-01',
+          end: '2025-06-05',
+          progress: 30,
+        },
+        {
+          id: 'Task 2',
+          name: 'Utförande',
+          start: '2025-06-06',
+          end: '2025-06-15',
+          progress: 60,
+        }
       ];
-      var gantt = new Gantt("#gantt-container", tasks);
+
+      console.log("Tasks definierade: ", tasks);
+
+      const gantt = new Gantt("#gantt-container", tasks);
+      console.log("Gantt-instans skapad: ", gantt);
     });
   </script>
 </body>
