@@ -646,4 +646,17 @@ details[open] .summary-icon {
   margin-bottom: 5rem;
 }}
 
+.adress-content {
+  display: flex;
+  flex-direction: column;
+}
 
+.maps-links {
+  margin-left: 1.5rem;
+  margin-top: 0.3rem;
+  font-size: 0.95em;
+}
+
+.maps-links a {
+  display: block;
+}
