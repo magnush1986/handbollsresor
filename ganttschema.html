@@ -83,52 +83,58 @@
       return date.toISOString().split('T')[0];
     }
 
-    function translateMonthsAndYears() {
+    function translateMonthsAndAddYears() {
       const monthMap = {
-        January: 'Januari',
-        February: 'Februari',
-        March: 'Mars',
-        April: 'April',
-        May: 'Maj',
-        June: 'Juni',
-        July: 'Juli',
-        August: 'Augusti',
-        September: 'September',
-        October: 'Oktober',
-        November: 'November',
-        December: 'December'
+        January: 'Januari', February: 'Februari', March: 'Mars', April: 'April', May: 'Maj',
+        June: 'Juni', July: 'Juli', August: 'Augusti', September: 'September',
+        October: 'Oktober', November: 'November', December: 'December'
       };
 
-      document.querySelectorAll('.grid-header .grid-row .tick text').forEach(el => {
-        const text = el.textContent.trim();
-        const parts = text.split(' ');
-        if (parts.length === 2) {
-          const eng = parts[0];
-          const year = parts[1];
-          if (monthMap[eng]) {
-            el.textContent = `${monthMap[eng]} ${year}`;
+      const ticks = document.querySelectorAll('.grid-header .grid-row .tick');
+      const years = new Set();
+      ticks.forEach(tick => {
+        const textEl = tick.querySelector('text');
+        if (textEl) {
+          const parts = textEl.textContent.trim().split(' ');
+          if (parts.length === 2) {
+            const eng = parts[0];
+            const year = parts[1];
+            years.add(year);
+            if (monthMap[eng]) {
+              textEl.textContent = `${monthMap[eng]} ${year}`;
+            }
           }
         }
       });
 
-      // Lägg till tydligare år på egen rad
-      const yearRowExists = document.querySelector('.grid-header .year-row');
-      if (!yearRowExists) {
-        const header = document.querySelector('.grid-header .grid-row').parentElement;
-        const yearRow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        yearRow.classList.add('year-row');
-        header.insertBefore(yearRow, header.firstChild);
+      // Lägg till år-rad ovanför månader
+      const existingYearRow = document.querySelector('.year-row');
+      if (existingYearRow) existingYearRow.remove();
 
-        const years = [...new Set(Array.from(document.querySelectorAll('.grid-header .grid-row .tick text')).map(el => el.textContent.trim().split(' ')[1]))];
-        years.forEach((year, index) => {
-          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', 50 + index * 300); // Anpassa x vid behov
-          text.setAttribute('y', 12);
-          text.setAttribute('font-weight', 'bold');
-          text.textContent = year;
-          yearRow.appendChild(text);
-        });
-      }
+      const svg = document.querySelector('.grid-header svg');
+      if (!svg) return;
+
+      const yearRow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      yearRow.classList.add('year-row');
+
+      ticks.forEach(tick => {
+        const textEl = tick.querySelector('text');
+        if (textEl) {
+          const parts = textEl.textContent.trim().split(' ');
+          if (parts.length === 2) {
+            const year = parts[1];
+            const x = tick.getAttribute('transform')?.match(/translate\(([^,]+)/)?.[1] || 0;
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', 10);
+            text.setAttribute('font-weight', 'bold');
+            text.textContent = year;
+            yearRow.appendChild(text);
+          }
+        }
+      });
+
+      svg.appendChild(yearRow);
     }
 
     function translateTodayButton() {
@@ -240,17 +246,16 @@
           bar_height: 30
         });
 
-        tasks.forEach(task => {
-          const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)}`);
-          bars.forEach(bar => {
+        document.querySelectorAll('.bar').forEach(bar => {
+          const taskName = bar.querySelector('text')?.textContent?.trim();
+          const taskData = tasks.find(t => t.name === taskName);
+          if (taskData) {
             const rect = bar.querySelector('rect');
-            if (rect) {
-              rect.style.fill = getColorForType(task.type || 'Övrigt');
-            }
-          });
+            if (rect) rect.style.fill = getColorForType(taskData.type || 'Övrigt');
+          }
         });
 
-        translateMonthsAndYears();
+        translateMonthsAndAddYears();
         translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
