@@ -252,7 +252,7 @@ function loadFilteredEvents() {
       const group = grouped[key];
       const groupDiv = document.createElement('div');
       groupDiv.className = 'event-group';
-      groupDiv.innerHTML = `<h2>📅 ${group.year} – ${group.name}</h2>`;
+      groupDiv.innerHTML = `<h2>🗓️ ${group.year} – ${group.name}</h2>`;
       group.data.forEach(e => {
         renderEventCard(e, groupDiv, !firstEventRendered);
         firstEventRendered = true;
