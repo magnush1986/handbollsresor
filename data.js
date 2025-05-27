@@ -270,7 +270,7 @@ function loadFilteredEvents() {
     });
 
     Object.keys(groupedBySeason).sort().reverse().forEach(season => {
-      renderGroup(`📆 ${season}`, groupedBySeason[season], container);
+      renderGroup(`🗓️ ${season}`, groupedBySeason[season], container);
     });
 
   } else if (selectedSeason === currentSeason) {
