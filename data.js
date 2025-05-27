@@ -428,15 +428,18 @@ function renderEventCard(e, target, isFirst = false) {
 
   const adress = e['Adress till boende']?.trim();
   const adressTillBoendeHtml = adress
-    ? `<div class="event-line adress-line">
-         <div class="main-row">
-           <span class="icon">📬</span>
-           <span class="label">Adress till boende:</span>
-           <span class="value">${adress}</span>
-         </div>
+  ? `<div class="event-line adress-line">
+       <div class="main-row">
+         <span class="icon">📬</span>
+         <span class="label">Adress till boende:</span>
+         <span class="value">${adress}</span>
+       </div>
+       <div class="maps-links">
          <span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adress)}" target="_blank">Visa på Google Maps</a></span>
-       </div>`
-    : "";
+         <span class="google-link"><a href="https://maps.apple.com/?q=${encodeURIComponent(adress)}" target="_blank">Visa på Apple Kartor</a></span>
+       </div>
+     </div>`
+  : "";
 
   contentDiv.innerHTML = `
     <div class="event-section">
