@@ -39,6 +39,7 @@
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
     let allEvents = [];
+    let colorMap = {};
 
     function getCurrentSeason() {
       const today = new Date();
@@ -46,6 +47,15 @@
       const month = today.getMonth() + 1;
       if (year === 2025 && month >= 5) return '2025-2026';
       return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    }
+
+    function getColorForType(type) {
+      if (!colorMap[type]) {
+        const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
+        const index = Math.abs(type.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % colors.length;
+        colorMap[type] = colors[index];
+      }
+      return colorMap[type];
     }
 
     function loadEvents() {
@@ -121,9 +131,18 @@
 
       document.getElementById('gantt-container').innerHTML = '';
       if (tasks.length > 0) {
-        new Gantt('#gantt-container', tasks, {
-          view_mode: 'Week',
+        const gantt = new Gantt('#gantt-container', tasks, {
+          view_mode: 'Day',
           bar_height: 30
+        });
+
+        gantt.tasks.forEach(task => {
+          const event = allEvents.find(e => e['Namn på händelse'] === task.name);
+          const type = event ? event['Typ av händelse'] : 'Övrigt';
+          const bar = document.querySelector(`.bar[data-id="${task.id}"] rect`);
+          if (bar) {
+            bar.style.fill = getColorForType(type);
+          }
         });
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
