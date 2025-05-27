@@ -28,53 +28,74 @@
   <h1>Gantt-schema för säsongen</h1>
   <div id="gantt-container"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
-    document.addEventListener("DOMContentLoaded", function() {
-      Papa.parse(SHEET_URL, {
-        download: true,
-        header: true,
-        complete: function(results) {
-          const data = results.data;
-          console.log("CSV Data:", data);
+    function getCurrentSeason() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      if (year === 2025 && month >= 5) return '2025-2026';
+      return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+    }
 
-          const tasks = data
-            .filter(row => row['Datum från'] && row['Datum till'])
-            .map((row, index) => {
-              return {
-                id: `Task${index}`,
-                name: row['Namn på händelse'] || 'Händelse',
-                start: row['Datum från'],
-                end: row['Datum till'],
-                progress: 0,
-              };
-            });
+    function getEffectiveToday() {
+      const today = new Date();
+      if (today.getFullYear() === 2025 && (today.getMonth() + 1) < 7) {
+        return new Date('2025-07-01');
+      }
+      return today;
+    }
 
-          console.log("Gantt tasks:", tasks);
+    function fetchCSV(url) {
+      return fetch(url).then(response => response.text());
+    }
 
-          const gantt = new Gantt("#gantt-container", tasks, {
-            view_mode: 'Week',
-            bar_height: 30,
-            custom_popup_html: function(task) {
-              const event = data.find(d => `Task${data.indexOf(d)}` === task.id);
-              return `
-                <div style="padding:10px;">
-                  <strong>${event['Namn på händelse']}</strong><br>
-                  ${event['Datum från']} – ${event['Datum till']}<br>
-                  Typ: ${event['Typ av händelse']}<br>
-                  Plats: ${event['Plats']}<br>
-                  Kostnad: ${event['Kostnad per spelare'] || '-'}
-                </div>
-              `;
-            }
-          });
+    function parseCSV(csv) {
+      const [headerLine, ...lines] = csv.trim().split('\n');
+      const headers = headerLine.split('\t');
+      return lines.map(line => {
+        const cols = line.split('\t');
+        const obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = cols[i] ? cols[i].trim() : '');
+        return obj;
+      });
+    }
 
-          console.log("Gantt initialized", gantt);
+    function createTasks(data) {
+      const currentSeason = getCurrentSeason();
+      const filtered = data.filter(row => row['Säsong'] === currentSeason);
+      filtered.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+      return filtered.map((row, index) => ({
+        id: `Task${index}`,
+        name: row['Namn på händelse'] || `Händelse ${index + 1}`,
+        start: row['Datum från'],
+        end: row['Datum till'],
+        progress: 0
+      }));
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+      const csv = await fetchCSV(SHEET_URL);
+      const data = parseCSV(csv);
+      const tasks = createTasks(data);
+
+      const gantt = new Gantt("#gantt-container", tasks, {
+        view_mode: 'Week',
+        bar_height: 30,
+        scroll_to: 'today',
+        custom_popup_html: function(task) {
+          return `
+            <div style="padding:10px;">
+              <strong>${task.name}</strong><br>
+              ${task.start} – ${task.end}
+            </div>
+          `;
         }
       });
+
+      console.log("Gantt initialized with tasks:", tasks);
     });
   </script>
 </body>
