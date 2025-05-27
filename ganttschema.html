@@ -58,6 +58,13 @@
       return colorMap[type];
     }
 
+    function adjustEndDate(dateString) {
+      if (!dateString) return null;
+      const date = new Date(dateString);
+      date.setDate(date.getDate() + 1);
+      return date.toISOString().split('T')[0];
+    }
+
     function loadEvents() {
       fetch(SHEET_URL)
         .then(res => res.text())
@@ -125,7 +132,7 @@
         id: e['Namn på händelse'],
         name: e['Namn på händelse'],
         start: e['Datum från'],
-        end: e['Datum till'] || e['Datum från'],
+        end: adjustEndDate(e['Datum till'] || e['Datum från']),
         progress: 0
       }));
 
