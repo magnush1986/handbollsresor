@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gantt-schema</title>
+
+    <!-- Länka till din lokala CSS-fil -->
     <link rel="stylesheet" href="frappe-gantt.css" />
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -20,51 +23,44 @@
         overflow: hidden;
         position: relative;
       }
-
-      #gantt-container svg {
-        width: 100% !important;
-        height: 100% !important;
-        display: block;
-      }
-
-      .popup-wrapper {
-        position: absolute !important;
-      }
     </style>
   </head>
   <body>
-    <h1 style="text-align:center; margin-top:20px;">Gantt-schema för säsongen</h1>
+    <h1 style="text-align: center; margin-top: 20px;">Gantt-schema för säsongen</h1>
+
     <div id="gantt-container"></div>
 
+    <!-- Länka till din lokala JavaScript-fil -->
     <script src="frappe-gantt.min.js"></script>
+
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
+      document.addEventListener("DOMContentLoaded", function () {
         var tasks = [
           {
-            id: 'Task1',
-            name: 'Förberedelse',
-            start: '2025-06-01',
-            end: '2025-06-05',
+            id: "Task1",
+            name: "Förberedelse",
+            start: "2025-06-01",
+            end: "2025-06-05",
             progress: 40
           },
           {
-            id: 'Task2',
-            name: 'Utförande',
-            start: '2025-06-06',
-            end: '2025-06-15',
+            id: "Task2",
+            name: "Utförande",
+            start: "2025-06-06",
+            end: "2025-06-15",
             progress: 60
           },
           {
-            id: 'Task3',
-            name: 'Avslut',
-            start: '2025-06-16',
-            end: '2025-06-20',
+            id: "Task3",
+            name: "Avslut",
+            start: "2025-06-16",
+            end: "2025-06-20",
             progress: 10
           }
         ];
 
         var gantt = new Gantt("#gantt-container", tasks, {
-          view_mode: 'Month'
+          view_mode: "Month"
         });
       });
     </script>
