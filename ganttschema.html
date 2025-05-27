@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gantt-schema för säsongen</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,7 +14,12 @@
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+    }
+    #filters {
+      margin: 20px 0;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
     }
     #gantt-container {
       height: 600px;
@@ -26,11 +31,14 @@
 </head>
 <body>
   <h1>Gantt-schema för säsongen</h1>
+  <div id="filters"></div>
   <div id="gantt-container"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
+    let allEvents = [];
 
     function getCurrentSeason() {
       const today = new Date();
@@ -40,63 +48,89 @@
       return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
     }
 
-    function getEffectiveToday() {
-      const today = new Date();
-      if (today.getFullYear() === 2025 && (today.getMonth() + 1) < 7) {
-        return new Date('2025-07-01');
-      }
-      return today;
+    function loadEvents() {
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(csvText => {
+          Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              allEvents = results.data.filter(e => e['Datum från']);
+              setupFilters();
+              renderGantt();
+            }
+          });
+        });
     }
 
-    function fetchCSV(url) {
-      return fetch(url).then(response => response.text());
-    }
+    function setupFilters() {
+      const filtersDiv = document.getElementById('filters');
+      filtersDiv.innerHTML = '';
 
-    function parseCSV(csv) {
-      const [headerLine, ...lines] = csv.trim().split('\n');
-      const headers = headerLine.split('\t');
-      return lines.map(line => {
-        const cols = line.split('\t');
-        const obj = {};
-        headers.forEach((h, i) => obj[h.trim()] = cols[i] ? cols[i].trim() : '');
-        return obj;
+      const seasonSelect = document.createElement('select');
+      seasonSelect.id = 'season-filter';
+      const seasonOptionAll = document.createElement('option');
+      seasonOptionAll.value = '';
+      seasonOptionAll.textContent = 'Alla säsonger';
+      seasonSelect.appendChild(seasonOptionAll);
+      [...new Set(allEvents.map(e => e['Säsong']))].sort().reverse().forEach(season => {
+        const option = document.createElement('option');
+        option.value = season;
+        option.textContent = season;
+        seasonSelect.appendChild(option);
       });
+      seasonSelect.value = getCurrentSeason();
+
+      const typeSelect = document.createElement('select');
+      typeSelect.id = 'type-filter';
+      const typeOptionAll = document.createElement('option');
+      typeOptionAll.value = '';
+      typeOptionAll.textContent = 'Alla typer';
+      typeSelect.appendChild(typeOptionAll);
+      [...new Set(allEvents.map(e => e['Typ av händelse']))].sort().forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        typeSelect.appendChild(option);
+      });
+
+      filtersDiv.appendChild(seasonSelect);
+      filtersDiv.appendChild(typeSelect);
+
+      seasonSelect.addEventListener('change', renderGantt);
+      typeSelect.addEventListener('change', renderGantt);
     }
 
-    function createTasks(data) {
-      const currentSeason = getCurrentSeason();
-      const filtered = data.filter(row => row['Säsong'] === currentSeason);
-      filtered.sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
-      return filtered.map((row, index) => ({
-        id: `Task${index}`,
-        name: row['Namn på händelse'] || `Händelse ${index + 1}`,
-        start: row['Datum från'],
-        end: row['Datum till'],
+    function renderGantt() {
+      const season = document.getElementById('season-filter').value;
+      const type = document.getElementById('type-filter').value;
+
+      const filtered = allEvents
+        .filter(e => (!season || e['Säsong'] === season))
+        .filter(e => (!type || e['Typ av händelse'] === type))
+        .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+
+      const tasks = filtered.map(e => ({
+        id: e['Namn på händelse'],
+        name: e['Namn på händelse'],
+        start: e['Datum från'],
+        end: e['Datum till'] || e['Datum från'],
         progress: 0
       }));
+
+      document.getElementById('gantt-container').innerHTML = '';
+      if (tasks.length > 0) {
+        new Gantt('#gantt-container', tasks, {
+          view_mode: 'Week',
+          bar_height: 30
+        });
+      } else {
+        document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", async function() {
-      const csv = await fetchCSV(SHEET_URL);
-      const data = parseCSV(csv);
-      const tasks = createTasks(data);
-
-      const gantt = new Gantt("#gantt-container", tasks, {
-        view_mode: 'Week',
-        bar_height: 30,
-        scroll_to: 'today',
-        custom_popup_html: function(task) {
-          return `
-            <div style="padding:10px;">
-              <strong>${task.name}</strong><br>
-              ${task.start} – ${task.end}
-            </div>
-          `;
-        }
-      });
-
-      console.log("Gantt initialized with tasks:", tasks);
-    });
+    document.addEventListener('DOMContentLoaded', loadEvents);
   </script>
 </body>
 </html>
