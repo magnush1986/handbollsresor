@@ -20,12 +20,28 @@
       display: flex;
       gap: 1rem;
       justify-content: center;
+      flex-wrap: wrap;
     }
     #gantt-container {
       height: 600px;
       width: 100%;
       border: 1px solid #ccc;
       background: #fff;
+    }
+    .view-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .view-buttons button {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+    }
+    .view-buttons button.active {
+      background: #2196F3;
+      color: #fff;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -40,6 +56,8 @@
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
     let allEvents = [];
     let colorMap = {};
+    let currentViewMode = 'Day';
+    let currentGantt = null;
 
     function getCurrentSeason() {
       const today = new Date();
@@ -65,6 +83,42 @@
       return date.toISOString().split('T')[0];
     }
 
+    function translateMonths() {
+      const monthMap = {
+        January: 'Januari',
+        February: 'Februari',
+        March: 'Mars',
+        April: 'April',
+        May: 'Maj',
+        June: 'Juni',
+        July: 'Juli',
+        August: 'Augusti',
+        September: 'September',
+        October: 'Oktober',
+        November: 'November',
+        December: 'December'
+      };
+
+      document.querySelectorAll('.grid-header .grid-row .tick text').forEach(el => {
+        const text = el.textContent.trim();
+        const parts = text.split(' ');
+        if (parts.length === 2) {
+          const eng = parts[0];
+          const year = parts[1];
+          if (monthMap[eng]) {
+            el.textContent = `${monthMap[eng]} ${year}`;
+          }
+        }
+      });
+    }
+
+    function translateTodayButton() {
+      const btn = document.querySelector('.today-btn');
+      if (btn) {
+        btn.textContent = 'Idag';
+      }
+    }
+
     function loadEvents() {
       fetch(SHEET_URL)
         .then(res => res.text())
@@ -75,6 +129,7 @@
             complete: function(results) {
               allEvents = results.data.filter(e => e['Datum från']);
               setupFilters();
+              setupViewButtons();
               renderGantt();
             }
           });
@@ -119,6 +174,28 @@
       typeSelect.addEventListener('change', renderGantt);
     }
 
+    function setupViewButtons() {
+      const filtersDiv = document.getElementById('filters');
+      const viewButtonsDiv = document.createElement('div');
+      viewButtonsDiv.classList.add('view-buttons');
+
+      ['Day', 'Week'].forEach(mode => {
+        const btn = document.createElement('button');
+        btn.textContent = mode;
+        btn.dataset.mode = mode;
+        btn.classList.toggle('active', mode === currentViewMode);
+        btn.addEventListener('click', () => {
+          currentViewMode = mode;
+          document.querySelectorAll('.view-buttons button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderGantt();
+        });
+        viewButtonsDiv.appendChild(btn);
+      });
+
+      filtersDiv.appendChild(viewButtonsDiv);
+    }
+
     function renderGantt() {
       const season = document.getElementById('season-filter').value;
       const type = document.getElementById('type-filter').value;
@@ -133,24 +210,29 @@
         name: e['Namn på händelse'],
         start: e['Datum från'],
         end: adjustEndDate(e['Datum till'] || e['Datum från']),
-        progress: 0
+        progress: 0,
+        type: e['Typ av händelse']
       }));
 
       document.getElementById('gantt-container').innerHTML = '';
       if (tasks.length > 0) {
-        const gantt = new Gantt('#gantt-container', tasks, {
-          view_mode: 'Day',
+        currentGantt = new Gantt('#gantt-container', tasks, {
+          view_mode: currentViewMode,
           bar_height: 30
         });
 
-        gantt.tasks.forEach(task => {
-          const event = allEvents.find(e => e['Namn på händelse'] === task.name);
-          const type = event ? event['Typ av händelse'] : 'Övrigt';
-          const bar = document.querySelector(`.bar[data-id="${task.id}"] rect`);
-          if (bar) {
-            bar.style.fill = getColorForType(type);
-          }
+        tasks.forEach(task => {
+          const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)}`);
+          bars.forEach(bar => {
+            const rect = bar.querySelector('rect');
+            if (rect) {
+              rect.style.fill = getColorForType(task.type || 'Övrigt');
+            }
+          });
         });
+
+        translateMonths();
+        translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
       }
