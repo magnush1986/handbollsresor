@@ -1,100 +1,36 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Packlista</title>
-  <style>
-    :root {
-      --accent-green: #148424;
-      --light-green: #f0fdf4;
-      --border-green: #6ecf7d;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      max-width: 800px;
-      background: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
-      padding: 1rem;
-    }
-
-    .container {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      color: var(--accent-green);
-      margin-bottom: 1rem;
-    }
-
-    h2 {
-      font-size: 1.3rem;
-      color: var(--accent-green);
-      border-left: 4px solid var(--accent-green);
-      padding-left: 0.6rem;
-      margin-top: 2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    p {
-      margin-bottom: 1.2rem;
-    }
-
-    ul {
-      margin: 0 0 1rem 1.5rem;
-      padding-left: 0.5rem;
-    }
-
-    li {
-      margin-bottom: 0.4rem;
-    }
-
-    .section {
-      background-color: var(--light-green);
-      border-left: 4px solid var(--border-green);
-      border-radius: 6px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .section:last-child {
-      margin-bottom: 0;
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 0.8rem;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-        padding-left: 0.5rem;
-      }
-
-      .section {
-        padding: 0.8rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Packlista för Handbollscup</h1>
-    <p>Inför handbollscupen där vi sover i klassrum är det viktigt att packa smart och vara förberedd för både matchspel och övernattning. Här hittar du en komplett packlista så att du inte missar något!</p>
+  <nav class="main-nav">
+    <img src="Logotyp1.jpg" alt="Föreningens logotyp" class="nav-logo" />
+    <div class="nav-wrapper">
+      <button class="menu-toggle" aria-label="Meny">
+        <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="10" rx="5"></rect>
+          <rect y="30" width="100" height="10" rx="5"></rect>
+          <rect y="60" width="100" height="10" rx="5"></rect>
+        </svg>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Händelser</a></li>
+        <li><a href="packlista.html" class="active">Packlista</a></li>
+        <li><a href="budget.html">Budget</a></li>
+      </ul>
+    </div>
+  </nav>
 
+  <h1 id="page-title">Packlista: Handbollscup med övernattning i klassrum</h1>
+  <p style="font-weight:bold; margin-left:0.5rem;">(Fri från nötter)</p>
+
+  <div class="container">
     <div class="section">
-      <h2>Viktigast (måste-ha)</h2>
+      <h2>📦 Viktigast (måste-ha)</h2>
       <ul>
         <li>Handbollskläder: matchtröja, shorts, strumpor (gärna flera uppsättningar)</li>
         <li>Handbollsskor</li>
@@ -107,7 +43,7 @@
     </div>
 
     <div class="section">
-      <h2>Sova i klassrum</h2>
+      <h2>😴 Sova i klassrum</h2>
       <ul>
         <li>Madrass/liggunderlag (gärna uppblåsbar för komfort)</li>
         <li>Sovsäck eller täcke & kudde</li>
@@ -118,7 +54,7 @@
     </div>
 
     <div class="section">
-      <h2>Hygien & personlig packning</h2>
+      <h2>🧴 Hygien & personlig packning</h2>
       <ul>
         <li>Tandborste & tandkräm</li>
         <li>Deodorant</li>
@@ -130,7 +66,7 @@
     </div>
 
     <div class="section">
-      <h2>Kläder utanför planen</h2>
+      <h2>👕 Kläder utanför planen</h2>
       <ul>
         <li>Ombyte för kvällen (t.ex. mjukiskläder)</li>
         <li>Underkläder & strumpor (extra!)</li>
@@ -140,7 +76,7 @@
     </div>
 
     <div class="section">
-      <h2>Mat & snacks (nötfria alternativ)</h2>
+      <h2>🍏 Mat & snacks</h2>
       <ul>
         <li>Frukt (banan, äpple, päron)</li>
         <li>Bars utan nötter</li>
@@ -150,7 +86,7 @@
     </div>
 
     <div class="section">
-      <h2>Övrigt & bra-att-ha</h2>
+      <h2>🎒 Övrigt & bra-att-ha</h2>
       <ul>
         <li>Laddare till mobil</li>
         <li>Powerbank (om lång dag utan laddning)</li>
@@ -162,5 +98,27 @@
       </ul>
     </div>
   </div>
+
+  <footer class="site-footer">
+    <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
+    <span class="footer-text">Developed by Beaver Consulting</span>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.querySelector(".menu-toggle");
+      const navLinks = document.querySelector(".nav-links");
+
+      toggleBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("open");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
