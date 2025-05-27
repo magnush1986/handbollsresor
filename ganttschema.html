@@ -3,158 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ren Gantt</title>
+  <title>Gantt-schema för säsongen</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
   <style>
     body {
-      font-family: sans-serif;
-      padding: 2rem;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 20px;
     }
-    .timeline {
-      position: relative;
-      border-top: 2px solid #333;
-      margin-top: 2rem;
-      height: 250px;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    .event {
-      position: absolute;
-      height: 40px;
-      background: #4CAF50;
-      color: white;
+    h1 {
       text-align: center;
-      border-radius: 4px;
-      padding-top: 10px;
-      font-size: 0.9rem;
-      overflow: hidden;
+      margin-bottom: 20px;
     }
-    .date-labels, .month-labels, .year-labels {
-      position: absolute;
-      font-size: 0.8rem;
-      white-space: nowrap;
-      display: flex;
-    }
-    .date-labels {
-      top: 0;
-    }
-    .month-labels {
-      top: 20px;
-      font-weight: bold;
-    }
-    .year-labels {
-      top: 40px;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-    .swimlane {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 50px;
-      border-top: 1px dashed rgba(0,0,0,0.2);
-      z-index: 0;
+    #gantt-container {
+      height: 600px;
+      width: 100%;
+      border: 1px solid #ccc;
+      background: #fff;
     }
   </style>
 </head>
 <body>
-  <h1>Ganttschema (ren HTML/JS)</h1>
-  <div id="timeline" class="timeline"></div>
+  <h1>Gantt-schema för säsongen</h1>
+  <div id="gantt-container"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
   <script>
-    const timeline = document.getElementById('timeline');
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
 
-    const startDate = new Date('2025-07-01');
-    const endDate = new Date('2025-10-31');
-    const dayMs = 24 * 60 * 60 * 1000;
-    const totalDays = Math.ceil((endDate - startDate) / dayMs);
-    const pxPerDay = 20;
+    document.addEventListener("DOMContentLoaded", function() {
+      Papa.parse(SHEET_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const data = results.data;
+          console.log("CSV Data:", data);
 
-    const yearLabels = document.createElement('div');
-    yearLabels.className = 'year-labels';
-    const monthLabels = document.createElement('div');
-    monthLabels.className = 'month-labels';
-    const dateLabels = document.createElement('div');
-    dateLabels.className = 'date-labels';
+          const tasks = data
+            .filter(row => row['Datum från'] && row['Datum till'])
+            .map((row, index) => {
+              return {
+                id: `Task${index}`,
+                name: row['Namn på händelse'] || 'Händelse',
+                start: row['Datum från'],
+                end: row['Datum till'],
+                progress: 0,
+              };
+            });
 
-    let currentMonth = -1;
-    let currentYear = -1;
+          console.log("Gantt tasks:", tasks);
 
-    for (let i = 0; i <= totalDays; i++) {
-      const date = new Date(startDate.getTime() + i * dayMs);
-      const left = `${i * pxPerDay}px`;
+          const gantt = new Gantt("#gantt-container", tasks, {
+            view_mode: 'Week',
+            bar_height: 30,
+            custom_popup_html: function(task) {
+              const event = data.find(d => `Task${data.indexOf(d)}` === task.id);
+              return `
+                <div style="padding:10px;">
+                  <strong>${event['Namn på händelse']}</strong><br>
+                  ${event['Datum från']} – ${event['Datum till']}<br>
+                  Typ: ${event['Typ av händelse']}<br>
+                  Plats: ${event['Plats']}<br>
+                  Kostnad: ${event['Kostnad per spelare'] || '-'}
+                </div>
+              `;
+            }
+          });
 
-      const dateDiv = document.createElement('div');
-      dateDiv.style.width = `${pxPerDay}px`;
-      dateDiv.style.textAlign = 'center';
-      dateDiv.style.left = left;
-      dateDiv.innerText = date.getDate();
-      dateLabels.appendChild(dateDiv);
-
-      if (date.getMonth() !== currentMonth) {
-        const monthDiv = document.createElement('div');
-        monthDiv.style.width = `${pxPerDay * 30}px`;
-        monthDiv.innerText = date.toLocaleString('sv-SE', { month: 'long' });
-        monthLabels.appendChild(monthDiv);
-        currentMonth = date.getMonth();
-      }
-
-      if (date.getFullYear() !== currentYear) {
-        const yearDiv = document.createElement('div');
-        yearDiv.style.width = `${pxPerDay * 365}px`;
-        yearDiv.innerText = date.getFullYear();
-        yearLabels.appendChild(yearDiv);
-        currentYear = date.getFullYear();
-      }
-    }
-
-    timeline.appendChild(yearLabels);
-    timeline.appendChild(monthLabels);
-    timeline.appendChild(dateLabels);
-
-    // Simbanor
-    for (let i = 0; i < 5; i++) {
-      const lane = document.createElement('div');
-      lane.className = 'swimlane';
-      lane.style.top = `${70 + i * 50}px`;
-      timeline.appendChild(lane);
-    }
-
-    const events = [
-      {
-        namn: 'Örebrocupen',
-        från: '2025-09-12',
-        till: '2025-09-14',
-        färg: '#4CAF50'
-      },
-      {
-        namn: 'USM Steg 1',
-        från: '2025-10-18',
-        till: '2025-10-19',
-        färg: '#2196F3'
-      },
-      {
-        namn: 'Eken Cup',
-        från: '2025-08-15',
-        till: '2025-08-20',
-        färg: '#FF9800'
-      }
-    ];
-
-    events.forEach((e, index) => {
-      const from = new Date(e.från);
-      const to = new Date(e.till);
-      const offset = Math.floor((from - startDate) / dayMs);
-      const width = Math.max(1, Math.ceil((to - from) / dayMs) + 1);
-
-      const div = document.createElement('div');
-      div.className = 'event';
-      div.innerText = e.namn;
-      div.style.left = `${offset * pxPerDay}px`;
-      div.style.width = `${width * pxPerDay}px`;
-      div.style.top = `${80 + index * 50}px`;
-      div.style.background = e.färg;
-
-      timeline.appendChild(div);
+          console.log("Gantt initialized", gantt);
+        }
+      });
     });
   </script>
 </body>
