@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gantt-schema</title>
-    <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css" />
+    <link rel="stylesheet" href="frappe-gantt.css" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
     <h1 style="text-align:center; margin-top:20px;">Gantt-schema för säsongen</h1>
     <div id="gantt-container"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.5.0/dist/frappe-gantt.min.js"></script>
+    <script src="frappe-gantt.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         var tasks = [
@@ -63,13 +63,9 @@
           }
         ];
 
-        console.log("Tasks data:", tasks);
-
         var gantt = new Gantt("#gantt-container", tasks, {
           view_mode: 'Month'
         });
-
-        console.log("Gantt object:", gantt);
       });
     </script>
   </body>
