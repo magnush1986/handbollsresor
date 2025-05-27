@@ -1,68 +1,27 @@
 <!DOCTYPE html>
 <html lang="sv">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gantt-schema</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gantt-schema</title>
+  <link rel="stylesheet" href="frappe-gantt.css" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #gantt-container { width: 100%; height: 600px; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">Gantt-schema för säsongen</h1>
+  <div id="gantt-container"></div>
 
-    <!-- Länka till din lokala CSS-fil -->
-    <link rel="stylesheet" href="frappe-gantt.css" />
-
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-
-      #gantt-container {
-        width: 100%;
-        height: 600px;
-        margin: 20px auto;
-        border: 1px solid #ccc;
-        overflow: hidden;
-        position: relative;
-      }
-    </style>
-  </head>
-  <body>
-    <h1 style="text-align: center; margin-top: 20px;">Gantt-schema för säsongen</h1>
-
-    <div id="gantt-container"></div>
-
-    <!-- Länka till din lokala JavaScript-fil -->
-    <script src="frappe-gantt.min.js"></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var tasks = [
-          {
-            id: "Task1",
-            name: "Förberedelse",
-            start: "2025-06-01",
-            end: "2025-06-05",
-            progress: 40
-          },
-          {
-            id: "Task2",
-            name: "Utförande",
-            start: "2025-06-06",
-            end: "2025-06-15",
-            progress: 60
-          },
-          {
-            id: "Task3",
-            name: "Avslut",
-            start: "2025-06-16",
-            end: "2025-06-20",
-            progress: 10
-          }
-        ];
-
-        var gantt = new Gantt("#gantt-container", tasks, {
-          view_mode: "Month"
-        });
-      });
-    </script>
-  </body>
+  <script src="frappe-gantt.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var tasks = [
+        { id: "1", name: "Test", start: "2025-06-01", end: "2025-06-05", progress: 20 }
+      ];
+      var gantt = new Gantt("#gantt-container", tasks);
+    });
+  </script>
+</body>
 </html>
