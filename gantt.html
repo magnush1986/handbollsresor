@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gantt-schema för säsongen</title>
-  <link rel="stylesheet" href="frappe-gantt.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,11 +14,13 @@
     }
     h1 {
       text-align: center;
+      margin-bottom: 20px;
     }
     #gantt-container {
       height: 600px;
       width: 100%;
-      border: 1px solid black;
+      border: 1px solid #ccc;
+      background: #fff;
     }
   </style>
 </head>
@@ -26,32 +28,30 @@
   <h1>Gantt-schema för säsongen</h1>
   <div id="gantt-container"></div>
 
-  <script src="frappe-gantt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      console.log("DOM laddad");
-
       const tasks = [
         {
           id: 'Task1',
           name: 'Planering',
           start: '2025-06-01',
           end: '2025-06-05',
-          progress: 30,
+          progress: 30
         },
         {
           id: 'Task2',
           name: 'Utförande',
           start: '2025-06-06',
           end: '2025-06-15',
-          progress: 60,
+          progress: 60
         },
         {
           id: 'Task3',
           name: 'Avslut',
           start: '2025-06-16',
           end: '2025-06-20',
-          progress: 100,
+          progress: 100
         }
       ];
 
@@ -69,7 +69,7 @@
         }
       });
 
-      console.log("Gantt-schemat initierat:", gantt);
+      console.log("Gantt initialized", gantt);
     });
   </script>
 </body>
