@@ -55,17 +55,10 @@
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
     let allEvents = [];
+    let colorMap = {};
     let currentViewMode = 'Day';
-    let currentGantt = null;
 
-    const colorMap = {
-      'Cup': '#4CAF50',
-      'Match': '#2196F3',
-      'Träning': '#FF9800',
-      'Läger': '#9C27B0',
-      'Möte': '#E91E63',
-      'Övrigt': '#00BCD4'
-    };
+    const colorPalette = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
 
     function getCurrentSeason() {
       const today = new Date();
@@ -80,6 +73,13 @@
       const date = new Date(dateString);
       date.setDate(date.getDate() + 1);
       return date.toISOString().split('T')[0];
+    }
+
+    function assignColors() {
+      const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean);
+      types.forEach((type, index) => {
+        colorMap[type] = colorPalette[index % colorPalette.length];
+      });
     }
 
     function addYearRow() {
@@ -132,6 +132,7 @@
             skipEmptyLines: true,
             complete: function(results) {
               allEvents = results.data.filter(e => e['Datum från']);
+              assignColors();
               setupFilters();
               setupViewButtons();
               renderGantt();
@@ -220,7 +221,7 @@
 
       document.getElementById('gantt-container').innerHTML = '';
       if (tasks.length > 0) {
-        currentGantt = new Gantt('#gantt-container', tasks, {
+        const gantt = new Gantt('#gantt-container', tasks, {
           view_mode: currentViewMode,
           bar_height: 30
         });
