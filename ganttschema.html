@@ -82,30 +82,9 @@
       return date.toISOString().split('T')[0];
     }
 
-    function translateHeader() {
-      const monthMap = {
-        January: 'Januari', February: 'Februari', March: 'Mars', April: 'April', May: 'Maj',
-        June: 'Juni', July: 'Juli', August: 'Augusti', September: 'September',
-        October: 'Oktober', November: 'November', December: 'December'
-      };
-
+    function addYearRow() {
       const ticks = document.querySelectorAll('.grid-header .grid-row .tick');
-      const years = new Set();
-
-      ticks.forEach(tick => {
-        const textEl = tick.querySelector('text');
-        if (textEl) {
-          const parts = textEl.textContent.trim().split(' ');
-          if (parts.length === 2) {
-            const eng = parts[0];
-            const year = parts[1];
-            years.add(year);
-            if (monthMap[eng]) {
-              textEl.textContent = `${monthMap[eng]} ${year}`;
-            }
-          }
-        }
-      });
+      if (!ticks.length) return;
 
       const existingYearRow = document.querySelector('.year-row');
       if (existingYearRow) existingYearRow.remove();
@@ -122,7 +101,10 @@
           const parts = textEl.textContent.trim().split(' ');
           if (parts.length === 2) {
             const year = parts[1];
-            const x = tick.getAttribute('transform')?.match(/translate\(([^,]+),/i)?.[1] || 0;
+            const transform = tick.getAttribute('transform') || '';
+            const match = transform.match(/translate\(([^,]+),/);
+            const x = match ? match[1] : 0;
+
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', x);
             text.setAttribute('y', 10);
@@ -134,22 +116,6 @@
       });
 
       svg.appendChild(yearRow);
-
-      document.querySelectorAll('.month-line').forEach(line => line.remove());
-      ticks.forEach(tick => {
-        const x = tick.getAttribute('transform')?.match(/translate\\(([^,]+)/)?.[1];
-        if (x) {
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', x);
-          line.setAttribute('y1', 0);
-          line.setAttribute('x2', x);
-          line.setAttribute('y2', 600);
-          line.setAttribute('stroke', '#999');
-          line.setAttribute('stroke-dasharray', '2,2');
-          line.classList.add('month-line');
-          svg.appendChild(line);
-        }
-      });
     }
 
     function translateTodayButton() {
@@ -266,7 +232,7 @@
           });
         });
 
-        translateHeader();
+        addYearRow();
         translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
