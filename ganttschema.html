@@ -4,54 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gantt-schema för säsongen</title>
+  <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    #filters {
-      margin: 20px 0;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    #gantt-container {
-      height: 600px;
-      width: 100%;
-      border: 1px solid #ccc;
-      background: #fff;
-    }
-    .view-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .view-buttons button {
-      padding: 0.4rem 0.8rem;
-      border: 1px solid #ccc;
-      background: #fff;
-      cursor: pointer;
-    }
-    .view-buttons button.active {
-      background: #2196F3;
-      color: #fff;
-      font-weight: bold;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
 </head>
 <body>
-  <h1>Gantt-schema för säsongen</h1>
+  <nav class="main-nav">
+    <img src="Logotyp1.jpg" alt="Föreningens logotyp" class="nav-logo" />
+    <div class="nav-wrapper">
+      <button class="menu-toggle" aria-label="Meny">
+        <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="10" rx="5"></rect>
+          <rect y="30" width="100" height="10" rx="5"></rect>
+          <rect y="60" width="100" height="10" rx="5"></rect>
+        </svg>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Händelser</a></li>
+        <li><a href="packlista.html">Packlista</a></li>
+        <li><a href="budget.html">Budget</a></li>
+        <li><a href="gantt.html" class="active">Gantt-schema</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <h1 id="page-title">Gantt-schema för säsongen</h1>
+
   <div id="filters"></div>
   <div id="gantt-container"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+  <footer class="site-footer">
+    <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
+    <span class="footer-text">Developed by Beaver Consulting</span>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleBtn = document.querySelector(".menu-toggle");
+      const navLinks = document.querySelector(".nav-links");
+
+      toggleBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("open");
+        });
+      });
+    });
+  </script>
+
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
     let allEvents = [];
@@ -116,11 +120,6 @@
       });
 
       svg.appendChild(yearRow);
-    }
-
-    function translateTodayButton() {
-      const btn = document.querySelector('.today-btn');
-      if (btn) btn.textContent = 'Idag';
     }
 
     function loadEvents() {
@@ -223,7 +222,8 @@
       if (tasks.length > 0) {
         const gantt = new Gantt('#gantt-container', tasks, {
           view_mode: currentViewMode,
-          bar_height: 30
+          bar_height: 30,
+          lines: 'vertical'
         });
 
         tasks.forEach(task => {
@@ -234,7 +234,6 @@
         });
 
         addYearRow();
-        translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
       }
