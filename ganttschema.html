@@ -30,10 +30,11 @@
     </div>
   </nav>
 
-  <h1 id="page-title">Gantt-schema för säsongen</h1>
-
-  <div id="filters"></div>
-  <div id="gantt-container"></div>
+  <div class="gantt-wrapper">
+    <h1 id="page-title">Gantt-schema för säsongen</h1>
+    <div id="filters"></div>
+    <div id="gantt-container"></div>
+  </div>
 
   <footer class="site-footer">
     <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
@@ -85,42 +86,6 @@
       types.forEach((type, index) => {
         colorMap[type] = colorPalette[index % colorPalette.length];
       });
-    }
-
-    function addYearRow() {
-      const ticks = document.querySelectorAll('.grid-header .grid-row .tick');
-      if (!ticks.length) return;
-
-      const existingYearRow = document.querySelector('.year-row');
-      if (existingYearRow) existingYearRow.remove();
-
-      const svg = document.querySelector('.grid-header svg');
-      if (!svg) return;
-
-      const yearRow = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      yearRow.classList.add('year-row');
-
-      ticks.forEach(tick => {
-        const textEl = tick.querySelector('text');
-        if (textEl) {
-          const parts = textEl.textContent.trim().split(' ');
-          if (parts.length === 2) {
-            const year = parts[1];
-            const transform = tick.getAttribute('transform') || '';
-            const match = transform.match(/translate\(([^,]+),/);
-            const x = match ? match[1] : 0;
-
-            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', x);
-            text.setAttribute('y', 10);
-            text.setAttribute('font-weight', 'bold');
-            text.textContent = year;
-            yearRow.appendChild(text);
-          }
-        }
-      });
-
-      svg.appendChild(yearRow);
     }
 
     function loadEvents() {
@@ -184,9 +149,9 @@
       const viewButtonsDiv = document.createElement('div');
       viewButtonsDiv.classList.add('view-buttons');
 
-      ['Day', 'Week'].forEach(mode => {
+      [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad']].forEach(([mode, label]) => {
         const btn = document.createElement('button');
-        btn.textContent = mode;
+        btn.textContent = label;
         btn.dataset.mode = mode;
         btn.classList.toggle('active', mode === currentViewMode);
         btn.addEventListener('click', () => {
@@ -233,8 +198,6 @@
             rect.style.fill = colorMap[task.type] || '#CCCCCC';
           });
         });
-
-        addYearRow();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
       }
