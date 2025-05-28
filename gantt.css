@@ -1,0 +1,65 @@
+/* Gantt-sidans egna stilregler */
+.gantt-wrapper {
+  padding: 0 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f8f8;
+}
+
+.gantt-wrapper h1 {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.gantt-wrapper #filters {
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 90%;
+}
+
+.gantt-wrapper #filters select,
+.gantt-wrapper .view-buttons button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.gantt-wrapper #filters select {
+  min-width: 150px;
+}
+
+.gantt-wrapper .view-buttons button.active {
+  background: #2196F3;
+  color: #fff;
+  font-weight: bold;
+}
+
+.gantt-wrapper #gantt-container {
+  flex: 1;
+  width: 95%;
+  max-width: 1400px;
+  margin: 0 auto 2rem auto;
+  height: 80vh;
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Footer styling (delas med andra sidor) */
+.site-footer {
+  text-align: center;
+  padding: 1rem;
+  background: #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.footer-logo {
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
