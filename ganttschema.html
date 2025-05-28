@@ -122,7 +122,7 @@
           const parts = textEl.textContent.trim().split(' ');
           if (parts.length === 2) {
             const year = parts[1];
-            const x = tick.getAttribute('transform')?.match(/translate\(([^,]+)/)?.[1] || 0;
+            const x = tick.getAttribute('transform')?.match(/translate\(([^,]+),/i)?.[1] || 0;
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', x);
             text.setAttribute('y', 10);
