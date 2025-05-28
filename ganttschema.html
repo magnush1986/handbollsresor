@@ -55,9 +55,17 @@
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo3xguOtukMryHNlYnebQdskaIWHXr3POx7fg9NfUHsMTGjOlDnkOJZybrWZ7r36NfB1/pub?output=csv';
     let allEvents = [];
-    let colorMap = {};
     let currentViewMode = 'Day';
     let currentGantt = null;
+
+    const colorMap = {
+      'Cup': '#4CAF50',
+      'Match': '#2196F3',
+      'Träning': '#FF9800',
+      'Läger': '#9C27B0',
+      'Möte': '#E91E63',
+      'Övrigt': '#00BCD4'
+    };
 
     function getCurrentSeason() {
       const today = new Date();
@@ -67,15 +75,6 @@
       return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
     }
 
-    function getColorForType(type) {
-      if (!colorMap[type]) {
-        const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
-        const index = Math.abs(type.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % colors.length;
-        colorMap[type] = colors[index];
-      }
-      return colorMap[type];
-    }
-
     function adjustEndDate(dateString) {
       if (!dateString) return null;
       const date = new Date(dateString);
@@ -83,7 +82,7 @@
       return date.toISOString().split('T')[0];
     }
 
-    function translateMonthsAndAddYears() {
+    function translateHeader() {
       const monthMap = {
         January: 'Januari', February: 'Februari', March: 'Mars', April: 'April', May: 'Maj',
         June: 'Juni', July: 'Juli', August: 'Augusti', September: 'September',
@@ -92,6 +91,7 @@
 
       const ticks = document.querySelectorAll('.grid-header .grid-row .tick');
       const years = new Set();
+
       ticks.forEach(tick => {
         const textEl = tick.querySelector('text');
         if (textEl) {
@@ -107,7 +107,6 @@
         }
       });
 
-      // Lägg till år som en egen rad överst
       const existingYearRow = document.querySelector('.year-row');
       if (existingYearRow) existingYearRow.remove();
 
@@ -123,7 +122,7 @@
           const parts = textEl.textContent.trim().split(' ');
           if (parts.length === 2) {
             const year = parts[1];
-            const x = tick.getAttribute('transform')?.match(/translate\(([^,]+)/)?.[1] || 0;
+            const x = tick.getAttribute('transform')?.match(/translate\\(([^,]+)/)?.[1] || 0;
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', x);
             text.setAttribute('y', 10);
@@ -136,10 +135,9 @@
 
       svg.appendChild(yearRow);
 
-      // Lägg till linjer för månadsbryt
       document.querySelectorAll('.month-line').forEach(line => line.remove());
       ticks.forEach(tick => {
-        const x = tick.getAttribute('transform')?.match(/translate\(([^,]+)/)?.[1];
+        const x = tick.getAttribute('transform')?.match(/translate\\(([^,]+)/)?.[1];
         if (x) {
           const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
           line.setAttribute('x1', x);
@@ -156,9 +154,7 @@
 
     function translateTodayButton() {
       const btn = document.querySelector('.today-btn');
-      if (btn) {
-        btn.textContent = 'Idag';
-      }
+      if (btn) btn.textContent = 'Idag';
     }
 
     function loadEvents() {
@@ -264,14 +260,13 @@
         });
 
         tasks.forEach(task => {
-          const typeColor = getColorForType(task.type || 'Övrigt');
           const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
           bars.forEach(rect => {
-            rect.style.fill = typeColor;
+            rect.style.fill = colorMap[task.type] || '#CCCCCC';
           });
         });
 
-        translateMonthsAndAddYears();
+        translateHeader();
         translateTodayButton();
       } else {
         document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
