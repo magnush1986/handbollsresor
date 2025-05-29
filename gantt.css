@@ -5,9 +5,9 @@
   display: flex;
   flex-direction: column;
   background: #f8f8f8;
-  max-width: 1400px;
+  width: 100%; /* Full bredd för Gantt */
+  max-width: none;
   margin: 0 auto;
-  width: 90%;
 }
 
 .gantt-wrapper h1 {
@@ -44,8 +44,7 @@
 
 .gantt-wrapper #gantt-container {
   flex: 1;
-  width: 100%;
-  max-width: none;
+  width: 95%;
   margin: 0 auto 2rem auto;
   height: 85vh; /* Öka höjden */
   border: 1px solid #ccc;
@@ -68,14 +67,17 @@
   margin-right: 0.5rem;
 }
 
+/* Standard body för alla sidor */
 body {
   max-width: 100%;
   padding: 0;
   margin: 0;
 }
 
+/* Innehållsbredd för sidor UTOM Gantt */
 .page-wrapper {
   max-width: 800px;
   margin: 0 auto;
   padding: 0 1rem;
+  width: 90%;
 }
