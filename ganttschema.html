@@ -188,11 +188,17 @@
 
       document.getElementById('gantt-container').innerHTML = '';
       if (tasks.length > 0) {
+        const minDate = new Date(Math.min(...tasks.map(t => new Date(t.start).getTime())));
+        const maxDate = new Date(Math.max(...tasks.map(t => new Date(t.end).getTime())));
+      
         const gantt = new Gantt('#gantt-container', tasks, {
           view_mode: currentViewMode,
           bar_height: 30,
-          lines: 'vertical'
+          lines: 'vertical',
+          start: minDate,
+          end: maxDate
         });
+
 
         tasks.forEach(task => {
           const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
