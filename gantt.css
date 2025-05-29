@@ -1,12 +1,11 @@
 /* Gantt-sidans egna stilregler */
 .gantt-wrapper {
   padding: 0 20px;
-  min-height: 100vh;
+  min-height: calc(100vh - 120px); /* Tar hänsyn till header + footer */
   display: flex;
   flex-direction: column;
   background: #f8f8f8;
-  width: 100%; /* Full bredd för Gantt */
-  max-width: none;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -43,14 +42,15 @@
 }
 
 .gantt-wrapper #gantt-container {
-  flex: 1;
-  width: 95%;
+  flex: 1 1 auto; /* Flexibel höjd */
+  width: 100%;
+  min-height: 400px; /* Ger en grundhöjd men låter växa */
+  max-height: 85vh; /* Maximal höjd */
   margin: 0 auto 2rem auto;
-  height: 85vh; /* Öka höjden */
   border: 1px solid #ccc;
   background: #fff;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 /* Footer styling (delas med andra sidor) */
