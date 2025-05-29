@@ -149,13 +149,16 @@ function renderGantt() {
   if (tasks.length > 0) {
     const minDate = new Date(Math.min(...tasks.map(t => new Date(t.start))));
     const maxDate = new Date(Math.max(...tasks.map(t => new Date(t.end))));
+    minDate.setHours(0, 0, 0, 0);
+    maxDate.setHours(23, 59, 59, 999);
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
       bar_height: 30,
       lines: 'vertical',
       start: minDate,
-      end: maxDate
+      end: maxDate,
+      padding: 0, // Försök minska intern padding (om biblioteket stödjer detta)
     });
 
     tasks.forEach(task => {
@@ -168,3 +171,4 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
