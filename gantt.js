@@ -143,12 +143,12 @@ function renderGantt() {
     type: e['Typ av händelse']
   }));
 
-  document.getElementById('gantt-container').innerHTML = '';
+  const container = document.getElementById('gantt-container');
+  container.innerHTML = '';
+
   if (tasks.length > 0) {
-    const startDates = tasks.map(t => new Date(t.start));
-    const endDates = tasks.map(t => new Date(t.end));
-    const minDate = new Date(Math.min(...startDates));
-    const maxDate = new Date(Math.max(...endDates));
+    const minDate = new Date(Math.min(...tasks.map(t => new Date(t.start))));
+    const maxDate = new Date(Math.max(...tasks.map(t => new Date(t.end))));
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
@@ -165,6 +165,6 @@ function renderGantt() {
       });
     });
   } else {
-    document.getElementById('gantt-container').innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
+    container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
