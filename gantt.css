@@ -72,3 +72,9 @@
   vertical-align: middle;
   margin-right: 0.5rem;
 }
+
+.page-wrapper.full-width {
+  max-width: none;
+  width: 100%;
+  padding: 0 20px;
+}
