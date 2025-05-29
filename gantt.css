@@ -1,12 +1,19 @@
-/* Gantt-sidans egna stilregler */
+/* === Gantt-sidans stilregler === */
 .gantt-wrapper {
   padding: 0 20px;
-  min-height: calc(100vh - 120px); /* Tar hänsyn till header + footer */
+  min-height: calc(100vh - 150px); /* Tar hänsyn till header + footer */
   display: flex;
   flex-direction: column;
   background: #f8f8f8;
-  width: 100%;
   margin: 0 auto;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.page-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .gantt-wrapper h1 {
@@ -42,18 +49,17 @@
 }
 
 .gantt-wrapper #gantt-container {
-  flex: 1 1 auto; /* Flexibel höjd */
+  flex: 1 1 auto;
   width: 100%;
-  min-height: 400px; /* Ger en grundhöjd men låter växa */
-  max-height: 85vh; /* Maximal höjd */
   margin: 0 auto 2rem auto;
   border: 1px solid #ccc;
   background: #fff;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto; /* Anpassad scroll */
+  height: auto; /* Låter innehållet styra höjden */
+  min-height: 400px;
 }
 
-/* Footer styling (delas med andra sidor) */
+/* === Footer (gemensam) === */
 .site-footer {
   text-align: center;
   padding: 1rem;
@@ -65,19 +71,4 @@
   height: 30px;
   vertical-align: middle;
   margin-right: 0.5rem;
-}
-
-/* Standard body för alla sidor */
-body {
-  max-width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-/* Innehållsbredd för sidor UTOM Gantt */
-.page-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  width: 90%;
 }
