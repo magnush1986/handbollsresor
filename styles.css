@@ -5,13 +5,20 @@ html {
 
 body {
   font-family: sans-serif;
-  margin: 0 auto;
-  max-width: 800px;
   padding: 1rem;
   background-color: #f9f9f9;
   color: #222;
   line-height: 1.5;
+  margin: 0;  /* Ta bort auto-centering */
+  max-width: none; /* Ta bort breddbegränsningen globalt */
 }
+
+/* Håll kvar layouten på andra sidor med undantag för Gantt */
+body:not(.gantt-page) {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 
 h1#page-title {
   font-size: 1.8rem;
