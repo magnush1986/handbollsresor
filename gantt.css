@@ -78,3 +78,25 @@
   width: 100%;
   padding: 0 20px;
 }
+
+.gantt-page body {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.gantt-page .main-content,
+.gantt-page .gantt-wrapper {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gantt-page .main-nav {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
