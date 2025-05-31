@@ -51,7 +51,7 @@
   background: #fff;
   overflow-x: auto;
   overflow-y: auto;
-  min-height: 400px;
+  //min-height: 400px;
   box-sizing: border-box;
 }
 
