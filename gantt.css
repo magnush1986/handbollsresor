@@ -103,14 +103,14 @@
 
 /* === Speciallayout för Gantt-sidan === */
 .gantt-page .page-wrapper {
-  //max-width: none;
+  max-width: none;
   width: 100%;
 }
 
 .gantt-page .main-content,
 .gantt-page .gantt-wrapper {
   width: 100%;
-  //max-width: none;
+  max-width: none;
   margin: 0;
   padding: 0;
 }
@@ -122,7 +122,7 @@
 }
 
 .gantt-page {
-  //max-width: none;
+  max-width: none;
   width: 100%;
   margin: 0;
   padding: 0;
