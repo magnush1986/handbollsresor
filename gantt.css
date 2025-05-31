@@ -121,3 +121,10 @@
   padding: 0 1rem;
 }
 
+.gantt-page {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
