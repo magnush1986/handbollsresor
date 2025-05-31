@@ -143,7 +143,8 @@ function renderGantt() {
     type: e['Typ av händelse']
   }));
 
-  if (tasks.length > 0) {
+/*  
+if (tasks.length > 0) {
     tasks.push({
       id: 'padding-row',
       name: '',
@@ -152,7 +153,10 @@ function renderGantt() {
       progress: 0
     });
   }
+  */
 
+  
+  
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
 
@@ -184,6 +188,15 @@ function renderGantt() {
       end: maxDate,
       padding: 0,
     });
+
+    setTimeout(() => {
+      const svg = document.querySelector('#gantt-container svg');
+      if (svg) {
+        const currentHeight = svg.getAttribute('height');
+        const extraPadding = 60;
+        svg.setAttribute('height', parseInt(currentHeight) + extraPadding);
+      }
+    }, 50);
 
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
