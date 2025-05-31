@@ -116,12 +116,15 @@
 }
 
 #gantt-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
+  max-height: 500px;
   width: 100%;
   white-space: nowrap;
-  height: 100%;
-  box-sizing: border-box;
+  background: #fff;
 }
 
 body {
