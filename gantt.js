@@ -143,6 +143,16 @@ function renderGantt() {
     type: e['Typ av händelse']
   }));
 
+  if (tasks.length > 0) {
+    tasks.push({
+      id: 'padding-row',
+      name: '',
+      start: tasks[tasks.length - 1].end,
+      end: tasks[tasks.length - 1].end,
+      progress: 0
+    });
+  }
+
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
 
