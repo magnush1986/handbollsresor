@@ -1,32 +1,56 @@
 /* === Gantt-sidans stilregler === */
-.gantt-wrapper {
-  padding: 0 20px;
-  min-height: calc(100vh - 150px); /* Tar hänsyn till header + footer */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body.gantt-page {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   background: #f8f8f8;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1400px;
 }
 
 .page-wrapper {
-  max-width: 800px;
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.gantt-wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .gantt-wrapper h1 {
   text-align: center;
-  margin-top: 1rem;
+  margin: 1rem 0;
 }
 
 .gantt-wrapper #filters {
-  margin: 20px auto;
+  margin: 1rem auto;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
+  width: 100%;
   max-width: 90%;
 }
 
@@ -48,18 +72,17 @@
   font-weight: bold;
 }
 
-.gantt-wrapper #gantt-container {
+#gantt-container {
   flex: 1 1 auto;
-  width: 100%;
-  margin: 0 auto 2rem auto;
+  overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid #ccc;
   background: #fff;
-  overflow: auto; /* Anpassad scroll */
-  height: auto; /* Låter innehållet styra höjden */
   min-height: 400px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* === Footer (gemensam) === */
 .site-footer {
   text-align: center;
   padding: 1rem;
@@ -71,61 +94,6 @@
   height: 30px;
   vertical-align: middle;
   margin-right: 0.5rem;
-}
-
-.page-wrapper.full-width {
-  max-width: none;
-  width: 100%;
-  padding: 0 20px;
-}
-
-/* === Speciallayout för Gantt-sidan === */
-.gantt-page body {
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.gantt-page .main-content,
-.gantt-page .gantt-wrapper {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-.gantt-page .nav-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* === Speciallayout för Gantt-sidan === */
-.gantt-page .page-wrapper {
-  max-width: none;
-  width: 100%;
-}
-
-.gantt-page .main-content,
-.gantt-page .gantt-wrapper {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-.gantt-page .nav-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.gantt-page {
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 .gantt-wrapper select {
@@ -145,10 +113,8 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-#gantt-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
+/* För att minska "bredd-explosionen" på Gantt */
+#gantt-container > svg {
   max-width: 100%;
-  white-space: nowrap;
+  height: auto;
 }
