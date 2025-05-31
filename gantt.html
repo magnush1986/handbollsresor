@@ -1,76 +1,43 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gantt-schema för säsongen</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #gantt-container {
-      height: 600px;
-      width: 100%;
-      border: 1px solid #ccc;
-      background: #fff;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="gantt.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
 </head>
-<body>
-  <h1>Gantt-schema för säsongen</h1>
-  <div id="gantt-container"></div>
+<body class="gantt-page">
+  <div class="page-wrapper full-width">
+    <nav class="main-nav">
+      <img src="Logotyp1.jpg" alt="Föreningens logotyp" class="nav-logo" />
+      <div class="nav-wrapper">
+        <ul class="nav-links">
+          <li><a href="index.html">Händelser</a></li>
+          <li><a href="packlista.html">Packlista</a></li>
+          <li><a href="budget.html">Budget</a></li>
+          <li><a href="gantt.html" class="active">Gantt-schema</a></li>
+        </ul>
+      </div>
+    </nav>
 
+    <main class="main-content">
+      <div class="gantt-wrapper">
+        <h1>Gantt-schema för säsongen</h1>
+        <div id="filters"></div>
+        <div id="gantt-container"></div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
+      <span class="footer-text">Developed by Beaver Consulting</span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const tasks = [
-        {
-          id: 'Task1',
-          name: 'Planering',
-          start: '2025-06-01',
-          end: '2025-06-05',
-          progress: 30
-        },
-        {
-          id: 'Task2',
-          name: 'Utförande',
-          start: '2025-06-06',
-          end: '2025-06-15',
-          progress: 60
-        },
-        {
-          id: 'Task3',
-          name: 'Avslut',
-          start: '2025-06-16',
-          end: '2025-06-20',
-          progress: 100
-        }
-      ];
-
-      const gantt = new Gantt("#gantt-container", tasks, {
-        view_mode: 'Week',
-        bar_height: 30,
-        custom_popup_html: function(task) {
-          return `
-            <div style="padding:10px;">
-              <strong>${task.name}</strong><br>
-              ${task.start} – ${task.end}<br>
-              ${task.progress}% klart
-            </div>
-          `;
-        }
-      });
-
-      console.log("Gantt initialized", gantt);
-    });
-  </script>
+  <script src="gantt.js"></script>
 </body>
 </html>
