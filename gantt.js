@@ -164,7 +164,7 @@ function renderGantt() {
       unitWidth = 300;
     }
 
-    container.style.width = `${unitCount * unitWidth}px`;
+    //container.style.width = `${unitCount * unitWidth}px`;
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
