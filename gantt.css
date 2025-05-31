@@ -117,9 +117,14 @@
 
 #gantt-container {
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: hidden;
   width: 100%;
   white-space: nowrap;
   height: 100%;
   box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
