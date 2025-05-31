@@ -101,4 +101,23 @@
   padding: 0 1rem;
 }
 
+/* === Speciallayout för Gantt-sidan === */
+.gantt-page .page-wrapper {
+  max-width: none;
+  width: 100%;
+}
+
+.gantt-page .main-content,
+.gantt-page .gantt-wrapper {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gantt-page .nav-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
