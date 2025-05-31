@@ -152,13 +152,27 @@ function renderGantt() {
     minDate.setHours(0, 0, 0, 0);
     maxDate.setHours(23, 59, 59, 999);
 
+    const diffDays = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
+    let unitCount = diffDays;
+    let unitWidth = 38; // default för 'Day'
+
+    if (currentViewMode === 'Week') {
+      unitCount = Math.ceil(diffDays / 7);
+      unitWidth = 140;
+    } else if (currentViewMode === 'Month') {
+      unitCount = Math.ceil(diffDays / 30);
+      unitWidth = 300;
+    }
+
+    container.style.width = `${unitCount * unitWidth}px`;
+
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
       bar_height: 30,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
-      padding: 0, // Försök minska intern padding (om biblioteket stödjer detta)
+      padding: 0,
     });
 
     tasks.forEach(task => {
@@ -171,4 +185,5 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
