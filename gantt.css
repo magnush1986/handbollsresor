@@ -1,7 +1,7 @@
 /* === Gantt-sidans stilregler === */
 .gantt-wrapper {
   padding: 0 20px;
-  height: calc(100vh - 150px); /* Tar hänsyn till header + footer */
+  min-height: calc(100vh - 150px);
   display: flex;
   flex-direction: column;
   background: #f8f8f8;
@@ -9,12 +9,6 @@
   width: 100%;
   max-width: 1400px;
   box-sizing: border-box;
-}
-
-.page-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
 }
 
 .gantt-wrapper h1 {
@@ -52,14 +46,12 @@
 .gantt-wrapper #gantt-container {
   flex: 1 1 auto;
   width: 100%;
-  max-width: 100%;
   margin: 0 auto;
   border: 1px solid #ccc;
   background: #fff;
   overflow-x: auto;
   overflow-y: auto;
   min-height: 400px;
-  height: 100%;
   box-sizing: border-box;
 }
 
@@ -77,18 +69,18 @@
   margin-right: 0.5rem;
 }
 
-.page-wrapper.full-width {
-  max-width: none;
-  width: 100%;
-  padding: 0 20px;
+/* === Nav-wrapper (centrerad meny) === */
+.nav-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* === Speciallayout för Gantt-sidan === */
+/* === Anpassad layout för Gantt-sidan === */
 .gantt-page body {
-  max-width: none;
-  width: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 .gantt-page .main-content,
@@ -104,11 +96,6 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 0 1rem;
-}
-
-.gantt-page .page-wrapper {
-  max-width: none;
-  width: 100%;
 }
 
 .gantt-wrapper select {
@@ -132,7 +119,6 @@
   overflow-x: auto;
   overflow-y: auto;
   width: 100%;
-  max-width: 100%;
   white-space: nowrap;
   height: 100%;
   box-sizing: border-box;
