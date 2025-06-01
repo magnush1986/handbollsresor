@@ -152,49 +152,23 @@ function renderGantt() {
     minDate.setHours(0, 0, 0, 0);
     maxDate.setHours(23, 59, 59, 999);
 
-    const diffDays = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
-    let unitCount = diffDays;
-    let unitWidth = 38; // default för 'Day'
-
-    if (currentViewMode === 'Week') {
-      unitCount = Math.ceil(diffDays / 7);
-      unitWidth = 140;
-    } else if (currentViewMode === 'Month') {
-      unitCount = Math.ceil(diffDays / 30);
-      unitWidth = 300;
-    }
-
-    // === Nytt: Definiera barHeight som variabel ===
-    const barHeight = 40; // Samma som i Gantt-konfigurationen
-
-    // === Nytt: Beräkna förväntad höjd baserat på antal rader ===
-    const expectedHeight = tasks.length * barHeight + 60; // 60 = extra luft
-
-    // === Nytt: Sätt höjden på #gantt-container baserat på beräkningen ===
-    container.style.height = expectedHeight + 'px';
-
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      bar_height: barHeight,
+      bar_height: 40,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
       padding: 0,
-    });
-
-    // === Nytt: Fallback – kontrollera faktisk SVG-höjd efter rendering ===
-    setTimeout(() => {
-      const svg = document.querySelector('#gantt-container svg');
-      if (svg) {
-        const svgHeight = svg.getBoundingClientRect().height;
-        const currentContainerHeight = parseInt(container.style.height);
-        if (svgHeight > currentContainerHeight) {
-          container.style.height = (svgHeight + 60) + 'px'; // Lägg till lite extra luft
+      on_render: () => {
+        const svg = container.querySelector('svg');
+        if (svg) {
+          const svgHeight = svg.getBoundingClientRect().height;
+          container.style.height = (svgHeight + 60) + 'px'; // 60 = buffert
         }
       }
-    }, 100);
+    });
 
-    // === Färgsättning som tidigare ===
+    // Färger som vanligt
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
       bars.forEach(rect => {
@@ -205,6 +179,7 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
 
 
