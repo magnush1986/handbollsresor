@@ -162,13 +162,12 @@ function renderGantt() {
       on_render: () => {
         const svg = container.querySelector('svg');
         if (svg) {
-          const svgHeight = svg.getBoundingClientRect().height;
-          container.style.height = (svgHeight + 80) + 'px'; // 60 = buffert
+          const bbox = svg.getBBox();
+          container.style.height = (bbox.height + 100) + 'px';
         }
       }
     });
 
-    // Färger som vanligt
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
       bars.forEach(rect => {
@@ -179,7 +178,3 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
-
-
-
-
