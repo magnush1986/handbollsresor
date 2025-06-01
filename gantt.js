@@ -143,20 +143,6 @@ function renderGantt() {
     type: e['Typ av händelse']
   }));
 
-/*  
-if (tasks.length > 0) {
-    tasks.push({
-      id: 'padding-row',
-      name: '',
-      start: tasks[tasks.length - 1].end,
-      end: tasks[tasks.length - 1].end,
-      progress: 0
-    });
-  }
-  */
-
-  
-  
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
 
@@ -178,26 +164,37 @@ if (tasks.length > 0) {
       unitWidth = 300;
     }
 
-    //container.style.width = `${unitCount * unitWidth}px`;
+    // === Nytt: Definiera barHeight som variabel ===
+    const barHeight = 40; // Samma som i Gantt-konfigurationen
+
+    // === Nytt: Beräkna förväntad höjd baserat på antal rader ===
+    const expectedHeight = tasks.length * barHeight + 60; // 60 = extra luft
+
+    // === Nytt: Sätt höjden på #gantt-container baserat på beräkningen ===
+    container.style.height = expectedHeight + 'px';
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      bar_height: 50,
+      bar_height: barHeight,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
       padding: 0,
     });
 
+    // === Nytt: Fallback – kontrollera faktisk SVG-höjd efter rendering ===
     setTimeout(() => {
       const svg = document.querySelector('#gantt-container svg');
       if (svg) {
-        const currentHeight = svg.getAttribute('height');
-        const extraPadding = 60;
-        svg.setAttribute('height', parseInt(currentHeight) + extraPadding);
+        const svgHeight = svg.getBoundingClientRect().height;
+        const currentContainerHeight = parseInt(container.style.height);
+        if (svgHeight > currentContainerHeight) {
+          container.style.height = (svgHeight + 60) + 'px'; // Lägg till lite extra luft
+        }
       }
-    }, 50);
+    }, 100);
 
+    // === Färgsättning som tidigare ===
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
       bars.forEach(rect => {
@@ -208,5 +205,6 @@ if (tasks.length > 0) {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
 
