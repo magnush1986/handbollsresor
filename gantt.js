@@ -152,9 +152,12 @@ function renderGantt() {
     minDate.setHours(0, 0, 0, 0);
     maxDate.setHours(23, 59, 59, 999);
 
+    const barHeight = 40;
+    const extraPadding = 100; // Ger marginal för skroll och ram
+
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      bar_height: 40,
+      bar_height: barHeight,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
@@ -162,8 +165,9 @@ function renderGantt() {
       on_render: () => {
         const svg = container.querySelector('svg');
         if (svg) {
-          const bbox = svg.getBBox();
-          container.style.height = (bbox.height + 100) + 'px';
+          const svgHeight = svg.getBoundingClientRect().height;
+          const adjustedHeight = svgHeight + extraPadding;
+          container.style.height = `${adjustedHeight}px`;
         }
       }
     });
@@ -178,3 +182,4 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
