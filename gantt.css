@@ -123,3 +123,10 @@ body {
   overflow-y: auto;
 }
 
+#gantt-container select,
+.gantt-wrapper select,
+.season-filter-wrapper select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
