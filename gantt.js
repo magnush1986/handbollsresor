@@ -163,7 +163,7 @@ function renderGantt() {
         const svg = container.querySelector('svg');
         if (svg) {
           const svgHeight = svg.getBoundingClientRect().height;
-          container.style.height = (svgHeight + 60) + 'px'; // 60 = buffert
+          container.style.height = (svgHeight + 80) + 'px'; // 60 = buffert
         }
       }
     });
