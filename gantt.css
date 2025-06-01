@@ -123,9 +123,3 @@ body {
   overflow-y: auto;
 }
 
-#gantt-container::after {
-  content: "";
-  display: block;
-  height: 40px; /* Samma som barHeight */
-}
-
