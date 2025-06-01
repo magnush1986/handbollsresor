@@ -1,7 +1,7 @@
 /* === Gantt-sidans stilregler === */
 .gantt-wrapper {
   padding: 0 20px;
-  min-height: calc(100vh - 150px);
+  //min-height: calc(100vh - 150px);
   display: flex;
   flex-direction: column;
   background: #f8f8f8;
