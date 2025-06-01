@@ -182,7 +182,7 @@ if (tasks.length > 0) {
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      bar_height: 30,
+      bar_height: 50,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
