@@ -160,20 +160,16 @@ function renderGantt() {
       end: maxDate,
       padding: 0,
       on_render: () => {
-        // Ny logik: hämta sista stapelns Y-positon
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
-          const barRect = lastBar.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-          const relativeBottom = barRect.bottom - containerRect.top;
+          const barBBox = lastBar.getBBox();
+          const totalHeight = barBBox.y + barBBox.height + 60; // 60 = luft
 
-          // Lägg till lite buffert (t.ex. 80px)
-          container.style.height = (relativeBottom + 80) + 'px';
+          container.style.height = `${totalHeight}px`;
         }
       }
     });
 
-    // Färger som vanligt
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
       bars.forEach(rect => {
@@ -184,5 +180,6 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
 
