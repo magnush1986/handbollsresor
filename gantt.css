@@ -53,7 +53,7 @@
   overflow-y: auto;
   box-sizing: border-box;
   padding: 20px;
-  //padding-bottom: 60px;  /* Luft under sista raden */
+  padding-bottom: 60px;  /* Luft under sista raden */
   //max-height: 500px;     /* Tak för höjden */
   white-space: nowrap;
 }
