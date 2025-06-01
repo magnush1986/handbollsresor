@@ -108,7 +108,7 @@ function setupViewButtons() {
   const viewButtonsDiv = document.createElement('div');
   viewButtonsDiv.classList.add('view-buttons');
 
-  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad']].forEach(([mode, label]) => {
+  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'],['Year', 'År']].forEach(([mode, label]) => {
     const btn = document.createElement('button');
     btn.textContent = label;
     btn.dataset.mode = mode;
