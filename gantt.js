@@ -140,7 +140,8 @@ function renderGantt() {
     start: e['Datum från'],
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
-    type: e['Typ av händelse']
+    type: e['Typ av händelse'],
+    color: colorMap[e['Typ av händelse']] || '#CCCCCC' // Ny rad: tilldela färg direkt
   }));
 
 if (tasks.length > 0) {
@@ -183,12 +184,13 @@ if (tasks.length > 0) {
       }
     });
 
-    tasks.forEach(task => {
-      const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
-      bars.forEach(rect => {
-        rect.style.fill = colorMap[task.type] || '#CCCCCC';
-      });
-    });
+    // Tar bort tidigare workaround för färgerna
+    // tasks.forEach(task => {
+    //   const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
+    //   bars.forEach(rect => {
+    //     rect.style.fill = colorMap[task.type] || '#CCCCCC';
+    //   });
+    // });
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
