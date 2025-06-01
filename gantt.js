@@ -152,26 +152,28 @@ function renderGantt() {
     minDate.setHours(0, 0, 0, 0);
     maxDate.setHours(23, 59, 59, 999);
 
-    const barHeight = 40;
-    const extraPadding = 100; // Ger marginal för skroll och ram
-
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      bar_height: barHeight,
+      bar_height: 40,
       lines: 'vertical',
       start: minDate,
       end: maxDate,
       padding: 0,
       on_render: () => {
-        const svg = container.querySelector('svg');
-        if (svg) {
-          const svgHeight = svg.getBoundingClientRect().height;
-          const adjustedHeight = svgHeight + extraPadding;
-          container.style.height = `${adjustedHeight}px`;
+        // Ny logik: hämta sista stapelns Y-positon
+        const lastBar = container.querySelector('.bar:last-child');
+        if (lastBar) {
+          const barRect = lastBar.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const relativeBottom = barRect.bottom - containerRect.top;
+
+          // Lägg till lite buffert (t.ex. 80px)
+          container.style.height = (relativeBottom + 80) + 'px';
         }
       }
     });
 
+    // Färger som vanligt
     tasks.forEach(task => {
       const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
       bars.forEach(rect => {
@@ -182,4 +184,5 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
