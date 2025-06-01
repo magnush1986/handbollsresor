@@ -171,6 +171,7 @@ if (tasks.length > 0) {
       start: minDate,
       end: maxDate,
       padding: 0,
+      infinite_padding: false,
       on_render: () => {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
