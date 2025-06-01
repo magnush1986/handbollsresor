@@ -655,7 +655,7 @@ details[open] .summary-icon {
 
 .event-group {
   margin-bottom: 5rem;
-}}
+}
 
 .adress-content {
   display: flex;
@@ -670,27 +670,4 @@ details[open] .summary-icon {
 
 .maps-links a {
   display: block;
-}
-
-.menu-toggle {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  display: block;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.menu-toggle svg {
-  width: 28px;
-  height: 28px;
-  stroke: #148424;
-}
-
-.main-nav {
-  position: relative;
 }
