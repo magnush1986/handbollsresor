@@ -165,7 +165,7 @@ function renderGantt() {
           const barBBox = lastBar.getBBox();
           const totalHeight = barBBox.y + barBBox.height + 60; // 60 = luft
 
-          container.style.height = `${totalHeight}px`;
+          //container.style.height = `${totalHeight}px`;
         }
       }
     });
