@@ -162,19 +162,19 @@ h1#page-title {
 .main-nav {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  /*align-items: center;*/
   position: relative;
   margin-bottom: 1rem;
-  padding-top: 0.5rem; /* denna rad jämnar ut vertikal placering */
+  /*padding-top: 0.5rem; /* denna rad jämnar ut vertikal placering */
 }
 
 .nav-wrapper {
   position: relative;
-  max-width: 800px;
+  /*max-width: 800px;
   margin: 0 auto;
   padding: 0 1rem;
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box;*/
 }
 
 .menu-toggle {
