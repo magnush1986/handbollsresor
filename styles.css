@@ -169,6 +169,11 @@ h1#page-title {
 
 .nav-wrapper {
   position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .menu-toggle {
@@ -178,15 +183,16 @@ h1#page-title {
   background: none;
   border: none;
   cursor: pointer;
-  display: none;
+  display: none; /* visas i mobil */
   padding: 0.75rem;
   width: 44px;
   height: 44px;
+  box-sizing: content-box;
 }
 
 .menu-toggle svg {
-  width: 100%;
-  height: 100%;
+  width: 28px;
+  height: 28px;
   fill: #148424;
 }
 
@@ -221,7 +227,7 @@ h1#page-title {
   border-bottom: 2px solid white;
 }
 
-/* === Responsiv meny + filtermobil === */
+/* === Mobil: hamburgermeny visas och meny öppnas vertikalt === */
 @media (max-width: 600px) {
   .menu-toggle {
     display: block;
@@ -230,12 +236,12 @@ h1#page-title {
   .nav-links {
     display: none;
     flex-direction: column;
-    background-color: rgba(255,255,255,0.97);
+    background-color: rgba(255, 255, 255, 0.97);
     position: absolute;
-    top: 40px;
+    top: 60px;
     right: 0;
     border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     min-width: 140px;
     z-index: 100;
@@ -254,6 +260,7 @@ h1#page-title {
     display: block;
     font-size: 1rem;
   }
+}
 
   .season-filter-wrapper {
     display: flex;
