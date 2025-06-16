@@ -163,6 +163,9 @@ function renderGantt() {
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
     type: e['Typ av händelse'],
+    place: e['Plats'] || '',
+    samlingsplats: e['Samling Härnösand'] || '',
+    info: e['Övrig information'] || '',
     color: colorMap[e['Typ av händelse']] || '#CCCCCC'
   }));
 
@@ -193,6 +196,17 @@ function renderGantt() {
       end: maxDate,
       padding: 0,
       infinite_padding: false,
+      custom_popup_html: task => `
+        <div class="details-container">
+          <h5>${task.name}</h5>
+          <p><strong>Datum från:</strong> ${task.start}</p>
+          <p><strong>Datum till:</strong> ${task.end}</p>
+          <p><strong>Typ:</strong> ${task.type}</p>
+          <p><strong>Plats:</strong> ${task.place}</p>
+          <p><strong>Samling Härnösand:</strong> ${task.samlingsplats}</p>
+          <p><strong>Övrig information:</strong> ${task.info}</p>
+        </div>
+      `,
       on_render: () => {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
@@ -206,3 +220,4 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
