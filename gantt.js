@@ -89,18 +89,40 @@ function setupFilters() {
   typeOptionAll.value = '';
   typeOptionAll.textContent = 'Alla typer';
   typeSelect.appendChild(typeOptionAll);
-  [...new Set(allEvents.map(e => e['Typ av händelse']))].sort().forEach(type => {
+  // Innehållet fylls in via updateTypeOptions
+
+  filtersDiv.appendChild(seasonSelect);
+  filtersDiv.appendChild(typeSelect);
+
+  seasonSelect.addEventListener('change', () => {
+    updateTypeOptions();
+    renderGantt();
+  });
+
+  typeSelect.addEventListener('change', renderGantt);
+
+  updateTypeOptions(); // Fyll typ-dropdown vid init
+}
+
+function updateTypeOptions() {
+  const season = document.getElementById('season-filter').value;
+  const typeSelect = document.getElementById('type-filter');
+
+  const filteredEvents = allEvents.filter(e => !season || e['Säsong'] === season);
+  const uniqueTypes = [...new Set(filteredEvents.map(e => e['Typ av händelse']))].filter(Boolean).sort();
+
+  typeSelect.innerHTML = '';
+  const allOption = document.createElement('option');
+  allOption.value = '';
+  allOption.textContent = 'Alla typer';
+  typeSelect.appendChild(allOption);
+
+  uniqueTypes.forEach(type => {
     const option = document.createElement('option');
     option.value = type;
     option.textContent = type;
     typeSelect.appendChild(option);
   });
-
-  filtersDiv.appendChild(seasonSelect);
-  filtersDiv.appendChild(typeSelect);
-
-  seasonSelect.addEventListener('change', renderGantt);
-  typeSelect.addEventListener('change', renderGantt);
 }
 
 function setupViewButtons() {
@@ -108,7 +130,7 @@ function setupViewButtons() {
   const viewButtonsDiv = document.createElement('div');
   viewButtonsDiv.classList.add('view-buttons');
 
-  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'],['Year', 'År']].forEach(([mode, label]) => {
+  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'], ['Year', 'År']].forEach(([mode, label]) => {
     const btn = document.createElement('button');
     btn.textContent = label;
     btn.dataset.mode = mode;
@@ -141,10 +163,10 @@ function renderGantt() {
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
     type: e['Typ av händelse'],
-    color: colorMap[e['Typ av händelse']] || '#CCCCCC' // Ny rad: tilldela färg direkt
+    color: colorMap[e['Typ av händelse']] || '#CCCCCC'
   }));
 
-if (tasks.length > 0) {
+  if (tasks.length > 0) {
     tasks.push({
       id: 'padding-row',
       name: '',
@@ -153,8 +175,6 @@ if (tasks.length > 0) {
       progress: 0
     });
   }
-
-
 
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
@@ -177,24 +197,12 @@ if (tasks.length > 0) {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
           const barBBox = lastBar.getBBox();
-          const totalHeight = barBBox.y + barBBox.height + 60; // 60 = luft
-
-          //container.style.height = `${totalHeight}px`;
+          const totalHeight = barBBox.y + barBBox.height + 60;
+          // container.style.height = `${totalHeight}px`;
         }
       }
     });
-
-    // Tar bort tidigare workaround för färgerna
-    // tasks.forEach(task => {
-    //   const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
-    //   bars.forEach(rect => {
-    //     rect.style.fill = colorMap[task.type] || '#CCCCCC';
-    //   });
-    // });
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
-
-
-
