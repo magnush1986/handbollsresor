@@ -18,13 +18,38 @@
   <script src="data.js"></script>
 
   <script>
-    // Ladda in gemensam meny
-    fetch("menu.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("menu-placeholder").innerHTML = html;
+  fetch("menu.html")
+    .then(res => res.text())
+    .then(html => {
+      const menuContainer = document.getElementById("menu-placeholder");
+      menuContainer.innerHTML = html;
+
+      // Markera aktuell sida som aktiv
+      const currentPath = window.location.pathname.split("/").pop();
+      const links = menuContainer.querySelectorAll(".nav-links a");
+      links.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === currentPath) {
+          link.classList.add("active");
+        }
       });
-  </script>
+
+      // Aktivera hamburgermenyn
+      const toggleBtn = menuContainer.querySelector(".menu-toggle");
+      const navLinks = menuContainer.querySelector(".nav-links");
+
+      toggleBtn?.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+
+      links.forEach(link => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("open");
+        });
+      });
+    });
+</script>
+
 
   <footer class="site-footer">
     <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
