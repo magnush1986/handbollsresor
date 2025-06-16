@@ -89,40 +89,18 @@ function setupFilters() {
   typeOptionAll.value = '';
   typeOptionAll.textContent = 'Alla typer';
   typeSelect.appendChild(typeOptionAll);
-  // Innehållet fylls in via updateTypeOptions
-
-  filtersDiv.appendChild(seasonSelect);
-  filtersDiv.appendChild(typeSelect);
-
-  seasonSelect.addEventListener('change', () => {
-    updateTypeOptions();
-    renderGantt();
-  });
-
-  typeSelect.addEventListener('change', renderGantt);
-
-  updateTypeOptions(); // Fyll typ-dropdown vid init
-}
-
-function updateTypeOptions() {
-  const season = document.getElementById('season-filter').value;
-  const typeSelect = document.getElementById('type-filter');
-
-  const filteredEvents = allEvents.filter(e => !season || e['Säsong'] === season);
-  const uniqueTypes = [...new Set(filteredEvents.map(e => e['Typ av händelse']))].filter(Boolean).sort();
-
-  typeSelect.innerHTML = '';
-  const allOption = document.createElement('option');
-  allOption.value = '';
-  allOption.textContent = 'Alla typer';
-  typeSelect.appendChild(allOption);
-
-  uniqueTypes.forEach(type => {
+  [...new Set(allEvents.map(e => e['Typ av händelse']))].sort().forEach(type => {
     const option = document.createElement('option');
     option.value = type;
     option.textContent = type;
     typeSelect.appendChild(option);
   });
+
+  filtersDiv.appendChild(seasonSelect);
+  filtersDiv.appendChild(typeSelect);
+
+  seasonSelect.addEventListener('change', renderGantt);
+  typeSelect.addEventListener('change', renderGantt);
 }
 
 function setupViewButtons() {
@@ -130,7 +108,7 @@ function setupViewButtons() {
   const viewButtonsDiv = document.createElement('div');
   viewButtonsDiv.classList.add('view-buttons');
 
-  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'], ['Year', 'År']].forEach(([mode, label]) => {
+  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'],['Year', 'År']].forEach(([mode, label]) => {
     const btn = document.createElement('button');
     btn.textContent = label;
     btn.dataset.mode = mode;
@@ -163,15 +141,10 @@ function renderGantt() {
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
     type: e['Typ av händelse'],
-    color: colorMap[e['Typ av händelse']] || '#CCCCCC',
-    custom_data: {
-      place: e['Plats'],
-      gathering: e['Samling Härnösand'],
-      info: e['Övrig information']
-    }
+    color: colorMap[e['Typ av händelse']] || '#CCCCCC' // Ny rad: tilldela färg direkt
   }));
 
-  if (tasks.length > 0) {
+if (tasks.length > 0) {
     tasks.push({
       id: 'padding-row',
       name: '',
@@ -180,6 +153,8 @@ function renderGantt() {
       progress: 0
     });
   }
+
+
 
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
@@ -198,33 +173,25 @@ function renderGantt() {
       end: maxDate,
       padding: 0,
       infinite_padding: false,
-      custom_popup_html: task => {
-        const data = task.custom_data || {};
-        return `
-          <div class="details-container">
-            <h5>${task.name}</h5>
-            <p><strong>Datum från:</strong> ${task.start}</p>
-            <p><strong>Datum till:</strong> ${task.end}</p>
-            <p><strong>Typ:</strong> ${task.type}</p>
-            ${data.place ? `<p><strong>Plats:</strong> ${data.place}</p>` : ''}
-            ${data.gathering ? `<p><strong>Samling Härnösand:</strong> ${data.gathering}</p>` : ''}
-            ${data.info ? `<p><strong>Övrig information:</strong> ${data.info}</p>` : ''}
-          </div>
-        `;
-      },
       on_render: () => {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
           const barBBox = lastBar.getBBox();
-          const totalHeight = barBBox.y + barBBox.height + 60;
+          const totalHeight = barBBox.y + barBBox.height + 60; // 60 = luft
+
           //container.style.height = `${totalHeight}px`;
         }
       }
     });
+
+    // Tar bort tidigare workaround för färgerna
+    // tasks.forEach(task => {
+    //   const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
+    //   bars.forEach(rect => {
+    //     rect.style.fill = colorMap[task.type] || '#CCCCCC';
+    //   });
+    // });
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
-
-
-
