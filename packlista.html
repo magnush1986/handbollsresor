@@ -5,25 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Packlista för Handbollscup</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="menu.css" />
 </head>
 <body>
-  <nav class="main-nav">
-    <img src="Logotyp1.jpg" alt="Föreningens logotyp" class="nav-logo" />
-    <div class="nav-wrapper">
-      <button class="menu-toggle" aria-label="Meny">
-        <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="10" rx="5"></rect>
-          <rect y="30" width="100" height="10" rx="5"></rect>
-          <rect y="60" width="100" height="10" rx="5"></rect>
-        </svg>
-      </button>
-      <ul class="nav-links">
-        <li><a href="index.html">Händelser</a></li>
-        <li><a href="packlista.html" class="active">Packlista</a></li>
-        <li><a href="budget.html">Budget</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div id="menu-placeholder"></div>
 
   <h1 id="page-title">Packlista: Övernattning i klassrum</h1>
   <p style="font-weight:bold; margin-left:0.5rem;">(Fri från nötter)</p>
@@ -107,20 +92,36 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggleBtn = document.querySelector(".menu-toggle");
-      const navLinks = document.querySelector(".nav-links");
+    fetch("menu.html")
+      .then(res => res.text())
+      .then(html => {
+        const menuContainer = document.getElementById("menu-placeholder");
+        menuContainer.innerHTML = html;
 
-      toggleBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("open");
-      });
+        // Markera aktuell sida som aktiv
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = menuContainer.querySelectorAll(".nav-links a");
+        links.forEach(link => {
+          const href = link.getAttribute("href");
+          if (href === currentPath) {
+            link.classList.add("active");
+          }
+        });
 
-      document.querySelectorAll(".nav-links a").forEach(link => {
-        link.addEventListener("click", () => {
-          navLinks.classList.remove("open");
+        // Aktivera hamburgermenyn
+        const toggleBtn = menuContainer.querySelector(".menu-toggle");
+        const navLinks = menuContainer.querySelector(".nav-links");
+
+        toggleBtn?.addEventListener("click", () => {
+          navLinks.classList.toggle("open");
+        });
+
+        links.forEach(link => {
+          link.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+          });
         });
       });
-    });
   </script>
 </body>
 </html>
