@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMenuToggle();
   loadEvents();
 });
-
+/*
 function setupMenuToggle() {
-  const toggleBtn = document.querySelector(".menu-toggle");
+  //const toggleBtn = document.querySelector(".menu-toggle");
   const navLinks = document.querySelector(".nav-links");
 
   toggleBtn.addEventListener("click", () => {
@@ -24,7 +24,7 @@ function setupMenuToggle() {
     });
   });
 }
-
+*/
 function getCurrentSeason() {
   const today = new Date();
   const year = today.getFullYear();
