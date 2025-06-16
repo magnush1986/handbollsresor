@@ -163,10 +163,10 @@ function renderGantt() {
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
     type: e['Typ av händelse'],
+    color: colorMap[e['Typ av händelse']] || '#CCCCCC',
     place: e['Plats'] || '',
     samlingsplats: e['Samling Härnösand'] || '',
-    info: e['Övrig information'] || '',
-    color: colorMap[e['Typ av händelse']] || '#CCCCCC'
+    info: e['Övrig information'] || ''
   }));
 
   if (tasks.length > 0) {
@@ -196,23 +196,26 @@ function renderGantt() {
       end: maxDate,
       padding: 0,
       infinite_padding: false,
-      custom_popup_html: task => `
-        <div class="details-container">
-          <h5>${task.name}</h5>
-          <p><strong>Datum från:</strong> ${task.start}</p>
-          <p><strong>Datum till:</strong> ${task.end}</p>
-          <p><strong>Typ:</strong> ${task.type}</p>
-          <p><strong>Plats:</strong> ${task.place}</p>
-          <p><strong>Samling Härnösand:</strong> ${task.samlingsplats}</p>
-          <p><strong>Övrig information:</strong> ${task.info}</p>
-        </div>
-      `,
+      custom_popup_html: task => {
+        const t = task._task;
+        return `
+          <div class="details-container">
+            <h5>${t.name}</h5>
+            <p><strong>Datum från:</strong> ${t.start}</p>
+            <p><strong>Datum till:</strong> ${t.end}</p>
+            <p><strong>Typ:</strong> ${t.type}</p>
+            <p><strong>Plats:</strong> ${t.place}</p>
+            <p><strong>Samling Härnösand:</strong> ${t.samlingsplats}</p>
+            <p><strong>Övrig information:</strong> ${t.info}</p>
+          </div>
+        `;
+      },
       on_render: () => {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
           const barBBox = lastBar.getBBox();
           const totalHeight = barBBox.y + barBBox.height + 60;
-          // container.style.height = `${totalHeight}px`;
+          //container.style.height = `${totalHeight}px`;
         }
       }
     });
@@ -220,4 +223,5 @@ function renderGantt() {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
 }
+
 
