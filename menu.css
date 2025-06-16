@@ -88,3 +88,10 @@
     font-size: 1rem;
   }
 }
+
+.nav-logo {
+  height: 60px;
+  object-fit: contain;
+  margin-right: auto;
+  margin-left: 0.5rem;
+}
