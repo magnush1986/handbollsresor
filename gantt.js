@@ -6,7 +6,7 @@ let currentViewMode = 'Month';
 const colorPalette = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupMenuToggle();
+  //setupMenuToggle();
   loadEvents();
 });
 /*
