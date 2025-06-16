@@ -95,3 +95,18 @@
   margin-right: auto;
   margin-left: 0.5rem;
 }
+
+/* Anpassning för Gantt-sidans centrering */
+body.gantt-page .main-nav {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+body.gantt-page .nav-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
