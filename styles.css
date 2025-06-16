@@ -19,7 +19,6 @@ body:not(.gantt-page) {
   margin: 0 auto;
 }
 
-
 h1#page-title {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
@@ -159,160 +158,60 @@ h1#page-title {
 }
 
 /* === Navigering & hamburgermeny === */
-.main-nav {
-  display: flex;
-  justify-content: flex-end;
-  /*align-items: center;*/
-  position: relative;
-  margin-bottom: 1rem;
-  /*padding-top: 0.5rem; /* denna rad jämnar ut vertikal placering */
-}
-
-.nav-wrapper {
-  position: relative;
-  /*max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  width: 100%;
-  box-sizing: border-box;*/
-}
-
-.menu-toggle {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: none; /* visas i mobil */
-  padding: 0.75rem;
-  width: 44px;
-  height: 44px;
-  box-sizing: content-box;
-}
-
-.menu-toggle svg {
-  width: 28px;
-  height: 28px;
-  fill: #148424;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  padding-left: 0;
-  margin: 0;
-}
-
-.nav-links li a {
-  text-decoration: none;
-  color: #148424;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  transition: background-color 0.2s ease;
-}
-
-.nav-links li a:hover,
-.nav-links li a:focus {
-  background-color: #148424;
-  color: white;
-  outline: none;
-}
-
-.nav-links li a.active {
-  background-color: #148424;
-  color: white;
-  font-weight: bold;
-  border-bottom: 2px solid white;
-}
+/* === MENY-REGLER BORTTAGNA – flyttade till menu.css === */
 
 /* === Mobil: hamburgermeny visas och meny öppnas vertikalt === */
-@media (max-width: 600px) {
-  .menu-toggle {
-    display: block;
-  }
+/* === MENY-REGLER BORTTAGNA – flyttade till menu.css === */
 
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.97);
-    position: absolute;
-    top: 60px;
-    right: 0;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    min-width: 140px;
-    z-index: 100;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .nav-links li {
-    margin: 0.4rem 0;
-  }
-
-  .nav-links li a {
-    padding: 0.6rem 1rem;
-    display: block;
-    font-size: 1rem;
-  }
+.season-filter-wrapper {
+  display: flex;
+  flex-wrap: wrap; /* Tillåter att rader bryts */
+  align-items: flex-start;
+  gap: 1rem 1.5rem; /* Vertikal och horisontell marginal */
 }
 
-  .season-filter-wrapper {
-    display: flex;
-    flex-wrap: wrap; /* Tillåter att rader bryts */
-    align-items: flex-start;
-    gap: 1rem 1.5rem; /* Vertikal och horisontell marginal */
-  }
-  
-  .season-filter-wrapper > label {
-    display: block;
-    width: 100%;
-    font-weight: bold;
-  }
-  
-  .season-filter-wrapper > select {
-    width: 100%;
-    max-width: 300px;
-  }
+.season-filter-wrapper > label {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+}
 
-  #season-filter,
-  #type-filter,
-  #place-filter,
-  #school-filter {
-    width: 100%;
-    max-width: 300px;
-  }
+.season-filter-wrapper > select {
+  width: 100%;
+  max-width: 300px;
+}
 
-  .event-card .label {
-    display: none;
-  }
+#season-filter,
+#type-filter,
+#place-filter,
+#school-filter {
+  width: 100%;
+  max-width: 300px;
+}
 
-  .event-card {
-    padding: 0.8rem;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
+.event-card .label {
+  display: none;
+}
 
-  .event-line.place-type {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
+.event-card {
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
 
-  .event-line.sampling-line .label {
-    display: none;
-  }
+.event-line.place-type {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
 
-  .event-line.sampling-line {
-    display: flex;
-    gap: 0.25rem;
-  }
+.event-line.sampling-line .label {
+  display: none;
+}
+
+.event-line.sampling-line {
+  display: flex;
+  gap: 0.25rem;
 }
 
 /* === Mobil - landskapsläge === */
@@ -340,10 +239,7 @@ h1#page-title {
     font-size: 0.8125rem;
   }
 
-  .nav-links li a {
-    font-size: 0.95rem;
-    padding: 0.4rem 0.8rem;
-  }
+  /* === MENY-REGLER BORTTAGNA – flyttade till menu.css === */
 }
 
 /* === Tidigare händelser (kollapsbar) === */
@@ -405,12 +301,7 @@ h1#page-title {
   object-fit: contain;
 }
 
-.nav-logo {
-  height: 60px;
-  object-fit: contain;
-  margin-right: auto;
-  margin-left: 0.5rem;
-}
+/* === MENY-REGLER BORTTAGNA – .nav-logo flyttad till menu.css === */
 
 .site-footer {
   display: flex;
@@ -483,8 +374,8 @@ h1#page-title {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   padding: 1rem 1.2rem;
-  border-left: 4px solid #6ecf7d; /* Ljusare grön kant */
-  background-color: #f0fdf4; /* Ljus grön ton */
+  border-left: 4px solid #6ecf7d;
+  background-color: #f0fdf4;
   border-radius: 6px;
 }
 
@@ -496,7 +387,7 @@ h1#page-title {
 }
 
 .event-section .event-line {
-  margin-left: 0.6rem; /* Litet indrag för rader */
+  margin-left: 0.6rem;
   margin-bottom: 0.4rem;
 }
 
@@ -513,6 +404,7 @@ h1#page-title {
 .event-card {
   position: relative;
 }
+
 /*
 .event-card + .event-card::before {
   content: "";
@@ -523,6 +415,7 @@ h1#page-title {
   opacity: 0.4;
 }
 */
+
 /* === Collapsable event cards === */
 .event-card summary {
   cursor: pointer;
@@ -569,6 +462,7 @@ h1#page-title {
 details[open] .summary-icon {
   transform: rotate(90deg);
 }
+
 .summary-icon::before {
   content: "▶";
   display: inline-block;
@@ -582,18 +476,18 @@ details[open] .summary-icon {
 
 @media (max-width: 600px) {
   .event-title {
-    font-size: 0.9rem; /* Minska storleken för eventrubriker */
+    font-size: 0.9rem;
   }
 
   .season-header {
-    font-size: 1rem; /* Minska storleken för säsongstitlar */
+    font-size: 1rem;
   }
 
   #season-filter,
   #type-filter,
   #place-filter,
   #school-filter {
-    font-size: 0.9rem; /* Minska storlek på filterdropdowns */
+    font-size: 0.9rem;
   }
 }
 
@@ -658,7 +552,6 @@ details[open] .summary-icon {
     font-size: 0.95rem;
   }
 }
-
 
 .event-group {
   margin-bottom: 5rem;
