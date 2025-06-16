@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gantt-schema för säsongen</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="gantt.css" />
+  <link rel="stylesheet" href="menu.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
+</head>
+<body class="gantt-page">
+  <div class="page-wrapper full-width">
+    <!-- Menyn laddas in på rätt plats -->
+    <div id="menu-placeholder"></div>
 
+    <main class="main-content">
+      <div class="gantt-wrapper">
+        <h1 id="page-title">Säsongsöversikt</h1>
+        <div id="filters"></div>
+        <div id="gantt-container"></div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <img src="beaver-logo.png" alt="Beaver Consulting logotyp" class="footer-logo" />
+      <span class="footer-text">Developed by Beaver Consulting</span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+  <script src="gantt.js"></script>
+
+  <script>
+    // Ladda in gemensam meny
+    fetch("menu.html")
+      .then(res => res.text())
+      .then(html => {
+        const menuContainer = document.getElementById("menu-placeholder");
+        menuContainer.innerHTML = html;
+
+        // Markera aktuell sida som aktiv
+        const currentPath = window.location.pathname.split("/").pop();
+        const links = menuContainer.querySelectorAll(".nav-links a");
+        links.forEach(link => {
+          const href = link.getAttribute("href");
+          if (href === currentPath) {
+            link.classList.add("active");
+          }
+        });
+
+        // Aktivera hamburgermenyn
+        const toggleBtn = menuContainer.querySelector(".menu-toggle");
+        const navLinks = menuContainer.querySelector(".nav-links");
+
+        toggleBtn?.addEventListener("click", () => {
+          navLinks.classList.toggle("open");
+        });
+
+        links.forEach(link => {
+          link.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+          });
+        });
+      });
+  </script>
+</body>
+</html>
