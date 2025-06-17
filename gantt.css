@@ -138,3 +138,38 @@ body {
   -moz-appearance: none;
   appearance: none;
 }
+
+.multi-select-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.multi-select-dropdown button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+  z-index: 10;
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.checkbox-option {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
