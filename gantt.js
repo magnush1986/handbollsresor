@@ -82,97 +82,26 @@ function setupFilters() {
     seasonSelect.appendChild(option);
   });
   seasonSelect.value = getCurrentSeason();
+
+  const typeSelect = document.createElement('select');
+  typeSelect.id = 'type-filter';
+  const typeOptionAll = document.createElement('option');
+  typeOptionAll.value = '';
+  typeOptionAll.textContent = 'Alla typer';
+  typeSelect.appendChild(typeOptionAll);
+  [...new Set(allEvents.map(e => e['Typ av händelse']))].sort().forEach(type => {
+    const option = document.createElement('option');
+    option.value = type;
+    option.textContent = type;
+    typeSelect.appendChild(option);
+  });
+
   filtersDiv.appendChild(seasonSelect);
+  filtersDiv.appendChild(typeSelect);
 
-  // Typfilter som dropdown
-  const dropdownWrapper = document.createElement('div');
-  dropdownWrapper.className = 'dropdown-wrapper';
-
-  const dropdownButton = document.createElement('button');
-  dropdownButton.className = 'dropdown-toggle';
-  dropdownButton.textContent = 'Filtrera typer ▼';
-
-  const dropdownMenu = document.createElement('div');
-  dropdownMenu.className = 'dropdown-menu';
-
-  function updateTypeOptions() {
-    dropdownMenu.innerHTML = '';
-
-    const selectedSeason = seasonSelect.value;
-    const filteredTypes = allEvents
-      .filter(e => !selectedSeason || e['Säsong'] === selectedSeason)
-      .map(e => e['Typ av händelse'])
-      .filter(Boolean);
-    const uniqueTypes = [...new Set(filteredTypes)].sort();
-
-    if (uniqueTypes.length > 0) {
-      const selectAllLabel = document.createElement('label');
-      selectAllLabel.classList.add('dropdown-item', 'bold');
-
-      const selectAllCheckbox = document.createElement('input');
-      selectAllCheckbox.type = 'checkbox';
-      selectAllCheckbox.checked = true;
-
-      selectAllCheckbox.addEventListener('change', () => {
-        const allBoxes = dropdownMenu.querySelectorAll('input[type="checkbox"].type-box');
-        allBoxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-        renderGantt();
-      });
-
-      selectAllLabel.appendChild(selectAllCheckbox);
-      selectAllLabel.append(' Markera alla');
-      dropdownMenu.appendChild(selectAllLabel);
-    }
-
-    uniqueTypes.forEach(type => {
-      const label = document.createElement('label');
-      label.className = 'dropdown-item';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.classList.add('type-box');
-      checkbox.value = type;
-      checkbox.checked = true;
-      checkbox.addEventListener('change', () => {
-        const allBoxes = dropdownMenu.querySelectorAll('input[type="checkbox"].type-box');
-        const selectAllCheckbox = dropdownMenu.querySelector('input[type="checkbox"]:not(.type-box)');
-        if (selectAllCheckbox) {
-          selectAllCheckbox.checked = Array.from(allBoxes).every(cb => cb.checked);
-        }
-        renderGantt();
-      });
-
-      label.appendChild(checkbox);
-      label.append(` ${type}`);
-      dropdownMenu.appendChild(label);
-    });
-  }
-
-  updateTypeOptions();
-
-  dropdownWrapper.appendChild(dropdownButton);
-  dropdownWrapper.appendChild(dropdownMenu);
-  filtersDiv.appendChild(dropdownWrapper);
-
-  seasonSelect.addEventListener('change', () => {
-    updateTypeOptions();
-    renderGantt();
-  });
-
-  dropdownButton.addEventListener('click', () => {
-    dropdownMenu.classList.toggle('show');
-  });
-
-  document.addEventListener('click', (event) => {
-    if (!dropdownWrapper.contains(event.target)) {
-      dropdownMenu.classList.remove('show');
-    }
-  });
+  seasonSelect.addEventListener('change', renderGantt);
+  typeSelect.addEventListener('change', renderGantt);
 }
-
-
-
-
 
 function setupViewButtons() {
   const filtersDiv = document.getElementById('filters');
@@ -198,15 +127,11 @@ function setupViewButtons() {
 
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
-
-  const typeCheckboxes = document.querySelectorAll('#type-checkboxes input[type="checkbox"]');
-  const selectedTypes = Array.from(typeCheckboxes)
-    .filter(cb => cb.checked)
-    .map(cb => cb.value);
+  const type = document.getElementById('type-filter').value;
 
   const filtered = allEvents
     .filter(e => (!season || e['Säsong'] === season))
-    .filter(e => selectedTypes.length === 0 || selectedTypes.includes(e['Typ av händelse']))
+    .filter(e => (!type || e['Typ av händelse'] === type))
     .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
   const tasks = filtered.map(e => ({
