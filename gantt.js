@@ -66,53 +66,60 @@ function loadEvents() {
 }
 
 function setupFilters() {
-  const seasonSelect = document.getElementById('season-filter');
+  const filtersDiv = document.getElementById('filters');
+  filtersDiv.innerHTML = '';
 
-  // Dynamiskt generera säsongsval
-  const allSeasons = [...new Set(allEvents.map(e => e['Säsong']))].filter(Boolean).sort();
-  seasonSelect.innerHTML = '';
-  allSeasons.forEach(s => {
+  const seasonSelect = document.createElement('select');
+  seasonSelect.id = 'season-filter';
+  const seasonOptionAll = document.createElement('option');
+  seasonOptionAll.value = '';
+  seasonOptionAll.textContent = 'Alla säsonger';
+  seasonSelect.appendChild(seasonOptionAll);
+  [...new Set(allEvents.map(e => e['Säsong']))].sort().reverse().forEach(season => {
     const option = document.createElement('option');
-    option.value = s;
-    option.textContent = s;
-    if (s === getCurrentSeason()) option.selected = true;
+    option.value = season;
+    option.textContent = season;
     seasonSelect.appendChild(option);
   });
+  seasonSelect.value = getCurrentSeason();
 
-  seasonSelect.addEventListener('change', renderGantt);
+  const typeSelect = document.createElement('select');
+  typeSelect.id = 'type-filter';
+  const typeOptionAll = document.createElement('option');
+  typeOptionAll.value = '';
+  typeOptionAll.textContent = 'Alla typer';
+  typeSelect.appendChild(typeOptionAll);
 
-  // Multi-select typfilter
-  const typeOptionsDiv = document.getElementById('type-options');
-  const button = document.getElementById('type-filter-button');
+  function updateTypeOptions() {
+    const selectedSeason = seasonSelect.value;
+    const filteredTypes = allEvents
+      .filter(e => !selectedSeason || e['Säsong'] === selectedSeason)
+      .map(e => e['Typ av händelse'])
+      .filter(Boolean);
+    const uniqueTypes = [...new Set(filteredTypes)].sort();
 
-  const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean).sort();
-  typeOptionsDiv.innerHTML = '';
+    typeSelect.innerHTML = '';
+    typeSelect.appendChild(typeOptionAll.cloneNode(true));
+    uniqueTypes.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      typeSelect.appendChild(option);
+    });
+  }
 
-  types.forEach(type => {
-    const label = document.createElement('label');
-    label.classList.add('checkbox-option');
+  updateTypeOptions();
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.value = type;
-    checkbox.addEventListener('change', renderGantt);
+  filtersDiv.appendChild(seasonSelect);
+  filtersDiv.appendChild(typeSelect);
 
-    label.appendChild(checkbox);
-    label.appendChild(document.createTextNode(' ' + type));
-    typeOptionsDiv.appendChild(label);
+  seasonSelect.addEventListener('change', () => {
+    updateTypeOptions();
+    renderGantt();
   });
 
-  button.addEventListener('click', () => {
-    typeOptionsDiv.classList.toggle('show');
-  });
-
-  window.addEventListener('click', (e) => {
-    if (!e.target.closest('#type-filter-dropdown')) {
-      typeOptionsDiv.classList.remove('show');
-    }
-  });
+  typeSelect.addEventListener('change', renderGantt);
 }
-
 
 
 function setupViewButtons() {
@@ -139,11 +146,12 @@ function setupViewButtons() {
 
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
-  const selectedTypes = Array.from(document.querySelectorAll('#type-options input[type="checkbox"]:checked')).map(cb => cb.value);
+  const type = document.getElementById('type-filter').value;
 
-  const filteredEvents = allEvents
-    .filter(e => !season || e['Säsong'] === season)
-    .filter(e => selectedTypes.length === 0 || selectedTypes.includes(e['Typ av händelse']));
+  const filtered = allEvents
+    .filter(e => (!season || e['Säsong'] === season))
+    .filter(e => (!type || e['Typ av händelse'] === type))
+    .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
   const tasks = filtered.map(e => ({
     id: e['Namn på händelse'],
