@@ -89,19 +89,38 @@ function setupFilters() {
   typeOptionAll.value = '';
   typeOptionAll.textContent = 'Alla typer';
   typeSelect.appendChild(typeOptionAll);
-  [...new Set(allEvents.map(e => e['Typ av händelse']))].sort().forEach(type => {
-    const option = document.createElement('option');
-    option.value = type;
-    option.textContent = type;
-    typeSelect.appendChild(option);
-  });
+
+  function updateTypeOptions() {
+    const selectedSeason = seasonSelect.value;
+    const filteredTypes = allEvents
+      .filter(e => !selectedSeason || e['Säsong'] === selectedSeason)
+      .map(e => e['Typ av händelse'])
+      .filter(Boolean);
+    const uniqueTypes = [...new Set(filteredTypes)].sort();
+
+    typeSelect.innerHTML = '';
+    typeSelect.appendChild(typeOptionAll.cloneNode(true));
+    uniqueTypes.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      typeSelect.appendChild(option);
+    });
+  }
+
+  updateTypeOptions();
 
   filtersDiv.appendChild(seasonSelect);
   filtersDiv.appendChild(typeSelect);
 
-  seasonSelect.addEventListener('change', renderGantt);
+  seasonSelect.addEventListener('change', () => {
+    updateTypeOptions();
+    renderGantt();
+  });
+
   typeSelect.addEventListener('change', renderGantt);
 }
+
 
 function setupViewButtons() {
   const filtersDiv = document.getElementById('filters');
