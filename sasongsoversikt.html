@@ -17,7 +17,17 @@
     <main class="main-content">
       <div class="gantt-wrapper">
         <h1 id="page-title">Säsongsöversikt</h1>
-        <div id="filters"></div>
+
+        <div id="filters">
+          <label for="season-filter">Säsong:</label>
+          <select id="season-filter"></select>
+
+          <div id="type-filter-dropdown">
+            <button id="type-filter-button">Välj typ av händelse</button>
+            <div id="type-options" class="type-options"></div>
+          </div>
+        </div>
+
         <div id="gantt-container"></div>
       </div>
     </main>
