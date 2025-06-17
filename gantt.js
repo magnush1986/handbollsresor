@@ -160,7 +160,10 @@ function renderGantt() {
     end: adjustEndDate(e['Datum till'] || e['Datum från']),
     progress: 0,
     type: e['Typ av händelse'],
-    color: colorMap[e['Typ av händelse']] || '#CCCCCC' // Ny rad: tilldela färg direkt
+    plats: e['Plats'] || '',
+    samling: e['Samling Härnösand'] || '',
+    info: e['Övrig information'] || '',
+    color: colorMap[e['Typ av händelse']] || '#CCCCCC'
   }));
 
 if (tasks.length > 0) {
@@ -192,16 +195,27 @@ if (tasks.length > 0) {
       end: maxDate,
       padding: 0,
       infinite_padding: false,
+      popup: ({ task }) => `
+        <div class="custom-popup">
+          <strong>Namn på händelse:</strong> ${task.id}<br/>
+          <strong>Datum från:</strong> ${task.start}<br/>
+          <strong>Datum till:</strong> ${task.end}<br/>
+          <strong>Typ:</strong> ${task.type || ''}<br/>
+          <strong>Plats:</strong> ${task.plats || ''}<br/>
+          <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
+          <strong>Övrig information:</strong> ${task.info || ''}
+        </div>
+      `,
       on_render: () => {
         const lastBar = container.querySelector('.bar:last-child');
         if (lastBar) {
           const barBBox = lastBar.getBBox();
-          const totalHeight = barBBox.y + barBBox.height + 60; // 60 = luft
-
-          //container.style.height = `${totalHeight}px`;
+          const totalHeight = barBBox.y + barBBox.height + 60;
+          // container.style.height = `${totalHeight}px`;
         }
       }
     });
+
 
     // Tar bort tidigare workaround för färgerna
     // tasks.forEach(task => {
