@@ -8,12 +8,6 @@
   <link rel="stylesheet" href="gantt.css" />
   <link rel="stylesheet" href="menu.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
-  <style>
-    /* Osynliga filterelement, endast för att undvika JS-fel */
-    #season-filter, #type-filter-dropdown {
-      display: none;
-    }
-  </style>
 </head>
 <body class="gantt-page">
   <div class="page-wrapper full-width">
@@ -23,16 +17,7 @@
     <main class="main-content">
       <div class="gantt-wrapper">
         <h1 id="page-title">Säsongsöversikt</h1>
-
-        <!-- Osynliga filterelement för att undvika JS-fel -->
-        <div id="filters">
-          <select id="season-filter"></select>
-          <div id="type-filter-dropdown">
-            <button id="type-filter-button">Välj typ</button>
-            <div id="type-options" class="type-options"></div>
-          </div>
-        </div>
-
+        <div id="filters"></div>
         <div id="gantt-container"></div>
       </div>
     </main>
