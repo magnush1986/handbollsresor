@@ -82,44 +82,79 @@ function setupFilters() {
     seasonSelect.appendChild(option);
   });
   seasonSelect.value = getCurrentSeason();
+  filtersDiv.appendChild(seasonSelect);
 
-  const typeSelect = document.createElement('select');
-  typeSelect.id = 'type-filter';
-  const typeOptionAll = document.createElement('option');
-  typeOptionAll.value = '';
-  typeOptionAll.textContent = 'Alla typer';
-  typeSelect.appendChild(typeOptionAll);
+  const typeWrapper = document.createElement('div');
+  typeWrapper.id = 'type-checkboxes';
 
   function updateTypeOptions() {
+    typeWrapper.innerHTML = '';
+
     const selectedSeason = seasonSelect.value;
     const filteredTypes = allEvents
       .filter(e => !selectedSeason || e['Säsong'] === selectedSeason)
       .map(e => e['Typ av händelse'])
       .filter(Boolean);
+
     const uniqueTypes = [...new Set(filteredTypes)].sort();
 
-    typeSelect.innerHTML = '';
-    typeSelect.appendChild(typeOptionAll.cloneNode(true));
+    // "Markera alla"-checkbox
+    if (uniqueTypes.length > 0) {
+      const selectAllLabel = document.createElement('label');
+      selectAllLabel.style.fontWeight = 'bold';
+      selectAllLabel.style.display = 'inline-block';
+      selectAllLabel.style.marginRight = '1rem';
+
+      const selectAllCheckbox = document.createElement('input');
+      selectAllCheckbox.type = 'checkbox';
+      selectAllCheckbox.checked = true;
+
+      selectAllCheckbox.addEventListener('change', () => {
+        const allBoxes = typeWrapper.querySelectorAll('input[type="checkbox"].type-box');
+        allBoxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+        renderGantt();
+      });
+
+      selectAllLabel.appendChild(selectAllCheckbox);
+      selectAllLabel.append(' Markera alla');
+      typeWrapper.appendChild(selectAllLabel);
+    }
+
+    // Skapa checkboxar för varje typ
     uniqueTypes.forEach(type => {
-      const option = document.createElement('option');
-      option.value = type;
-      option.textContent = type;
-      typeSelect.appendChild(option);
+      const label = document.createElement('label');
+      label.style.marginRight = '1rem';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.classList.add('type-box');
+      checkbox.value = type;
+      checkbox.checked = true;
+      checkbox.addEventListener('change', () => {
+        const allBoxes = typeWrapper.querySelectorAll('input[type="checkbox"].type-box');
+        const selectAllCheckbox = typeWrapper.querySelector('input[type="checkbox"]:not(.type-box)');
+        if (selectAllCheckbox) {
+          selectAllCheckbox.checked = Array.from(allBoxes).every(cb => cb.checked);
+        }
+        renderGantt();
+      });
+
+      label.appendChild(checkbox);
+      label.append(` ${type}`);
+      typeWrapper.appendChild(label);
     });
   }
 
   updateTypeOptions();
-
-  filtersDiv.appendChild(seasonSelect);
-  filtersDiv.appendChild(typeSelect);
+  filtersDiv.appendChild(typeWrapper);
 
   seasonSelect.addEventListener('change', () => {
     updateTypeOptions();
     renderGantt();
   });
-
-  typeSelect.addEventListener('change', renderGantt);
 }
+
+
 
 
 function setupViewButtons() {
@@ -146,11 +181,15 @@ function setupViewButtons() {
 
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
-  const type = document.getElementById('type-filter').value;
+
+  const typeCheckboxes = document.querySelectorAll('#type-checkboxes input[type="checkbox"]');
+  const selectedTypes = Array.from(typeCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
 
   const filtered = allEvents
     .filter(e => (!season || e['Säsong'] === season))
-    .filter(e => (!type || e['Typ av händelse'] === type))
+    .filter(e => selectedTypes.length === 0 || selectedTypes.includes(e['Typ av händelse']))
     .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
   const tasks = filtered.map(e => ({
