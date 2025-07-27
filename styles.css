@@ -571,3 +571,10 @@ details[open] .summary-icon {
 .maps-links a {
   display: block;
 }
+
+@media (min-width: 768px) {
+  .event-card .label {
+    display: inline;
+  }
+}
+
