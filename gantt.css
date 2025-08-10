@@ -282,3 +282,39 @@ body {
   border-color: #2196F3;
   box-shadow: 0 0 0 3px rgba(33,150,243,0.12);
 }
+
+/* --- Fix: gör multi-select helt fristående utan extra ”box i box” --- */
+#gantt-container, .gantt-wrapper { position: relative; } /* redan hos dig, ok */
+
+.gantt-wrapper #filters .type-multiselect {
+  position: relative;          /* ankare för panelen */
+  display: inline-block;       /* egen plats i raden */
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* ta bort ev. pseudo-ikoner eller bakgrunder på wrappern */
+.gantt-wrapper #filters .type-multiselect::before,
+.gantt-wrapper #filters .type-multiselect::after {
+  content: none !important;
+}
+
+/* knappen – ser ut som select, men utan extra ”ytterpil” */
+.gantt-wrapper #filters .type-ms-button {
+  margin: 0;
+  min-width: 150px;
+  outline: none;
+}
+
+/* panelen ska hamna rakt under knappen */
+.gantt-wrapper #filters .type-ms-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;              /* börja vid knappens vänsterkant */
+  right: auto;
+  z-index: 3000;
+}
