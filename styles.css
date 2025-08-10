@@ -875,3 +875,10 @@ details[open] .summary-icon {
   left: 0;
   right: 0;
 }
+
+.bootstrap-select .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  margin-top: 0 !important;
+}
