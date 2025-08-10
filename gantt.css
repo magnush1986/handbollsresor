@@ -180,11 +180,11 @@ body {
 
 /* === Multi-select Typ (checkbox-dropdown) === */
 .type-multiselect {
-  position: relative;
-  display: inline-block;
-  border: 0;           /* tillagd: ta bort "box i box" runt knappen */
-  background: none;    /* tillagd */
-  box-shadow: none;    /* tillagd */
+  position: relative;      /* behålls: förankrar panelen */
+  display: inline-block;   /* behålls: egen plats utan extra "box" */
+  border: 0;
+  background: none;
+  box-shadow: none;
 }
 
 /* Matcha utseendet på <select> */
@@ -201,21 +201,22 @@ body {
   background-repeat: no-repeat;
   background-position: right 0.6rem center;
   background-size: 1rem;
-  min-width: 150px; /* tillagd för jämn bredd med select */
-  outline: none;    /* tillagd: undvik dubbel fokusram */
+  min-width: 150px; /* jämn bredd med select */
+  outline: none;    /* undvik dubbel fokusram */
 }
 
 /* Lägg vyknappar på ny rad under filtren */
 .gantt-wrapper #filters .view-buttons {
-  flex-basis: 100%;          /* tillagd */
-  display: flex;             /* tillagd */
-  justify-content: center;   /* tillagd */
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .type-ms-panel {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  left: 0;                 /* panelen börjar vid knappens vänsterkant */
+  right: auto;
   min-width: 220px;
   max-width: 320px;
   background: #fff;
@@ -223,7 +224,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.12);
   padding: 0.5rem;
-  z-index: 3000; /* ändrad från 50 för att ligga över gantt */
+  z-index: 3000; /* över gantt */
   max-height: 300px;
   overflow-y: auto;
 }
@@ -280,31 +281,4 @@ body {
 .type-ms-button[aria-expanded="true"] {
   border-color: #2196F3;
   box-shadow: 0 0 0 3px rgba(33,150,243,0.12);
-}
-
-/* === Multi-select Typ (checkbox-dropdown) === */
-/* Gör wrappern helt "osynlig" så bara knappen syns */
-.type-multiselect {
-  display: contents;        /* <— tar bort själva boxen */
-  border: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-}
-
-/* Knappen ser ut som en vanlig select */
-.type-ms-button {
-  font-size: 1rem;
-  padding: 0.4rem 2rem 0.4rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  color: #333;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 0.6rem center;
-  background-size: 1rem;
-  min-width: 150px;
-  outline: none;
 }
