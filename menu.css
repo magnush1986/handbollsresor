@@ -110,3 +110,19 @@ body.gantt-page .nav-wrapper {
   box-sizing: border-box;
 }
 
+/* Alltid över filtren */
+.main-nav {
+  position: relative;   /* finns redan, men bra att ha */
+  z-index: 5000;
+}
+
+/* Mobilmenyn ska ligga över allt */
+@media (max-width: 600px) {
+  .menu-toggle {
+    position: relative; /* skapa stacking context */
+    z-index: 6000;
+  }
+  .nav-links {
+    z-index: 5500;      /* högre än filter/dropdown (3000) */
+  }
+}
