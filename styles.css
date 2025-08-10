@@ -762,3 +762,19 @@ details[open] .summary-icon {
     max-width: 100%;
   }
 }
+
+/* Gör Typ-filtret visuellt identiskt med övriga select-fält i desktop */
+@media (min-width: 900px) {
+  .season-filter-wrapper .type-multiselect {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .season-filter-wrapper .type-ms-button {
+    margin: 0; /* Ta bort ev. extra marginal */
+    height: 36px;
+    line-height: 1.2;
+  }
+}
