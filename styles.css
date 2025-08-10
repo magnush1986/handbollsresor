@@ -864,3 +864,14 @@ details[open] .summary-icon {
   }
 }
 
+.type-filter-wrapper {
+  position: relative; /* Gör att dropdownen kan positioneras i förhållande till boxen */
+  z-index: 1000; /* Så att listan inte hamnar bakom något */
+}
+
+.type-filter-wrapper .multiselect-container {
+  position: absolute;
+  top: 100%; /* Direkt under boxen */
+  left: 0;
+  right: 0;
+}
