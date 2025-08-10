@@ -882,3 +882,28 @@ details[open] .summary-icon {
   left: 0 !important;
   margin-top: 0 !important;
 }
+
+/* Fixa Typ-dropdownens position på Händelser-sidan */
+@media (min-width: 900px) {
+  .season-filter-wrapper { position: relative; z-index: 2000; } /* som gantt */
+
+  /* Åsidosätt display: contents — behåll ett riktigt ankare vid knappen */
+  .season-filter-wrapper .type-multiselect {
+    display: inline-block !important;
+    position: relative !important;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* Placera panelen exakt under knappen */
+  .season-filter-wrapper .type-ms-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: auto;
+    z-index: 3000;
+  }
+}
