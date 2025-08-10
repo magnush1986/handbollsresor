@@ -907,3 +907,32 @@ details[open] .summary-icon {
     z-index: 3000;
   }
 }
+
+/* Ta bort extra box runt Typ-filtret */
+.type-filter,
+.type-filter .ms-parent,
+.type-filter .ms-choice {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+
+/* Centrera text och pil i Typ-filtret */
+.type-filter .ms-choice {
+    display: flex !important;
+    align-items: center !important;
+    height: 38px !important; /* samma höjd som de andra filtren */
+    line-height: 38px !important;
+    padding-left: 8px !important;
+}
+.type-filter .ms-choice > span {
+    display: inline-block !important;
+    line-height: normal !important;
+}
+.type-filter .ms-choice > div {
+    display: flex !important;
+    align-items: center !important;
+}
+
