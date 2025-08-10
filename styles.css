@@ -778,3 +778,89 @@ details[open] .summary-icon {
     line-height: 1.2;
   }
 }
+
+/* Desktop: lägg Säsong, Typ, Plats i en rad med exakt samma look */
+@media (min-width: 900px) {
+  /* Byt till grid för pixelren rad */
+  .season-filter-wrapper {
+    display: grid;
+    grid-template-columns: auto 220px auto 220px auto 220px; /* label + field x3 */
+    align-items: center;
+    column-gap: 24px;
+    row-gap: 8px;
+    justify-content: start;
+    max-width: 100%; /* undvik “för smal” rad */
+  }
+
+  .season-filter-wrapper .filter-item {
+    display: contents; /* låt label + control lägga sig direkt i grid */
+  }
+
+  .season-filter-wrapper .filter-item label {
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .season-filter-wrapper select,
+  .season-filter-wrapper .type-ms-button {
+    width: 220px; /* samma bredd på alla tre kontrollerna */
+    height: 36px;
+    line-height: 1.2;
+  }
+
+  /* Ta bort känslan av separat box runt Typ */
+  .season-filter-wrapper .type-multiselect {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+    display: contents; /* låt knappen hamna direkt i grid */
+  }
+
+  /* Skolfiltret på rad 2, vänsterställt, full bredd på fältet */
+  #school-filter {
+    grid-column: 1 / span 6;   /* hela raden under */
+    width: 300px;
+    max-width: 100%;
+  }
+}
+
+/* Desktop: Justera vertikal linjering för Typ så den matchar select-fälten */
+@media (min-width: 900px) {
+  .season-filter-wrapper .type-ms-button {
+    height: 36px;              /* samma höjd som select */
+    line-height: 1.2;           /* samma som select */
+    display: flex;              /* gör att vi kan centrera innehållet exakt */
+    align-items: center;        /* vertikal centrering */
+    padding-top: 0;              /* ta bort extra top-padding */
+    padding-bottom: 0;           /* ta bort extra bottom-padding */
+  }
+}
+
+/* Desktop: Lägg alla tre första filtren på samma rad och justera vertikal linjering */
+@media (min-width: 900px) {
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .season-filter-wrapper,
+  .type-filter-wrapper,
+  .extra-filter-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Justera vertikal linjering för Typ-knappen */
+  .season-filter-wrapper .type-ms-button {
+    height: 36px;         /* samma höjd som select */
+    line-height: 1.2;     /* samma som select */
+    display: flex;
+    align-items: center;  /* perfekt vertikal centrering */
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
