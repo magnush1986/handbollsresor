@@ -2,6 +2,7 @@ const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwy0b0RMcUXo
 let allEvents = [];
 let colorMap = {};
 let currentViewMode = 'Month';
+const selectedTypes = new Set();
 
 const colorPalette = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
 
@@ -83,14 +84,37 @@ function setupFilters() {
   });
   seasonSelect.value = getCurrentSeason();
 
-  const typeSelect = document.createElement('select');
-  typeSelect.id = 'type-filter';
-  const typeOptionAll = document.createElement('option');
-  typeOptionAll.value = '';
-  typeOptionAll.textContent = 'Alla typer';
-  typeSelect.appendChild(typeOptionAll);
+  // --- Multi-select för Typ ---
+  const typeWrapper = document.createElement('div');
+  typeWrapper.id = 'type-filter';
+  typeWrapper.className = 'type-multiselect';
 
-  function updateTypeOptions() {
+  const typeButton = document.createElement('button');
+  typeButton.type = 'button';
+  typeButton.className = 'type-ms-button';
+  typeButton.textContent = 'Typ (välj flera)';
+  typeButton.setAttribute('aria-expanded', 'false');
+
+  const typePanel = document.createElement('div');
+  typePanel.className = 'type-ms-panel';
+  typePanel.hidden = true;
+
+  const typeList = document.createElement('div');
+  typeList.className = 'type-ms-list';
+  typePanel.appendChild(typeList);
+
+  const actions = document.createElement('div');
+  actions.className = 'type-ms-actions';
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.textContent = 'Rensa val';
+  actions.appendChild(clearBtn);
+  typePanel.appendChild(actions);
+
+  typeWrapper.appendChild(typeButton);
+  typeWrapper.appendChild(typePanel);
+
+  function rebuildTypeOptions() {
     const selectedSeason = seasonSelect.value;
     const filteredTypes = allEvents
       .filter(e => !selectedSeason || e['Säsong'] === selectedSeason)
@@ -98,29 +122,80 @@ function setupFilters() {
       .filter(Boolean);
     const uniqueTypes = [...new Set(filteredTypes)].sort();
 
-    typeSelect.innerHTML = '';
-    typeSelect.appendChild(typeOptionAll.cloneNode(true));
+    // Behåll bara val som finns kvar
+    for (const t of Array.from(selectedTypes)) {
+      if (!uniqueTypes.includes(t)) selectedTypes.delete(t);
+    }
+
+    typeList.innerHTML = '';
     uniqueTypes.forEach(type => {
-      const option = document.createElement('option');
-      option.value = type;
-      option.textContent = type;
-      typeSelect.appendChild(option);
+      const id = `type-${type.replace(/\s+/g, '_')}`;
+      const row = document.createElement('label');
+      row.className = 'type-ms-row';
+      row.htmlFor = id;
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = id;
+      cb.value = type;
+      cb.checked = selectedTypes.has(type);
+      cb.addEventListener('change', () => {
+        if (cb.checked) selectedTypes.add(type);
+        else selectedTypes.delete(type);
+        renderGantt();
+        updateTypeButtonText();
+      });
+
+      const span = document.createElement('span');
+      span.textContent = type;
+
+      row.appendChild(cb);
+      row.appendChild(span);
+      typeList.appendChild(row);
     });
+
+    updateTypeButtonText();
   }
 
-  updateTypeOptions();
+  function updateTypeButtonText() {
+    if (selectedTypes.size === 0) {
+      typeButton.textContent = 'Typ (alla)';
+    } else if (selectedTypes.size === 1) {
+      typeButton.textContent = `Typ (${Array.from(selectedTypes)[0]})`;
+    } else {
+      typeButton.textContent = `Typ (${selectedTypes.size} val)`;
+    }
+  }
 
-  filtersDiv.appendChild(seasonSelect);
-  filtersDiv.appendChild(typeSelect);
+  typeButton.addEventListener('click', () => {
+    const open = typePanel.hidden;
+    typePanel.hidden = !open;
+    typeButton.setAttribute('aria-expanded', String(open));
+  });
 
-  seasonSelect.addEventListener('change', () => {
-    updateTypeOptions();
+  document.addEventListener('click', (e) => {
+    if (!typeWrapper.contains(e.target)) {
+      typePanel.hidden = true;
+      typeButton.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  clearBtn.addEventListener('click', () => {
+    selectedTypes.clear();
+    rebuildTypeOptions();
     renderGantt();
   });
 
-  typeSelect.addEventListener('change', renderGantt);
-}
+  rebuildTypeOptions();
 
+  filtersDiv.appendChild(seasonSelect);
+  filtersDiv.appendChild(typeWrapper);
+
+  seasonSelect.addEventListener('change', () => {
+    rebuildTypeOptions();
+    renderGantt();
+  });
+}
 
 function setupViewButtons() {
   const filtersDiv = document.getElementById('filters');
@@ -146,11 +221,11 @@ function setupViewButtons() {
 
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
-  const type = document.getElementById('type-filter').value;
+  const typesSelected = Array.from(selectedTypes); // tom => alla
 
   const filtered = allEvents
     .filter(e => (!season || e['Säsong'] === season))
-    .filter(e => (!type || e['Typ av händelse'] === type))
+    .filter(e => (typesSelected.length === 0 || typesSelected.includes(e['Typ av händelse'])))
     .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
 
   const tasks = filtered.map(e => ({
@@ -166,7 +241,7 @@ function renderGantt() {
     color: colorMap[e['Typ av händelse']] || '#CCCCCC'
   }));
 
-if (tasks.length > 0) {
+  if (tasks.length > 0) {
     tasks.push({
       id: 'padding-row',
       name: '',
@@ -175,8 +250,6 @@ if (tasks.length > 0) {
       progress: 0
     });
   }
-
-
 
   const container = document.getElementById('gantt-container');
   container.innerHTML = '';
@@ -215,7 +288,6 @@ if (tasks.length > 0) {
         }
       }
     });
-
 
     // Tar bort tidigare workaround för färgerna
     // tasks.forEach(task => {
