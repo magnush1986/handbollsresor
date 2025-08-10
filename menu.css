@@ -137,21 +137,19 @@ body.gantt-page .nav-wrapper {
 }
 
 @media (max-width: 600px) {
-  .menu-toggle {
+  .nav-links {
     position: fixed;
-    top: 15px;
+    top: 60px; /* så den ligger under toppbaren */
     right: 15px;
-    z-index: 1001; /* ovanför filterboxar och annat */
+    background-color: rgba(255, 255, 255, 0.97);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    min-width: 160px;
+    z-index: 9999; /* alltid över annat innehåll */
   }
 
-  .main-nav {
-    position: fixed;
-    top: 0;
-    right: 0;
-    background-color: white; /* eller din bakgrundsfärg */
-    width: 200px; /* eller önskad bredd */
-    height: 100vh; /* hela höjden på skärmen */
-    overflow-y: auto;
-    z-index: 1000;
+  .nav-links li {
+    margin: 0.4rem 0;
   }
 }
