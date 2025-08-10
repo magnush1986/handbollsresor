@@ -578,3 +578,144 @@ details[open] .summary-icon {
   }
 }
 
+/* === Filterrad – Händelser-sidan === */
+.season-filter-wrapper {
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 90%;
+  position: relative;
+  z-index: 2000;
+}
+
+.season-filter-wrapper label {
+  font-weight: 600;
+  margin-right: .4rem;
+}
+
+.season-filter-wrapper select {
+  font-size: 1rem;
+  height: 36px;
+  line-height: 1.2;
+  padding: 0 2rem 0 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right .6rem center;
+  background-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  min-width: 150px;
+}
+
+.season-filter-wrapper select:hover { background-color: #fafafa; }
+.season-filter-wrapper select:focus { outline: none; box-shadow: 0 0 0 3px rgba(33,150,243,0.12); border-color: #2196F3; }
+
+/* === Multi-select Typ (checkbox-dropdown) – Händelser-sidan === */
+.season-filter-wrapper .type-multiselect {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Knappen ska se ut som <select> */
+.season-filter-wrapper .type-ms-button {
+  font-size: 1rem;
+  height: 36px;
+  line-height: 1.2;
+  padding: 0 2rem 0 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  min-width: 150px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right .6rem center;
+  background-size: 1rem;
+}
+
+.season-filter-wrapper .type-ms-button:hover { background-color: #fafafa; }
+.season-filter-wrapper .type-ms-button:focus { outline: none; box-shadow: 0 0 0 3px rgba(33,150,243,0.12); border-color: #2196F3; }
+.season-filter-wrapper .type-ms-button[aria-expanded="true"] { border-color: #2196F3; box-shadow: 0 0 0 3px rgba(33,150,243,0.12); }
+
+/* Panelen under knappen */
+.season-filter-wrapper .type-ms-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: auto;
+  z-index: 3000;
+  min-width: 220px;
+  max-width: 320px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  padding: .5rem;
+}
+
+/* Checkbox-lista */
+.season-filter-wrapper .type-ms-list {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.season-filter-wrapper .type-ms-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .25rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.season-filter-wrapper .type-ms-row:hover { background: #f6f6f6; }
+.season-filter-wrapper .type-ms-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #2196F3; }
+
+/* Actions (Rensa val) */
+.season-filter-wrapper .type-ms-actions {
+  margin-top: .5rem;
+  padding-top: .5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.season-filter-wrapper .type-ms-actions button {
+  font-size: .9rem;
+  padding: .35rem .7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.season-filter-wrapper .type-ms-actions button:hover { background: #f6f6f6; }
+
+/* Mobiljusteringar */
+@media (max-width: 700px) {
+  .season-filter-wrapper { gap: .75rem; }
+  .season-filter-wrapper .type-ms-button { min-width: 140px; }
+  .season-filter-wrapper .type-ms-panel { min-width: 200px; max-width: 90vw; }
+}
