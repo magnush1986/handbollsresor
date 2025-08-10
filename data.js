@@ -539,10 +539,11 @@ function renderEventCard(e, target, isFirst = false) {
       ${kostnadHtml}
       ${övrigInformationHtml}
     </div>
-    ${ (ledigFrånSkolanHtml || övrigInformationHtml) ? `
+    ${ (ledigFrånSkolanHtml || ledighetHtml) ? `
     <div class="event-section">
       <h3>Ledig från skolan</h3>
       ${ledigFrånSkolanHtml}
+      ${ledighetHtml}
     </div>` : '' }
     ${ (samlingHTML || resvägHtml || färdsättHtml) ? `
     <div class="event-section">
