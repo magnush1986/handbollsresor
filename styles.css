@@ -719,3 +719,46 @@ details[open] .summary-icon {
   .season-filter-wrapper .type-ms-button { min-width: 140px; }
   .season-filter-wrapper .type-ms-panel { min-width: 200px; max-width: 90vw; }
 }
+
+/* Desktop: Säsong, Typ och Plats på samma rad */
+@media (min-width: 900px) {
+  .season-filter-wrapper {
+    justify-content: flex-start;   /* vänsterställd, inte centrerad */
+    flex-wrap: nowrap;             /* tvinga första raden att hålla ihop */
+    gap: 1rem 1.5rem;
+  }
+
+  /* Se till att varje filter-block inte tar full bredd */
+  .season-filter-wrapper .filter-item {
+    flex: 0 0 auto;
+    width: auto;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  /* Etikett bredvid väljaren i desktop */
+  .season-filter-wrapper .filter-item label {
+    display: inline;
+    margin-bottom: 0;
+  }
+
+  /* Överstyr tidigare "width: 100%" på selects i desktop */
+  .season-filter-wrapper select {
+    width: auto;
+    max-width: none;
+  }
+
+  /* Typ-multiselect ska bete sig som en kompakt knapp */
+  .season-filter-wrapper .type-multiselect {
+    display: inline-flex;
+  }
+
+  /* Låt skol-filtret bryta till nästa rad och vara fullbredd där */
+  #school-filter {
+    flex-basis: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+}
