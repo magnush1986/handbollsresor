@@ -281,3 +281,30 @@ body {
   border-color: #2196F3;
   box-shadow: 0 0 0 3px rgba(33,150,243,0.12);
 }
+
+/* === Multi-select Typ (checkbox-dropdown) === */
+/* Gör wrappern helt "osynlig" så bara knappen syns */
+.type-multiselect {
+  display: contents;        /* <— tar bort själva boxen */
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Knappen ser ut som en vanlig select */
+.type-ms-button {
+  font-size: 1rem;
+  padding: 0.4rem 2rem 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+  min-width: 150px;
+  outline: none;
+}
