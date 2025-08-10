@@ -936,3 +936,50 @@ details[open] .summary-icon {
     align-items: center !important;
 }
 
+/* --- FIXA DUBBELBOX RUNT TYP --- */
+
+/* 1) Ta bort select-stil från själva wrappen (den är en DIV) */
+.season-filter-wrapper #type-filter {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* 2) Flytta select-stilen till den riktiga kontrollen (knappen) */
+.season-filter-wrapper .type-ms-button {
+  font-size: 1rem;
+  height: 36px;
+  line-height: 1.2;
+  padding: 0 2rem 0 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right .6rem center;
+  background-size: 1rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 3) Breddar på mobil samma som dina selects */
+@media (max-width: 700px) {
+  .season-filter-wrapper .type-ms-button {
+    width: 100%;
+    max-width: 300px;
+    min-width: 140px;
+  }
+}
+
+/* 4) Desktop-bredd så alla tre matchar */
+@media (min-width: 900px) {
+  .season-filter-wrapper .type-ms-button { width: 220px; }
+}
+
