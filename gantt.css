@@ -173,3 +173,95 @@ body {
   margin-bottom: 0.3rem;
 }
 
+/* === Multi-select Typ (checkbox-dropdown) === */
+.type-multiselect {
+  position: relative;
+  display: inline-block;
+}
+
+/* Matcha utseendet på <select> */
+.type-ms-button {
+  font-size: 1rem;
+  padding: 0.4rem 2rem 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23148424" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+}
+
+.type-ms-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  max-width: 320px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  padding: 0.5rem;
+  z-index: 50;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Lista med checkboxar */
+.type-ms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.type-ms-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.type-ms-row:hover {
+  background: #f6f6f6;
+}
+
+.type-ms-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2196F3;
+}
+
+/* Actions (t.ex. Rensa val) */
+.type-ms-actions {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.type-ms-actions button {
+  font-size: 0.9rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.type-ms-actions button:hover {
+  background: #f6f6f6;
+}
+
+/* Se till att knappen får "active"-känsla när panelen är öppen */
+.type-ms-button[aria-expanded="true"] {
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33,150,243,0.12);
+}
+
