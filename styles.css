@@ -983,3 +983,6 @@ details[open] .summary-icon {
   .season-filter-wrapper .type-ms-button { width: 220px; }
 }
 
+.season-filter-wrapper .type-ms-row span {
+  font-weight: normal;
+}
