@@ -546,7 +546,6 @@ function renderEventCard(e, target, isFirst = false) {
       <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
       <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
       <div class="event-line"><span class="icon">🗓️</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
-      // ${kostnadHtml}
       ${övrigInformationHtml}
     </div>
     ${ (ledigFrånSkolanHtml || ledighetHtml) ? `
