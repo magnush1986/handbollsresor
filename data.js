@@ -435,6 +435,11 @@ function renderEventCard(e, target, isFirst = false) {
     ? `<div class="event-line">📷 <a href="${bilderLänk}" target="_blank">Se bilder</a></div>`
     : "";
 
+  const boendeLänk = e["Länk till bilder"]?.trim();
+  const boendeLänkHtml = (boendeLänk && boendeLänk.startsWith("http"))
+    ? `<div class="event-line">🌐 <a href="${boendeLänk}" target="_blank">Se bilder</a></div>`
+    : "";
+
   let samlingHTML = '';
   const samlingH = e['Samling Härnösand']?.trim();
   const samlingP = e['Samling på plats']?.trim();
@@ -576,11 +581,12 @@ function renderEventCard(e, target, isFirst = false) {
       ${tillgångTillBoendeHtml}
       ${adressTillBoendeHtml}
     </div>` : '' }
-    ${ (hemsidaUrl || bilderHtml) ? `
+    ${ (hemsidaUrl || bilderHtml || boendeLänkHtml) ? `
     <div class="event-section">
       <h3>Länkar</h3>
       ${hemsidaUrl}
       ${bilderHtml}
+      ${boendeLänkHtml}
     </div>` : '' }
   `;
 
