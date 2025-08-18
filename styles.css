@@ -986,3 +986,14 @@ details[open] .summary-icon {
 .season-filter-wrapper .type-ms-row span {
   font-weight: normal;
 }
+
+/* Visa etiketter i mobil-landskap (t.ex. iPhone 14 Pro) */
+@media (max-width: 812px) and (orientation: landscape) {
+  .event-card .label { 
+    display: inline !important;
+  }
+  /* Behåll undantaget för samlingsraderna */
+  .event-line.sampling-line .label {
+    display: none !important;
+  }
+}
