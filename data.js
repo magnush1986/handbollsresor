@@ -432,12 +432,12 @@ function renderEventCard(e, target, isFirst = false) {
 
   const bilderLänk = e["Länk till bilder"]?.trim();
   const bilderHtml = (bilderLänk && bilderLänk.startsWith("http"))
-    ? `<div class="event-line">📷 <a href="${bilderLänk}" target="_blank">Se bilder</a></div>`
+    ? `<div class="event-line"><strong>📷 Bilder:</strong> <a href="${bilderLänk}" target="_blank">Se bilder</a></div>`
     : "";
 
   const boendeLänk = e["Länk till bilder"]?.trim();
   const boendeLänkHtml = (boendeLänk && boendeLänk.startsWith("http"))
-    ? `<div class="event-line">🌐 <a href="${boendeLänk}" target="_blank">Se bilder</a></div>`
+    ? `<div class="event-line"><strong>🌐 Hemsida boende:</strong> <a href="${boendeLänk}" target="_blank">Se bilder</a></div>`
     : "";
 
   let samlingHTML = '';
