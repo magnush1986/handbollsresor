@@ -435,9 +435,9 @@ function renderEventCard(e, target, isFirst = false) {
     ? `<div class="event-line"><strong>📷 Bilder:</strong> <a href="${bilderLänk}" target="_blank">Se bilder</a></div>`
     : "";
 
-  const boendeLänk = e["Länk till bilder"]?.trim();
+  const boendeLänk = e["Länk till boendes hemsida"]?.trim();
   const boendeLänkHtml = (boendeLänk && boendeLänk.startsWith("http"))
-    ? `<div class="event-line"><strong>🌐 Hemsida boende:</strong> <a href="${boendeLänk}" target="_blank">Se bilder</a></div>`
+    ? `<div class="event-line"><strong>🌐 Hemsida boende:</strong> <a href="${boendeLänk}" target="_blank">Länk till boendes hemsida</a></div>`
     : "";
 
   let samlingHTML = '';
