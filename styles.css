@@ -997,3 +997,15 @@ details[open] .summary-icon {
     display: none !important;
   }
 }
+
+/* Döljer rubriker för samlingsrader ENDAST i mobil-porträtt */
+@media (max-width: 768px) and (orientation: portrait) {
+  .event-line.sampling-line .label {
+    display: none !important;
+  }
+}
+
+/* Visar rubrikerna annars (landskap + desktop) */
+.event-line.sampling-line .label {
+  display: inline !important;
+}
