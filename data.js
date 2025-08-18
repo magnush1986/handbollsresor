@@ -484,6 +484,16 @@ function renderEventCard(e, target, isFirst = false) {
   const kostnadHtml = kostnad
     ? `<div class="event-line"><span class="icon">💰</span><span class="label">Kostnad:</span> <span class="value">${kostnad}</span></div>`
     : "";
+
+  const sistaBetalningsdag = e['Sista betalningsdag']?.trim();
+  const sistaBetalningsdagHtml = sistaBetalningsdag
+    ? `<div class="event-line"><span class="icon">⏳</span><span class="label">Sista betalningsdag:</span> <span class="value">${sistaBetalningsdag}</span></div>`
+    : "";
+  
+  const betalningsmottagare = e['Betalningsmottagare']?.trim();
+  const betalningsmottagareHtml = betalningsmottagare
+    ? `<div class="event-line"><span class="icon">🏦</span><span class="label">Betalningsmottagare:</span> <span class="value">${betalningsmottagare}</span></div>`
+    : "";
   
   const färdsätt = e['Färdsätt']?.trim();
   const färdsättHtml = färdsätt
@@ -536,7 +546,7 @@ function renderEventCard(e, target, isFirst = false) {
       <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
       <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
       <div class="event-line"><span class="icon">🗓️</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
-      ${kostnadHtml}
+      // ${kostnadHtml}
       ${övrigInformationHtml}
     </div>
     ${ (ledigFrånSkolanHtml || ledighetHtml) ? `
@@ -545,10 +555,12 @@ function renderEventCard(e, target, isFirst = false) {
       ${ledigFrånSkolanHtml}
       ${ledighetHtml}
     </div>` : '' }
-    ${ (kostnadHtml || ledighetHtml) ? `
+    ${ (kostnadHtml || sistaBetalningsdagHtml || betalningsmottagareHtml) ? `
     <div class="event-section">
       <h3>Kostnader</h3>
       ${kostnadHtml}
+      ${sistaBetalningsdagHtml}
+      ${betalningsmottagareHtml}
     </div>` : '' }
     ${ (samlingHTML || resvägHtml || färdsättHtml) ? `
     <div class="event-section">
