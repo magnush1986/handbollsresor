@@ -154,6 +154,8 @@ function loadBudget() {
                 namn: e['Namn på händelse'],
                 datum: e['Datum från'],
                 plats: e['Plats'],
+                sistaBetalningsdag: e['Sista betalningsdag'],
+                betalningsmottagare: e['Betalningsmottagare'],
                 kostnad
               });
 
@@ -196,6 +198,8 @@ function loadBudget() {
                 <th>Händelse</th>
                 <th>Datum</th>
                 <th>Plats</th>
+                <th>Sista betalningsdag</th>
+                <th>Betalningsmottagare</th>
                 <th>Kostnad</th>
               </tr>`;
             innerTable.appendChild(thead);
@@ -207,6 +211,8 @@ function loadBudget() {
                 <td data-label="Händelse">${ev.namn}</td>
                 <td data-label="Datum">📅 ${ev.datum}</td>
                 <td data-label="Plats">📍 ${ev.plats}</td>
+                <td data-label="Sista betalningsdag">⏳ ${ev.sistaBetalningsdag || ''}</td>
+                <td data-label="Betalningsmottagare">🏦 ${ev.betalningsmottagare || ''}</td>
                 <td data-label="Kostnad">💰 ${ev.kostnad.toLocaleString('sv-SE')} kr</td>
               `;
               tbody.appendChild(row);
