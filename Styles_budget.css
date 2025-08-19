@@ -294,3 +294,15 @@ h1#page-title {
 details summary {
   list-style: none;
 }
+
+/* Gör betalningsmottagare två-radig i mobilläge */
+.budget-inner-table td[data-label="Betalningsmottagare"] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.budget-inner-table td[data-label="Betalningsmottagare"]::before {
+  display: block;
+  margin-bottom: 0.2rem;
+}
