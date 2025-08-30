@@ -7,25 +7,9 @@ const selectedTypes = new Set();
 const colorPalette = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#8BC34A', '#FFC107', '#3F51B5', '#009688'];
 
 document.addEventListener("DOMContentLoaded", () => {
-  //setupMenuToggle();
   loadEvents();
 });
-/*
-function setupMenuToggle() {
-  //const toggleBtn = document.querySelector(".menu-toggle");
-  const navLinks = document.querySelector(".nav-links");
 
-  toggleBtn.addEventListener("click", () => {
-    navLinks.classList.toggle("open");
-  });
-
-  document.querySelectorAll(".nav-links a").forEach(link => {
-    link.addEventListener("click", () => {
-      navLinks.classList.remove("open");
-    });
-  });
-}
-*/
 function getCurrentSeason() {
   const today = new Date();
   const year = today.getFullYear();
@@ -34,11 +18,11 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
-// === Lokala datumhjälpare (undvik UTC-drift) ===
+// ===== Datumhjälpare (lokal tid) =====
 function parseLocalDate(yyyy_mm_dd) {
   if (!yyyy_mm_dd) return null;
   const [y, m, d] = yyyy_mm_dd.trim().split('-').map(Number);
-  return new Date(y, m - 1, d); // lokal 00:00
+  return new Date(y, m - 1, d);
 }
 function addDaysLocal(date, days) {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -47,10 +31,10 @@ function addDaysLocal(date, days) {
 }
 function adjustEndDate(dateString) {
   if (!dateString) return null;
-  return addDaysLocal(parseLocalDate(dateString), 1); // inklusivt slut
+  return addDaysLocal(parseLocalDate(dateString), 1);
 }
 
-// === Patch: exakt positionering i Month-vy (använd verklig månads-längd) ===
+// ===== Patcha Frappe Gantt: exakt position i Month-läge =====
 (function patchFrappeGanttMonthPositioning() {
   if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
   const original_get_x = Gantt.prototype.get_x;
@@ -58,13 +42,11 @@ function adjustEndDate(dateString) {
     if (this.view_mode === 'Month') {
       const start = this.gantt_start;
       const cw = this.options.column_width;
-      // antal hela månader från chart-start till datumets månad
       const monthIndex =
         (date.getFullYear() - start.getFullYear()) * 12 +
         (date.getMonth() - start.getMonth());
-      // proportion inom aktuell månad
       const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-      const dayIndex = date.getDate() - 1; // 0-baserad
+      const dayIndex = date.getDate() - 1;
       return monthIndex * cw + (dayIndex / daysInMonth) * cw;
     }
     return original_get_x.call(this, date);
@@ -115,7 +97,6 @@ function setupFilters() {
   });
   seasonSelect.value = getCurrentSeason();
 
-  // --- Multi-select för Typ ---
   const typeWrapper = document.createElement('div');
   typeWrapper.id = 'type-filter';
   typeWrapper.className = 'type-multiselect';
@@ -153,7 +134,6 @@ function setupFilters() {
       .filter(Boolean);
     const uniqueTypes = [...new Set(filteredTypes)].sort();
 
-    // Behåll bara val som finns kvar
     for (const t of Array.from(selectedTypes)) {
       if (!uniqueTypes.includes(t)) selectedTypes.delete(t);
     }
@@ -233,7 +213,7 @@ function setupViewButtons() {
   const viewButtonsDiv = document.createElement('div');
   viewButtonsDiv.classList.add('view-buttons');
 
-  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'],['Year', 'År']].forEach(([mode, label]) => {
+  [['Day', 'Dag'], ['Week', 'Vecka'], ['Month', 'Månad'], ['Year', 'År']].forEach(([mode, label]) => {
     const btn = document.createElement('button');
     btn.textContent = label;
     btn.dataset.mode = mode;
@@ -252,7 +232,7 @@ function setupViewButtons() {
 
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
-  const typesSelected = Array.from(selectedTypes); // tom => alla
+  const typesSelected = Array.from(selectedTypes);
 
   const filtered = allEvents
     .filter(e => (!season || e['Säsong'] === season))
@@ -290,7 +270,6 @@ function renderGantt() {
   container.innerHTML = '';
 
   if (tasks.length > 0) {
-    // Lås visningsspannet till hela månader (så sista månaden syns)
     const minDateRaw = new Date(Math.min(...tasks.map(t => t.start.getTime())));
     const maxDateRaw = new Date(Math.max(...tasks.map(t => t.end.getTime())));
     const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
@@ -324,8 +303,6 @@ function renderGantt() {
         }
       }
     });
-
-    // (ingen extra färgworkaround behövs)
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
