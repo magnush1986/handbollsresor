@@ -34,11 +34,20 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
+// === NYTT: Lokala datumhjälpare ===
+function parseLocalDate(yyyy_mm_dd) {
+  if (!yyyy_mm_dd) return null;
+  const [y, m, d] = yyyy_mm_dd.split('-').map(Number);
+  return new Date(y, m - 1, d); // lokal 00:00
+}
+function addDaysLocal(date, days) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  d.setDate(d.getDate() + days);
+  return d;
+}
 function adjustEndDate(dateString) {
   if (!dateString) return null;
-  const date = new Date(dateString);
-  date.setDate(date.getDate() + 1);
-  return date.toISOString().split('T')[0];
+  return addDaysLocal(parseLocalDate(dateString), 1); // inklusivt slut
 }
 
 function assignColors() {
@@ -226,20 +235,24 @@ function renderGantt() {
   const filtered = allEvents
     .filter(e => (!season || e['Säsong'] === season))
     .filter(e => (typesSelected.length === 0 || typesSelected.includes(e['Typ av händelse'])))
-    .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']));
+    .sort((a, b) => parseLocalDate(a['Datum från']) - parseLocalDate(b['Datum från']));
 
-  const tasks = filtered.map(e => ({
-    id: e['Namn på händelse'],
-    name: e['Namn på händelse'],
-    start: e['Datum från'],
-    end: adjustEndDate(e['Datum till'] || e['Datum från']),
-    progress: 0,
-    type: e['Typ av händelse'],
-    plats: e['Plats'] || '',
-    samling: e['Samling Härnösand'] || '',
-    info: e['Övrig information'] || '',
-    color: colorMap[e['Typ av händelse']] || '#CCCCCC'
-  }));
+  const tasks = filtered.map(e => {
+    const start = parseLocalDate(e['Datum från']);
+    const end = adjustEndDate(e['Datum till'] || e['Datum från']);
+    return {
+      id: e['Namn på händelse'],
+      name: e['Namn på händelse'],
+      start,
+      end,
+      progress: 0,
+      type: e['Typ av händelse'],
+      plats: e['Plats'] || '',
+      samling: e['Samling Härnösand'] || '',
+      info: e['Övrig information'] || '',
+      color: colorMap[e['Typ av händelse']] || '#CCCCCC'
+    };
+  });
 
   if (tasks.length > 0) {
     tasks.push({
@@ -255,8 +268,8 @@ function renderGantt() {
   container.innerHTML = '';
 
   if (tasks.length > 0) {
-    const minDate = new Date(Math.min(...tasks.map(t => new Date(t.start))));
-    const maxDate = new Date(Math.max(...tasks.map(t => new Date(t.end))));
+    const minDate = new Date(Math.min(...tasks.map(t => t.start.getTime())));
+    const maxDate = new Date(Math.max(...tasks.map(t => t.end.getTime())));
     minDate.setHours(0, 0, 0, 0);
     maxDate.setHours(23, 59, 59, 999);
 
