@@ -34,7 +34,7 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
-// === Lokala datumhjälpare (för att undvika UTC-drift) ===
+// === Lokala datumhjälpare (undvik UTC-drift) ===
 function parseLocalDate(yyyy_mm_dd) {
   if (!yyyy_mm_dd) return null;
   const [y, m, d] = yyyy_mm_dd.trim().split('-').map(Number);
@@ -49,6 +49,28 @@ function adjustEndDate(dateString) {
   if (!dateString) return null;
   return addDaysLocal(parseLocalDate(dateString), 1); // inklusivt slut
 }
+
+// === Patch: exakt positionering i Month-vy (använd verklig månads-längd) ===
+(function patchFrappeGanttMonthPositioning() {
+  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
+  const original_get_x = Gantt.prototype.get_x;
+  Gantt.prototype.get_x = function(date) {
+    if (this.view_mode === 'Month') {
+      const start = this.gantt_start;
+      const cw = this.options.column_width;
+      // antal hela månader från chart-start till datumets månad
+      const monthIndex =
+        (date.getFullYear() - start.getFullYear()) * 12 +
+        (date.getMonth() - start.getMonth());
+      // proportion inom aktuell månad
+      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+      const dayIndex = date.getDate() - 1; // 0-baserad
+      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
+    }
+    return original_get_x.call(this, date);
+  };
+  Gantt.prototype.__monthPatched = true;
+})();
 
 function assignColors() {
   const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean);
@@ -268,11 +290,11 @@ function renderGantt() {
   container.innerHTML = '';
 
   if (tasks.length > 0) {
-    // Spann: lås till hela månader så att nästa månad (t.ex. februari) syns
+    // Lås visningsspannet till hela månader (så sista månaden syns)
     const minDateRaw = new Date(Math.min(...tasks.map(t => t.start.getTime())));
     const maxDateRaw = new Date(Math.max(...tasks.map(t => t.end.getTime())));
-    const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);           // första dagen i minsta månaden
-    const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);         // första dagen i månaden efter största månaden
+    const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
+    const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
@@ -303,13 +325,7 @@ function renderGantt() {
       }
     });
 
-    // Tar bort tidigare workaround för färgerna
-    // tasks.forEach(task => {
-    //   const bars = document.querySelectorAll(`.bar-${CSS.escape(task.id)} rect`);
-    //   bars.forEach(rect => {
-    //     rect.style.fill = colorMap[task.type] || '#CCCCCC';
-    //   });
-    // });
+    // (ingen extra färgworkaround behövs)
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
