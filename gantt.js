@@ -18,21 +18,24 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
-// ===== Datumhjälpare (lokal tid) =====
+// ===== Datumhjälpare (lokal tid, alltid kl 12:00) =====
 function parseLocalDate(yyyy_mm_dd) {
   if (!yyyy_mm_dd) return null;
   const [y, m, d] = yyyy_mm_dd.trim().split('-').map(Number);
-  return new Date(y, m - 1, d);
+  // lägg tiden mitt på dagen för att undvika DST/UTC-glidning
+  return new Date(y, m - 1, d, 12, 0, 0, 0);
 }
 function addDaysLocal(date, days) {
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // bevara kl 12:00 när vi flyttar datumet
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
   d.setDate(d.getDate() + days);
   return d;
 }
 function adjustEndDate(dateString) {
   if (!dateString) return null;
-  return addDaysLocal(parseLocalDate(dateString), 1);
+  return addDaysLocal(parseLocalDate(dateString), 1); // exklusivt slut → +1 dag
 }
+
 
 // ===== Patcha Frappe Gantt: exakt position i Month-läge =====
 (function patchFrappeGanttMonthPositioning() {
