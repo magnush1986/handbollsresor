@@ -34,10 +34,10 @@ function getCurrentSeason() {
   return month >= 7 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
 }
 
-// === NYTT: Lokala datumhjälpare ===
+// === Lokala datumhjälpare (för att undvika UTC-drift) ===
 function parseLocalDate(yyyy_mm_dd) {
   if (!yyyy_mm_dd) return null;
-  const [y, m, d] = yyyy_mm_dd.split('-').map(Number);
+  const [y, m, d] = yyyy_mm_dd.trim().split('-').map(Number);
   return new Date(y, m - 1, d); // lokal 00:00
 }
 function addDaysLocal(date, days) {
@@ -268,24 +268,25 @@ function renderGantt() {
   container.innerHTML = '';
 
   if (tasks.length > 0) {
-    const minDate = new Date(Math.min(...tasks.map(t => t.start.getTime())));
-    const maxDate = new Date(Math.max(...tasks.map(t => t.end.getTime())));
-    minDate.setHours(0, 0, 0, 0);
-    maxDate.setHours(23, 59, 59, 999);
+    // Spann: lås till hela månader så att nästa månad (t.ex. februari) syns
+    const minDateRaw = new Date(Math.min(...tasks.map(t => t.start.getTime())));
+    const maxDateRaw = new Date(Math.max(...tasks.map(t => t.end.getTime())));
+    const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);           // första dagen i minsta månaden
+    const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);         // första dagen i månaden efter största månaden
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
       bar_height: 40,
       lines: 'vertical',
-      start: minDate,
-      end: maxDate,
+      start: viewStart,
+      end: viewEnd,
       padding: 0,
       infinite_padding: false,
       popup: ({ task }) => `
         <div class="custom-popup">
           <strong>Namn på händelse:</strong> ${task.id}<br/>
-          <strong>Datum från:</strong> ${task.start}<br/>
-          <strong>Datum till:</strong> ${task.end}<br/>
+          <strong>Datum från:</strong> ${task.start.toLocaleDateString('sv-SE')}<br/>
+          <strong>Datum till:</strong> ${task.end.toLocaleDateString('sv-SE')}<br/>
           <strong>Typ:</strong> ${task.type || ''}<br/>
           <strong>Plats:</strong> ${task.plats || ''}<br/>
           <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
