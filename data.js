@@ -334,7 +334,9 @@ function loadFilteredEvents() {
       const groupDiv = document.createElement('div');
       groupDiv.className = 'event-group';
       groupDiv.innerHTML = `<h2>🗓️ ${group.year} – ${group.name}</h2>`;
-      group.data.forEach(e => {
+      group.data
+      .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']))
+      .forEach(e => {
         renderEventCard(e, groupDiv, !firstEventRendered);
         firstEventRendered = true;
       });
