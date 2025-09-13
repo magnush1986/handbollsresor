@@ -233,6 +233,26 @@ function setupViewButtons() {
   filtersDiv.appendChild(viewButtonsDiv);
 }
 
+function ensureMonthPatch() {
+  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
+
+  const original_get_x = Gantt.prototype.get_x;
+  Gantt.prototype.get_x = function(date) {
+    if (this.view_mode === 'Month') {
+      const start = this.gantt_start;          // första dagen i vyn
+      const cw = this.options.column_width;    // kolumnbredd per månad
+      const monthIndex =
+        (date.getFullYear() - start.getFullYear()) * 12 +
+        (date.getMonth() - start.getMonth());
+      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+      const dayIndex = date.getDate() - 1;     // 0-baserat
+      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
+    }
+    return original_get_x.call(this, date);
+  };
+  Gantt.prototype.__monthPatched = true;
+}
+
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
   const typesSelected = Array.from(selectedTypes);
@@ -278,6 +298,8 @@ function renderGantt() {
     const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
     const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);
 
+    ensureMonthPatch();
+    
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
       bar_height: 40,
