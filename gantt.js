@@ -272,7 +272,8 @@ function renderGantt() {
         upper_text: (date, prev) =>
           !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
         thick_line: (date) => date.getDate() === 1,
-        snap_at: '1d'
+        snap_at: '1d',
+        padding: '2m' // viktigt för att Gantt ska beräkna gantt_start/gantt_end
       },
       Gantt.VIEW_MODE.YEAR
     ];
