@@ -279,45 +279,45 @@ function renderGantt() {
     ];
 
     const gantt = new Gantt('#gantt-container', tasks, {
-    view_mode: currentViewMode,
-    view_modes: viewModes,
-    bar_height: 40,
-    lines: 'vertical',
-    // låt libben räkna start/slut; dina viewStart/viewEnd ignoreras ändå
-    padding: 0,
-    infinite_padding: false,
-    popup: ({ task }) => `
-      <div class="custom-popup">
-        <strong>Namn på händelse:</strong> ${task.id}<br/>
-        <strong>Datum från:</strong> ${task.start.toLocaleDateString('sv-SE')}<br/>
-        <strong>Datum till:</strong> ${task.end.toLocaleDateString('sv-SE')}<br/>
-        <strong>Typ:</strong> ${task.type || ''}<br/>
-        <strong>Plats:</strong> ${task.plats || ''}<br/>
-        <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
-        <strong>Övrig information:</strong> ${task.info || ''}
-      </div>
-    `,
-    on_render: () => {
-      const lastBar = container.querySelector('.bar:last-child');
-      if (lastBar) {
-        const barBBox = lastBar.getBBox();
-        const totalHeight = barBBox.y + barBBox.height + 60;
-        // container.style.height = `${totalHeight}px`;
+      view_mode: currentViewMode,
+      view_modes: viewModes,
+      bar_height: 40,
+      lines: 'vertical',
+      // börja vid start i Månad (annars "today")
+      scroll_to: currentViewMode === 'Month' ? 'start' : 'today',
+      // låt libben räkna start/slut; dina viewStart/viewEnd används inte här
+      padding: 0,
+      infinite_padding: false,
+      popup: ({ task }) => `
+        <div class="custom-popup">
+          <strong>Namn på händelse:</strong> ${task.id}<br/>
+          <strong>Datum från:</strong> ${task.start.toLocaleDateString('sv-SE')}<br/>
+          <strong>Datum till:</strong> ${task.end.toLocaleDateString('sv-SE')}<br/>
+          <strong>Typ:</strong> ${task.type || ''}<br/>
+          <strong>Plats:</strong> ${task.plats || ''}<br/>
+          <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
+          <strong>Övrig information:</strong> ${task.info || ''}
+        </div>
+      `,
+      on_render: () => {
+        const lastBar = container.querySelector('.bar:last-child');
+        if (lastBar) {
+          const barBBox = lastBar.getBBox();
+          const totalHeight = barBBox.y + barBBox.height + 60;
+          // container.style.height = `${totalHeight}px`;
+        }
       }
+    });
+
+    // säkerställ att första stapeln syns direkt i Månad
+    if (currentViewMode === 'Month' && tasks.length > 0) {
+      const firstReal = tasks.find(t => t.id !== 'padding-row') || tasks[0];
+      const firstStart = firstReal.start instanceof Date ? firstReal.start : new Date(firstReal.start);
+      const daysFromStart = Math.round((firstStart - gantt.gantt_start) / (1000 * 60 * 60 * 24));
+      const px = daysFromStart * gantt.config.column_width;
+      gantt.$container.scrollLeft = Math.max(px - gantt.config.column_width * 2, 0);
     }
-  });
-  
-  // --- NYTT: auto-scrolla i Månad till första händelsen som visas ---
-  if (currentViewMode === 'Month' && tasks.length > 0) {
-    // hitta första riktiga uppgift (hoppa över ev. padding-row)
-    const firstReal = tasks.find(t => t.id !== 'padding-row') || tasks[0];
-    const firstStart = firstReal.start instanceof Date ? firstReal.start : new Date(firstReal.start);
-  
-    // räkna ut pixelläget för första uppgiftens start i nuvarande skala
-    const daysFromStart =
-      Math.round((firstStart - gantt.gantt_start) / (1000 * 60 * 60 * 24)); // hela dagar
-    const px = daysFromStart * gantt.config.column_width;
-  
-    // scrolla så staplarna syns med lite marginal
-    gantt.$container.scrollLeft = Math.max(px - gantt.config.column_width * 2, 0);
+  } else {
+    container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
+}
