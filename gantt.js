@@ -300,6 +300,50 @@ function renderGantt() {
 
     ensureMonthPatch();
     
+    // --- Exakt månadsvy med dagsteg ---
+    const monthName = new Intl.DateTimeFormat('sv-SE', { month: 'long' });
+    const viewModes = [
+      Gantt.VIEW_MODE.DAY,
+      Gantt.VIEW_MODE.WEEK,
+      // Ersätt standard-"Month" med en dag-baserad variant
+      {
+        name: 'Month',
+        step: '1d',                // dagliga kolumner ⇒ korrekt X-position inom månaden
+        column_width: 20,          // justera bredd efter smak (t.ex. 18–24)
+        date_format: 'YYYY-MM-DD', // spelar mest roll internt
+        lower_text: (date, prev) =>
+          !prev || date.getMonth() !== prev.getMonth() ? monthName.format(date) : '',
+        upper_text: (date, prev) =>
+          !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
+        thick_line: (date) => date.getDate() === 1, // tjock linje vid månadsskifte
+        snap_at: '1d'
+      },
+      Gantt.VIEW_MODE.YEAR
+    ];
+    
+    // Skapa gantt med våra viewModes
+    const gantt = new Gantt('#gantt-container', tasks, {
+      view_mode: currentViewMode,   // 'Day' | 'Week' | 'Month' | 'Year'
+      view_modes: viewModes,        // <-- viktiga raden
+      bar_height: 40,
+      lines: 'vertical',
+      start: viewStart,
+      end: viewEnd,
+      padding: 0,
+      infinite_padding: false,
+      popup: ({ task }) => `
+        <div class="custom-popup">
+          <strong>Namn på händelse:</strong> ${task.id}<br/>
+          <strong>Datum från:</strong> ${task.start.toLocaleDateString('sv-SE')}<br/>
+          <strong>Datum till:</strong> ${task.end.toLocaleDateString('sv-SE')}<br/>
+          <strong>Typ:</strong> ${task.type || ''}<br/>
+          <strong>Plats:</strong> ${task.plats || ''}<br/>
+          <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
+          <strong>Övrig information:</strong> ${task.info || ''}
+        </div>
+      `
+    });
+    
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
       bar_height: 40,
