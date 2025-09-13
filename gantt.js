@@ -37,26 +37,6 @@ function adjustEndDate(dateString) {
 }
 
 
-// ===== Patcha Frappe Gantt: exakt position i Month-läge =====
-(function patchFrappeGanttMonthPositioning() {
-  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
-  const original_get_x = Gantt.prototype.get_x;
-  Gantt.prototype.get_x = function(date) {
-    if (this.view_mode === 'Month') {
-      const start = this.gantt_start;
-      const cw = this.options.column_width;
-      const monthIndex =
-        (date.getFullYear() - start.getFullYear()) * 12 +
-        (date.getMonth() - start.getMonth());
-      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-      const dayIndex = date.getDate() - 1;
-      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
-    }
-    return original_get_x.call(this, date);
-  };
-  Gantt.prototype.__monthPatched = true;
-})();
-
 function assignColors() {
   const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean);
   types.forEach((type, index) => {
@@ -309,44 +289,4 @@ function renderGantt() {
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
-}
-// --- PATCH: dag-precision i Month utan att ändra view_mode ---
-try {
-  // Hitta stapelklassens konstruktor via första baren
-  const BarCtor = gantt.bars && gantt.bars[0] && gantt.bars[0].constructor;
-  if (BarCtor && !BarCtor.__monthDayPatchApplied) {
-    const original_compute_x = BarCtor.prototype.compute_x;
-
-    BarCtor.prototype.compute_x = function () {
-      // Kör speciallogik endast när vyn är "Month" (standard-month: unit='month')
-      if (this.gantt && this.gantt.view_is('Month')) {
-        const cw = this.gantt.config.column_width;
-        const start = this.gantt.gantt_start;   // vänsterkant för första månadskolumnen
-        const date  = this.task._start;         // uppgiftens start (Date)
-
-        // hur många hela månader mellan gantt_start och uppgiftens månad
-        const monthIndex =
-          (date.getFullYear() - start.getFullYear()) * 12 +
-          (date.getMonth() - start.getMonth());
-
-        // fraktion inom månaden baserat på dagnummer
-        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-        const dayIndex = Math.max(0, Math.min(daysInMonth - 1, date.getDate() - 1)); // 0-baserat, clamp
-        const x = monthIndex * cw + (dayIndex / daysInMonth) * cw;
-
-        this.x = x; // sätt beräknad X-position
-        return;     // hoppa över originalet
-      }
-
-      // Övriga vyer: använd originalbeteendet
-      return original_compute_x.call(this);
-    };
-
-    BarCtor.__monthDayPatchApplied = true;
-
-    // Tvinga omritning med patchen aktiv
-    gantt.change_view_mode(gantt.options.view_mode, true);
-  }
-} catch (err) {
-  console.warn('Month day-precision patch misslyckades:', err);
 }
