@@ -257,35 +257,35 @@ function renderGantt() {
     const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
     const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);
 
-    // --- Exakt månadsvy med dagsteg ---
+    // --- Exakt månadsvy med dagsteg, men allt annat är oförändrat ---
     const monthName = new Intl.DateTimeFormat('sv-SE', { month: 'long' });
-    const viewModes = [
-      Gantt.VIEW_MODE.DAY,
-      Gantt.VIEW_MODE.WEEK,
-      {
-        name: 'Month',
-        step: '1d',
-        column_width: 20,
-        date_format: 'YYYY-MM-DD',
-        lower_text: (date, prev) =>
-          !prev || date.getMonth() !== prev.getMonth() ? monthName.format(date) : '',
-        upper_text: (date, prev) =>
-          !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
-        thick_line: (date) => date.getDate() === 1,
-        snap_at: '1d',
-        padding: '2m' // viktigt för att Gantt ska beräkna gantt_start/gantt_end
-      },
-      Gantt.VIEW_MODE.YEAR
-    ];
+    const monthVM = {
+      ...Gantt.VIEW_MODE.MONTH,
+      name: 'Month',
+      step: '1d',
+      column_width: 20,
+      date_format: 'YYYY-MM-DD',
+      lower_text: (date, prev) =>
+        !prev || date.getMonth() !== prev.getMonth() ? monthName.format(date) : '',
+      upper_text: (date, prev) =>
+        !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
+      thick_line: (date) => date.getDate() === 1,
+      snap_at: '1d',
+      padding: '2m'
+    };
 
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      view_modes: viewModes,
+      view_modes: [
+        Gantt.VIEW_MODE.DAY,
+        Gantt.VIEW_MODE.WEEK,
+        monthVM,
+        Gantt.VIEW_MODE.YEAR
+      ],
       bar_height: 40,
       lines: 'vertical',
-      // börja vid start i Månad (annars "today")
-      scroll_to: currentViewMode === 'Month' ? 'start' : 'today',
-      // låt libben räkna start/slut; dina viewStart/viewEnd används inte här
+      start: viewStart,
+      end: viewEnd,
       padding: 0,
       infinite_padding: false,
       popup: ({ task }) => `
@@ -309,7 +309,7 @@ function renderGantt() {
       }
     });
 
-    // säkerställ att första stapeln syns direkt i Månad
+    // Auto-scroll i Månad till första händelsen så det inte ser tomt ut
     if (currentViewMode === 'Month' && tasks.length > 0) {
       const firstReal = tasks.find(t => t.id !== 'padding-row') || tasks[0];
       const firstStart = firstReal.start instanceof Date ? firstReal.start : new Date(firstReal.start);
