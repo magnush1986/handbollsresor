@@ -36,6 +36,27 @@ function adjustEndDate(dateString) {
   return addDaysLocal(parseLocalDate(dateString), 1); // exklusivt slut → +1 dag
 }
 
+
+// ===== Patcha Frappe Gantt: exakt position i Month-läge =====
+(function patchFrappeGanttMonthPositioning() {
+  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
+  const original_get_x = Gantt.prototype.get_x;
+  Gantt.prototype.get_x = function(date) {
+    if (this.view_mode === 'Month') {
+      const start = this.gantt_start;
+      const cw = this.options.column_width;
+      const monthIndex =
+        (date.getFullYear() - start.getFullYear()) * 12 +
+        (date.getMonth() - start.getMonth());
+      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+      const dayIndex = date.getDate() - 1;
+      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
+    }
+    return original_get_x.call(this, date);
+  };
+  Gantt.prototype.__monthPatched = true;
+})();
+
 function assignColors() {
   const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean);
   types.forEach((type, index) => {
@@ -257,31 +278,8 @@ function renderGantt() {
     const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
     const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);
 
-    // --- Exakt månadsvy med dagsteg, men allt annat är oförändrat ---
-    const monthName = new Intl.DateTimeFormat('sv-SE', { month: 'long' });
-    const monthVM = {
-      ...Gantt.VIEW_MODE.MONTH,
-      name: 'Month',
-      step: '1d',
-      column_width: 20,
-      date_format: 'YYYY-MM-DD',
-      lower_text: (date, prev) =>
-        !prev || date.getMonth() !== prev.getMonth() ? monthName.format(date) : '',
-      upper_text: (date, prev) =>
-        !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
-      thick_line: (date) => date.getDate() === 1,
-      snap_at: '1d',
-      padding: '2m'
-    };
-
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
-      view_modes: [
-        Gantt.VIEW_MODE.DAY,
-        Gantt.VIEW_MODE.WEEK,
-        monthVM,
-        Gantt.VIEW_MODE.YEAR
-      ],
       bar_height: 40,
       lines: 'vertical',
       start: viewStart,
@@ -308,15 +306,6 @@ function renderGantt() {
         }
       }
     });
-
-    // Auto-scroll i Månad till första händelsen så det inte ser tomt ut
-    if (currentViewMode === 'Month' && tasks.length > 0) {
-      const firstReal = tasks.find(t => t.id !== 'padding-row') || tasks[0];
-      const firstStart = firstReal.start instanceof Date ? firstReal.start : new Date(firstReal.start);
-      const daysFromStart = Math.round((firstStart - gantt.gantt_start) / (1000 * 60 * 60 * 24));
-      const px = daysFromStart * gantt.config.column_width;
-      gantt.$container.scrollLeft = Math.max(px - gantt.config.column_width * 2, 0);
-    }
   } else {
     container.innerHTML = '<p style="text-align:center; padding:2rem;">Inga händelser att visa</p>';
   }
