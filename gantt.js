@@ -36,27 +36,6 @@ function adjustEndDate(dateString) {
   return addDaysLocal(parseLocalDate(dateString), 1); // exklusivt slut → +1 dag
 }
 
-
-// ===== Patcha Frappe Gantt: exakt position i Month-läge =====
-(function patchFrappeGanttMonthPositioning() {
-  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
-  const original_get_x = Gantt.prototype.get_x;
-  Gantt.prototype.get_x = function(date) {
-    if (this.view_mode === 'Month') {
-      const start = this.gantt_start;
-      const cw = this.options.column_width;
-      const monthIndex =
-        (date.getFullYear() - start.getFullYear()) * 12 +
-        (date.getMonth() - start.getMonth());
-      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-      const dayIndex = date.getDate() - 1;
-      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
-    }
-    return original_get_x.call(this, date);
-  };
-  Gantt.prototype.__monthPatched = true;
-})();
-
 function assignColors() {
   const types = [...new Set(allEvents.map(e => e['Typ av händelse']))].filter(Boolean);
   types.forEach((type, index) => {
@@ -233,26 +212,6 @@ function setupViewButtons() {
   filtersDiv.appendChild(viewButtonsDiv);
 }
 
-function ensureMonthPatch() {
-  if (typeof Gantt === 'undefined' || Gantt.prototype.__monthPatched) return;
-
-  const original_get_x = Gantt.prototype.get_x;
-  Gantt.prototype.get_x = function(date) {
-    if (this.view_mode === 'Month') {
-      const start = this.gantt_start;          // första dagen i vyn
-      const cw = this.options.column_width;    // kolumnbredd per månad
-      const monthIndex =
-        (date.getFullYear() - start.getFullYear()) * 12 +
-        (date.getMonth() - start.getMonth());
-      const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-      const dayIndex = date.getDate() - 1;     // 0-baserat
-      return monthIndex * cw + (dayIndex / daysInMonth) * cw;
-    }
-    return original_get_x.call(this, date);
-  };
-  Gantt.prototype.__monthPatched = true;
-}
-
 function renderGantt() {
   const season = document.getElementById('season-filter').value;
   const typesSelected = Array.from(selectedTypes);
@@ -298,54 +257,29 @@ function renderGantt() {
     const viewStart = new Date(minDateRaw.getFullYear(), minDateRaw.getMonth(), 1);
     const viewEnd = new Date(maxDateRaw.getFullYear(), maxDateRaw.getMonth() + 1, 1);
 
-    ensureMonthPatch();
-    
     // --- Exakt månadsvy med dagsteg ---
     const monthName = new Intl.DateTimeFormat('sv-SE', { month: 'long' });
     const viewModes = [
       Gantt.VIEW_MODE.DAY,
       Gantt.VIEW_MODE.WEEK,
-      // Ersätt standard-"Month" med en dag-baserad variant
       {
         name: 'Month',
-        step: '1d',                // dagliga kolumner ⇒ korrekt X-position inom månaden
-        column_width: 20,          // justera bredd efter smak (t.ex. 18–24)
-        date_format: 'YYYY-MM-DD', // spelar mest roll internt
+        step: '1d',
+        column_width: 20,
+        date_format: 'YYYY-MM-DD',
         lower_text: (date, prev) =>
           !prev || date.getMonth() !== prev.getMonth() ? monthName.format(date) : '',
         upper_text: (date, prev) =>
           !prev || date.getFullYear() !== prev.getFullYear() ? String(date.getFullYear()) : '',
-        thick_line: (date) => date.getDate() === 1, // tjock linje vid månadsskifte
+        thick_line: (date) => date.getDate() === 1,
         snap_at: '1d'
       },
       Gantt.VIEW_MODE.YEAR
     ];
-    
-    // Skapa gantt med våra viewModes
-    const gantt = new Gantt('#gantt-container', tasks, {
-      view_mode: currentViewMode,   // 'Day' | 'Week' | 'Month' | 'Year'
-      view_modes: viewModes,        // <-- viktiga raden
-      bar_height: 40,
-      lines: 'vertical',
-      start: viewStart,
-      end: viewEnd,
-      padding: 0,
-      infinite_padding: false,
-      popup: ({ task }) => `
-        <div class="custom-popup">
-          <strong>Namn på händelse:</strong> ${task.id}<br/>
-          <strong>Datum från:</strong> ${task.start.toLocaleDateString('sv-SE')}<br/>
-          <strong>Datum till:</strong> ${task.end.toLocaleDateString('sv-SE')}<br/>
-          <strong>Typ:</strong> ${task.type || ''}<br/>
-          <strong>Plats:</strong> ${task.plats || ''}<br/>
-          <strong>Samling Härnösand:</strong> ${task.samling || ''}<br/>
-          <strong>Övrig information:</strong> ${task.info || ''}
-        </div>
-      `
-    });
-    
+
     const gantt = new Gantt('#gantt-container', tasks, {
       view_mode: currentViewMode,
+      view_modes: viewModes,
       bar_height: 40,
       lines: 'vertical',
       start: viewStart,
