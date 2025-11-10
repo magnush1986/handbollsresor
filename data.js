@@ -309,40 +309,75 @@ function loadFilteredEvents() {
   let firstEventRendered = false;
 
   function renderGroup(title, list, target) {
-    const grouped = {};
-    list.forEach(e => {
-      const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
-      if (!grouped[key]) {
-        grouped[key] = {
-          year: e['År'],
-          name: e['Månadsnamn'],
-          data: []
-        };
-      }
-      grouped[key].data.push(e);
-    });
-
-    const keys = Object.keys(grouped).sort();
-    if (title) {
-      const h2 = document.createElement('h2');
-      h2.textContent = title;
-      target.appendChild(h2);
+  const grouped = {};
+  list.forEach(e => {
+    const key = `${e['År']}-${e['Månadsnummer'].padStart(2, '0')}`;
+    if (!grouped[key]) {
+      grouped[key] = {
+        year: e['År'],
+        name: e['Månadsnamn'],
+        data: []
+      };
     }
+    grouped[key].data.push(e);
+  });
 
-    keys.forEach(key => {
-      const group = grouped[key];
-      const groupDiv = document.createElement('div');
-      groupDiv.className = 'event-group';
-      groupDiv.innerHTML = `<h2>🗓️ ${group.year} – ${group.name}</h2>`;
-      group.data
-      .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']))
-      .forEach(e => {
-        renderEventCard(e, groupDiv, !firstEventRendered);
-        firstEventRendered = true;
-      });
-      target.appendChild(groupDiv);
-    });
+  const keys = Object.keys(grouped).sort();
+  if (title) {
+    const h2 = document.createElement('h2');
+    h2.textContent = title;
+    target.appendChild(h2);
   }
+
+  keys.forEach(key => {
+    const group = grouped[key];
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'event-group';
+    groupDiv.innerHTML = `<h2>🗓️ ${group.year} – ${group.name}</h2>`;
+
+    // --- NYTT: Gruppera inom månaden per vecka ---
+    const weeks = {};
+    group.data.forEach(e => {
+      const startDate = new Date(e['Datum från']);
+      if (isNaN(startDate)) return;
+      const week = getWeekNumber(startDate);
+      const year = startDate.getFullYear();
+      const keyWeek = `${year}-v${week}`;
+      if (!weeks[keyWeek]) weeks[keyWeek] = [];
+      weeks[keyWeek].push(e);
+    });
+
+    const sortedWeeks = Object.keys(weeks).sort((a, b) => {
+      const [y1, w1] = a.split('-v').map(Number);
+      const [y2, w2] = b.split('-v').map(Number);
+      return y1 === y2 ? w1 - w2 : y1 - y2;
+    });
+
+    sortedWeeks.forEach(weekKey => {
+      const [year, weekLabel] = weekKey.split('-v');
+      const weekNum = parseInt(weekLabel);
+      const firstDay = new Date(year, 0, (weekNum - 1) * 7 + 1);
+      const lastDay = new Date(firstDay);
+      lastDay.setDate(firstDay.getDate() + 6);
+
+      const weekDiv = document.createElement('div');
+      weekDiv.className = 'week-group';
+      weekDiv.innerHTML = `<h3>📅 Vecka ${weekNum} (${firstDay.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} – ${lastDay.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })})</h3>`;
+
+      weeks[weekKey]
+        .sort((a, b) => new Date(a['Datum från']) - new Date(b['Datum från']))
+        .forEach(e => {
+          renderEventCard(e, weekDiv);
+        });
+
+      groupDiv.appendChild(weekDiv);
+    });
+    // --- SLUT NYTT ---
+
+    target.appendChild(groupDiv);
+  });
+}
+
 
   if (!selectedSeason) {
     const groupedBySeason = {};
