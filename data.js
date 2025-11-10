@@ -16,6 +16,25 @@ function getEffectiveToday() {
   return today;
 }
 
+function formatDateRange(from, to) {
+  if (!from && !to) return '';
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+
+  // Om båda datum finns och skiljer sig
+  if (from && to && from !== to) {
+    const fromStr = fromDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+    const toStr = toDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+    return `${fromStr} – ${toStr}`;
+  }
+
+  // Om bara ett datum finns, eller samma datum
+  return from
+    ? fromDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
+    : toDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+}
+
+
 let allEvents = [];
 const selectedTypes = new Set();
 
