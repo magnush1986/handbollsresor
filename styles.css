@@ -1018,10 +1018,11 @@ details[open] .summary-icon {
 
 .summary-header {
   display: flex;
-  align-items: center;
+  align-items: baseline; /* Viktig – justerar så textbaslinjer möts */
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+
 
 .event-date-label {
   background: rgba(0, 128, 0, 0.1);
