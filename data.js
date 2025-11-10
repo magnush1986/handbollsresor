@@ -454,9 +454,23 @@ function renderEventCard(e, target, isFirst = false) {
 
   const summary = document.createElement('summary');
   summary.className = 'event-title';
+  const dateFrom = e['Datum från'];
+  const dateTo = e['Datum till'];
+  
+  const dateStr =
+    (dateFrom && dateTo && dateFrom !== dateTo)
+      ? `${formatDateRange(dateFrom, dateTo)}`
+      : (dateFrom || dateTo || '');
+  
   summary.innerHTML = `
-    <span class="summary-text">${e['Namn på händelse']}</span>
+    <div class="summary-header">
+      ${dateStr
+        ? `<span class="event-date-label">${dateStr}</span>`
+        : ''}
+      <span class="event-title">${e['Namn på händelse']}</span>
+    </div>
   `;
+
   card.appendChild(summary);
 
   card.addEventListener('toggle', () => {
