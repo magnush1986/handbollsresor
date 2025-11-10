@@ -384,9 +384,15 @@ function loadFilteredEvents() {
     sortedWeeks.forEach(weekKey => {
       const [year, weekLabel] = weekKey.split('-v');
       const weekNum = parseInt(weekLabel);
-      const firstDay = new Date(year, 0, (weekNum - 1) * 7 + 1);
+      // --- Korrekt ISO 8601 vecka (måndag–söndag) ---
+      const simple = new Date(year, 0, 1 + (weekNum - 1) * 7);
+      const dayOfWeek = simple.getDay() || 7; // söndag = 7
+      const isoMonday = new Date(simple);
+      isoMonday.setDate(simple.getDate() - (dayOfWeek - 1));
+      const firstDay = isoMonday;
       const lastDay = new Date(firstDay);
       lastDay.setDate(firstDay.getDate() + 6);
+
 
       const weekDiv = document.createElement('div');
       weekDiv.className = 'week-group';
