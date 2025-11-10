@@ -1009,3 +1009,10 @@ details[open] .summary-icon {
 .event-line.sampling-line .label {
   display: inline !important;
 }
+
+.week-group {
+  margin-bottom: 1.5rem; /* extra luft mellan veckorna */
+  padding-bottom: 0.5rem; /* lite inre luft */
+  border-bottom: 1px solid #eee; /* tunn grå linje som visuell avgränsning, kan tas bort om du vill */
+}
+
