@@ -659,8 +659,8 @@ function renderEventCard(e, target, isFirst = false) {
       ${(() => {
         const fromDate = e['Datum från']?.trim();
         const toDate = e['Datum till']?.trim();
-        const fromTime = e['Från tid']?.trim();
-        const toTime = e['Till tid']?.trim();
+        const fromTime = e['Från tid']?.trim()?.slice(0,5);
+        const toTime = e['Till tid']?.trim()?.slice(0,5);
       
         if (fromDate && toDate && fromDate === toDate) {
           // Samma dag → visa datum + tider
