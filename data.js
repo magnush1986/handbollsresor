@@ -527,16 +527,19 @@ function renderEventCard(e, target, isFirst = false) {
 
   let samlingHTML = '';
   const samlingH = e['Samling Härnösand']?.trim();
+  const samlingI = e['Samlingsinfo']?.trim();
   const samlingP = e['Samling på plats']?.trim();
-  if (samlingH && samlingP) {
-    samlingHTML = `
-      <div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>
-      <div class="event-line sampling-line"><span class="icon">⏱️</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>
-    `;
-  } else if (samlingH) {
-    samlingHTML = `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>`;
-  } else if (samlingP) {
-    samlingHTML = `<div class="event-line sampling-line"><span class="icon">⏱️</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>`;
+  
+  if (samlingH || samlingI || samlingP) {
+    samlingHTML += samlingH
+      ? `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>`
+      : '';
+    samlingHTML += samlingI
+      ? `<div class="event-line sampling-line"><span class="icon">ℹ️</span><span class="value">${samlingI}</span></div>`
+      : '';
+    samlingHTML += samlingP
+      ? `<div class="event-line sampling-line"><span class="icon">⏱️</span><span class="label">Samling på plats:</span> <span class="value">${samlingP}</span></div>`
+      : '';
   }
 
   const resväg = e['Resväg']?.trim();
