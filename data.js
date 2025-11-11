@@ -622,6 +622,22 @@ function renderEventCard(e, target, isFirst = false) {
      </div>`
   : "";
 
+  const adressTillSpelplats = e['Adress till spelplats']?.trim();
+  const adressTillSpelplatsHtml = adressTillSpelplats
+    ? `<div class="event-line adress-line">
+         <div class="main-row">
+           <span class="icon">🏟️</span>
+           <span class="label">Adress till spelplats:</span>
+           <span class="value">${adressTillSpelplats}</span>
+         </div>
+         <div class="maps-links">
+           <br><span class="google-link"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adressTillSpelplats)}" target="_blank">Visa på Google Maps</a></span><br>
+           <span class="google-link"><a href="https://maps.apple.com/?q=${encodeURIComponent(adressTillSpelplats)}" target="_blank">Visa på Apple Kartor</a></span>
+         </div>
+       </div>`
+    : "";
+
+
   const övrigInformation = e['Övrig information']?.trim();
   const övrigInformationHtml = övrigInformation
     ? `<div class="event-line long-text">
@@ -641,6 +657,7 @@ function renderEventCard(e, target, isFirst = false) {
         <div class="event-line"><span class="icon">📌</span><span class="label">Plats (laget.se):</span> <span class="value">${e['Location (ICS)']}</span></div>
       ` : ''}
       <div class="event-line"><span class="icon">🗓️</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
+      ${adressTillSpelplatsHtml}
       ${övrigInformationHtml}
     </div>
     ${ (ledigFrånSkolanHtml || ledighetHtml) ? `
