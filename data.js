@@ -527,7 +527,7 @@ function renderEventCard(e, target, isFirst = false) {
 
   let samlingHTML = '';
   const samlingH = e['Samling Härnösand']?.trim();
-  const samlingI = e['Samlingsinfo']?.trim();
+  const samlingI = e['Samlingsinfo (ICS)']?.trim();
   const samlingP = e['Samling på plats']?.trim();
   
   if (samlingH || samlingI || samlingP) {
