@@ -656,7 +656,35 @@ function renderEventCard(e, target, isFirst = false) {
       ${e['Location (ICS)']?.trim() ? `
         <div class="event-line"><span class="icon">📌</span><span class="label">Plats (laget.se):</span> <span class="value">${e['Location (ICS)']}</span></div>
       ` : ''}
-      <div class="event-line"><span class="icon">🗓️</span><span class="label">Period:</span> <span class="value">${e['Datum från']} – ${e['Datum till']}</span></div>
+      ${(() => {
+        const fromDate = e['Datum från']?.trim();
+        const toDate = e['Datum till']?.trim();
+        const fromTime = e['Från tid']?.trim();
+        const toTime = e['Till tid']?.trim();
+      
+        if (fromDate && toDate && fromDate === toDate) {
+          // Samma dag → visa datum + tider
+          const timePart = (fromTime && toTime)
+            ? `${fromTime} – ${toTime}`
+            : (fromTime || toTime || '');
+          return `
+            <div class="event-line">
+              <span class="icon">🗓️</span>
+              <span class="label">Datum:</span>
+              <span class="value">${fromDate}${timePart ? ` (${timePart})` : ''}</span>
+            </div>
+          `;
+        } else {
+          // Flera dagar → visa period som tidigare
+          return `
+            <div class="event-line">
+              <span class="icon">🗓️</span>
+              <span class="label">Period:</span>
+              <span class="value">${fromDate || ''}${(fromDate && toDate) ? ' – ' : ''}${toDate || ''}</span>
+            </div>
+          `;
+        }
+      })()}
       ${adressTillSpelplatsHtml}
       ${övrigInformationHtml}
     </div>
