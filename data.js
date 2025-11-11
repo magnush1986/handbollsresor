@@ -45,7 +45,7 @@ function loadEvents() {
   const isLedigt = href.includes("ledig.html");
   const todayDate = getEffectiveToday().toISOString().split("T")[0];
 
-  fetch(SHEET_URL)
+  fetch(`${SHEET_URL}&_=${Date.now()}`)
     .then(res => res.text())
     .then(csvText => {
       Papa.parse(csvText, {
