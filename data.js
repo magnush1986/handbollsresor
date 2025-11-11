@@ -532,7 +532,7 @@ function renderEventCard(e, target, isFirst = false) {
   
   if (samlingH || samlingI || samlingP) {
     samlingHTML += samlingH
-      ? `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling Härnösand:</span> <span class="value">${samlingH}</span></div>`
+      ? `<div class="event-line sampling-line"><span class="icon">🚍</span><span class="label">Samling:</span> <span class="value">${samlingH}</span></div>`
       : '';
     samlingHTML += samlingI
       ? `<div class="event-line sampling-line"><span class="icon">ℹ️</span><span class="value">${samlingI}</span></div>`
