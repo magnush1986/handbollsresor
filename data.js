@@ -659,11 +659,11 @@ function renderEventCard(e, target, isFirst = false) {
       ${(() => {
         const fromDate = e['Datum från']?.trim();
         const toDate = e['Datum till']?.trim();
-        const fromTime = e['Från tid']?.trim()?.slice(0,5);
-        const toTime = e['Till tid']?.trim()?.slice(0,5);
+        const fromTime = e['Från tid']?.trim();
+        const toTime = e['Till tid']?.trim();
       
         if (fromDate && toDate && fromDate === toDate) {
-          // Samma dag → visa datum + tider
+          // Samma dag → visa separat datum och tid
           const timePart = (fromTime && toTime)
             ? `${fromTime} – ${toTime}`
             : (fromTime || toTime || '');
@@ -671,8 +671,15 @@ function renderEventCard(e, target, isFirst = false) {
             <div class="event-line">
               <span class="icon">🗓️</span>
               <span class="label">Datum:</span>
-              <span class="value">${fromDate}${timePart ? ` (${timePart})` : ''}</span>
+              <span class="value">${fromDate}</span>
             </div>
+            ${timePart ? `
+              <div class="event-line">
+                <span class="icon">⏰</span>
+                <span class="label">Tid:</span>
+                <span class="value">${timePart}</span>
+              </div>
+            ` : ''}
           `;
         } else {
           // Flera dagar → visa period som tidigare
