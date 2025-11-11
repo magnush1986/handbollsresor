@@ -650,12 +650,55 @@ function renderEventCard(e, target, isFirst = false) {
     <div class="event-section">
       <h3>Grundläggande info</h3>
       <div class="event-line"><span class="icon">🏷️</span><span class="label">Typ:</span> <span class="value">${e['Typ av händelse']}</span></div>
-      ${e['Plats']?.trim() ? `
-        <div class="event-line"><span class="icon">📍</span><span class="label">Plats:</span> <span class="value">${e['Plats']}</span></div>
-      ` : ''}
-      ${e['Location (ICS)']?.trim() ? `
-        <div class="event-line"><span class="icon">📌</span><span class="label">Plats (laget.se):</span> <span class="value">${e['Location (ICS)']}</span></div>
-      ` : ''}
+     ${(() => {
+        const plats = e['Plats']?.trim() || '';
+        const platsICS = e['Location (ICS)']?.trim() || '';
+        
+        // Om de är lika (skiftlägesoberoende), visa bara Plats
+        if (plats && platsICS && plats.toLowerCase() === platsICS.toLowerCase()) {
+          return `
+            <div class="event-line">
+              <span class="icon">📍</span>
+              <span class="label">Plats:</span>
+              <span class="value">${plats}</span>
+            </div>
+          `;
+        }
+        // Om båda finns men skiljer sig
+        else if (plats && platsICS) {
+          return `
+            <div class="event-line">
+              <span class="icon">📍</span>
+              <span class="label">Plats:</span>
+              <span class="value">${plats}</span>
+            </div>
+            <div class="event-line">
+              <span class="icon">📌</span>
+              <span class="label">Plats (laget.se):</span>
+              <span class="value">${platsICS}</span>
+            </div>
+          `;
+        }
+        // Om bara en av dem finns
+        else if (plats) {
+          return `
+            <div class="event-line">
+              <span class="icon">📍</span>
+              <span class="label">Plats:</span>
+              <span class="value">${plats}</span>
+            </div>
+          `;
+        } else if (platsICS) {
+          return `
+            <div class="event-line">
+              <span class="icon">📌</span>
+              <span class="label">Plats (laget.se):</span>
+              <span class="value">${platsICS}</span>
+            </div>
+          `;
+        }
+        return '';
+      })()}
       ${(() => {
         const fromDate = e['Datum från']?.trim();
         const toDate = e['Datum till']?.trim();
