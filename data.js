@@ -659,8 +659,12 @@ function renderEventCard(e, target, isFirst = false) {
       ${(() => {
         const fromDate = e['Datum från']?.trim();
         const toDate = e['Datum till']?.trim();
-        const fromTime = e['Från tid']?.trim();
-        const toTime = e['Till tid']?.trim();
+        const fromTimeRaw = e['Från tid']?.trim();
+        const toTimeRaw = e['Till tid']?.trim();
+      
+        // Klipper bort sekunder (om formatet t.ex. är "12:15:00")
+        const fromTime = fromTimeRaw ? fromTimeRaw.slice(0, 5) : '';
+        const toTime = toTimeRaw ? toTimeRaw.slice(0, 5) : '';
       
         if (fromDate && toDate && fromDate === toDate) {
           // Samma dag → visa separat datum och tid
